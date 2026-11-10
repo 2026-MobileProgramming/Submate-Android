@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_submate_button"
-    android:minHeight="48dp"
+    android:background="@color/pri700"
+    android:minHeight="56dp"
     android:paddingHorizontal="20dp"
-    android:textColor="@android:color/white"
-    android:textStyle="bold" />
+    android:textColor="@color/appwhite"
+    style="@style/typo_body_m1" />
