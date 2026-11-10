@@ -5,13 +5,13 @@ ex) [Feat] 회원가입 화면 구현
 ```
 ### 2. 브랜치 생성
 ```
-Type/#IssueNumber 작업 내용
-ex) Feat/#1
+Type/#IssueNumber-작업 내용
+ex) Feat/#1-setting
  ```
 ### 3. 커밋 메시지
 ```
-Type/#IssueNumber-작업 내용
-ex) Feat/#1-setting
+Type/#IssueNumber 작업 내용
+ex) Feat/#1 로그인 화면 구현
 ```
 ### 4. PR 생성
 ```
