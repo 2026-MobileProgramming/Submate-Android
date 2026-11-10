@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/navigation_setting" android:layout_width="0dp" android:layout_height="60dp" android:layout_gravity="center_vertical" android:layout_weight="1" android:background="@drawable/bg_navigation_tab" android:clickable="true" android:focusable="true" android:gravity="center" android:orientation="vertical" android:paddingTop="4dp" android:paddingBottom="4dp">
+    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:contentDescription="설정" android:src="@drawable/ic_setting" android:tint="@color/navigation_icon_tint" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="설정" android:textColor="@color/navigation_text_tint" style="@style/typo_body_r1" />
+</LinearLayout>
