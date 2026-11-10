@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/navigation_calendar" android:icon="@drawable/ic_calendar" android:title="캘린더" />
+    <item android:id="@+id/navigation_subscribe_list" android:icon="@drawable/ic_list" android:title="구독목록" />
+    <item android:id="@+id/navigation_report" android:icon="@drawable/ic_report" android:title="리포트" />
+    <item android:id="@+id/navigation_setting" android:icon="@drawable/ic_setting" android:title="설정" />
+</menu>
