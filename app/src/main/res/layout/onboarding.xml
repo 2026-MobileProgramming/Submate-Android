@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-</FrameLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appwhite"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button_onboarding_description"
+        android:layout_width="364dp"
+        android:layout_height="56dp"
+        android:background="@drawable/bg_onboarding_description"
+        android:fontFamily="@font/pretendard_regular"
+        android:text="여기는 온보딩뷰"
+        android:textAllCaps="false"
+        android:textColor="@color/appwhite"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/button_enter_main"
+        android:layout_width="364dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_onboarding_enter"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="메인으로진입하기"
+        android:textAllCaps="false"
+        android:textColor="@color/appwhite"
+        android:textSize="14sp" />
+</LinearLayout>
