@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Submate color tokens: replace or extend with the design system values. -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="submate_primary">#6750A4</color>
+
+    <!-- Brand -->
+    <color name="color_primary">@color/submate_primary</color>
+
+    <!-- Semantic -->
+    <color name="color_background">@color/white</color>
+    <color name="color_surface">@color/white</color>
+    <color name="color_text_primary">@color/black</color>
 </resources>

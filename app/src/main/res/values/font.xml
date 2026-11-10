@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Typography tokens: replace fontFamily or add sizes according to the design system. -->
+    <style name="TextAppearance.Submate.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:fontFamily">@font/pretendard_bold</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Submate.Body" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+    </style>
+
+    <style name="TextAppearance.Submate.Caption" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+    </style>
+</resources>
