@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Typography tokens: replace fontFamily or add sizes according to the design system. -->
-    <style name="TextAppearance.Submate.Title" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:fontFamily">@font/pretendard_bold</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextAppearance.Submate.Body" parent="TextAppearance.Material3.BodyLarge">
-        <item name="android:fontFamily">@font/pretendard_regular</item>
-    </style>
-
-    <style name="TextAppearance.Submate.Caption" parent="TextAppearance.Material3.BodySmall">
-        <item name="android:fontFamily">@font/pretendard_medium</item>
-    </style>
+    <style name="typo_title_b1"><item name="android:fontFamily">@font/pretendard_bold</item><item name="android:textSize">28sp</item></style>
+    <style name="typo_title_b2"><item name="android:fontFamily">@font/pretendard_bold</item><item name="android:textSize">20sp</item></style>
+    <style name="typo_body_b3"><item name="android:fontFamily">@font/pretendard_bold</item><item name="android:textSize">14sp</item></style>
+    <style name="typo_body_m2"><item name="android:fontFamily">@font/pretendard_medium</item><item name="android:textSize">16sp</item></style>
+    <style name="typo_body_b2"><item name="android:fontFamily">@font/pretendard_bold</item><item name="android:textSize">16sp</item></style>
+    <style name="typo_body_m1"><item name="android:fontFamily">@font/pretendard_medium</item><item name="android:textSize">18sp</item></style>
+    <style name="typo_body_r1"><item name="android:fontFamily">@font/pretendard_regular</item><item name="android:textSize">14sp</item></style>
+    <style name="typo_cap_r1"><item name="android:fontFamily">@font/pretendard_regular</item><item name="android:textSize">12sp</item></style>
 </resources>
