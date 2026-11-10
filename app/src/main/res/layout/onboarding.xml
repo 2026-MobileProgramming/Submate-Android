@@ -6,18 +6,26 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <include
+    <com.example.submate.presentation.common.view.SubmateButton
         android:id="@+id/button_onboarding_description"
-        layout="@layout/common_wide_button"
         android:layout_width="364dp"
         android:layout_height="56dp"
-        android:text="여기는 온보딩뷰" />
+        android:background="@drawable/bg_submate_button"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="여기는 온보딩뷰"
+        android:textAllCaps="false"
+        android:textColor="@color/appwhite"
+        android:textSize="18sp" />
 
-    <include
+    <com.example.submate.presentation.common.view.SubmateButton
         android:id="@+id/button_enter_main"
-        layout="@layout/common_wide_button"
         android:layout_width="364dp"
         android:layout_height="56dp"
         android:layout_marginTop="16dp"
-        android:text="메인으로진입하기" />
+        android:background="@drawable/bg_submate_button"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="메인으로진입하기"
+        android:textAllCaps="false"
+        android:textColor="@color/appwhite"
+        android:textSize="18sp" />
 </LinearLayout>
