@@ -1,19 +1,18 @@
-package com.example.submate;
+package com.example.submate.presentation.subscribe.activity;
 
 import android.os.Bundle;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+import com.example.submate.R;
+import com.example.submate.presentation.subscribe.viewmodel.SubscribeListViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
-import com.example.submate.presentation.subscribe.SubscribeListViewModel;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
-
     private SubscribeListViewModel viewModel;
 
     @Override

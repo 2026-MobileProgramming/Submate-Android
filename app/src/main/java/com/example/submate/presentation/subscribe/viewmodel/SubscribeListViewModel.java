@@ -1,4 +1,4 @@
-package com.example.submate.presentation.subscribe;
+package com.example.submate.presentation.subscribe.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;

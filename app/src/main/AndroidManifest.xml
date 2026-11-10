@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Submate">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.subscribe.activity.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
