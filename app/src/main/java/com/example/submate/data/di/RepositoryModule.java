@@ -1,8 +1,8 @@
-package com.example.submate.di;
+package com.example.submate.data.di;
 
-import com.example.submate.data.repository.SubscribeRepositoryImpl;
-import com.example.submate.data.service.SubscribeService;
-import com.example.submate.data.service.SubscribeServiceImpl;
+import com.example.submate.data.repository.subscribelist.SubscribeRepositoryImpl;
+import com.example.submate.data.service.subscribelist.SubscribeService;
+import com.example.submate.data.service.subscribelist.SubscribeServiceImpl;
 import com.example.submate.domain.repository.SubscribeRepository;
 import javax.inject.Singleton;
 import dagger.Binds;

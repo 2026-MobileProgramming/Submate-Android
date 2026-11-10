@@ -1,4 +1,4 @@
-package com.example.submate.presentation.subscribe.adapter;
+package com.example.submate.presentation.subscribelist.adapter;
 
 /** XML list adapter placeholder for the SubscribeList screen. */
 public class SubscribeListAdapter {

@@ -1,4 +1,4 @@
-package com.example.submate.data.service;
+package com.example.submate.data.service.subscribelist;
 
 import com.example.submate.domain.model.SubscribeItem;
 import java.util.Arrays;
