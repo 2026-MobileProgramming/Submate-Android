@@ -6,27 +6,61 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.example.submate.presentation.common.view.SubmateButton
-        android:id="@+id/button_onboarding_description"
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:src="@drawable/logo_medium" />
+
+    <com.example.submate.presentation.common.view.SubmateEditText
+        android:id="@+id/et_email"
         android:layout_width="364dp"
         android:layout_height="56dp"
-        android:background="@drawable/bg_submate_button"
-        android:backgroundTint="@color/gray800"
-        android:fontFamily="@font/pretendard_medium"
-        android:text="여기는 온보딩뷰"
-        android:textAllCaps="false"
-        android:textColor="@color/appwhite"
-        android:textSize="18sp" />
+        android:background="@drawable/bg_submate_edittext"
+        android:hint="이메일 주소"
+        android:inputType="textEmailAddress"
+        android:paddingHorizontal="20dp"
+        style="@style/typo_body_m1" />
+
+    <com.example.submate.presentation.common.view.SubmateEditText
+        android:id="@+id/et_password"
+        android:layout_width="364dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/bg_submate_edittext"
+        android:hint="비밀번호"
+        android:inputType="textPassword"
+        android:paddingHorizontal="20dp"
+        style="@style/typo_body_m1" />
+
+    <TextView
+        android:id="@+id/tv_find_password"
+        android:layout_width="364dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="end"
+        android:text="비밀번호가 기억나지 않으시나요?"
+        android:textColor="@color/gray500"
+        style="@style/typo_body_r1" />
 
     <com.example.submate.presentation.common.view.SubmateButton
-        android:id="@+id/button_enter_main"
+        android:id="@+id/btn_login"
         android:layout_width="364dp"
         android:layout_height="56dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="28dp"
         android:background="@drawable/bg_submate_button"
-        android:fontFamily="@font/pretendard_medium"
-        android:text="메인으로진입하기"
-        android:textAllCaps="false"
+        android:text="로그인"
         android:textColor="@color/appwhite"
-        android:textSize="18sp" />
+        style="@style/typo_body_m1" />
+
+    <TextView
+        android:id="@+id/tv_signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="65dp"
+        android:text="회원가입"
+        android:textColor="@color/gray600"
+        style="@style/typo_body_m1" />
+
 </LinearLayout>
