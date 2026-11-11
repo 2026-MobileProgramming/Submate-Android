@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/appwhite">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+        <com.example.submate.presentation.common.view.SubmateButton
+            android:layout_width="364dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_submate_button"
+            android:backgroundTint="@color/gray800"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="리포트 탭"
+            android:textAllCaps="false"
+            android:textColor="@color/appwhite"
+            android:textSize="18sp" />
+    </LinearLayout>
+</FrameLayout>

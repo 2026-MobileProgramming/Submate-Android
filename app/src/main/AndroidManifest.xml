@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".SubmateApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,9 +13,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Submate">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.subscribelist.activity.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".presentation.onboarding.activity.OnboardingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.splash.activity.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Submate">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
