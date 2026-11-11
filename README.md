@@ -17,13 +17,15 @@ ex) Feat/#1 로그인 화면 구현
 ```
 [Type/#IssueNumber] 작업 내용
 ex) [Feat/#1] 회원가입 및 로그인 화면 구현
+
+❗최소 1명의 리뷰 승인 후 merge가 가능하게 설정했으므로 Reviewers 설정 바랍니다❗
 ```
 ### 5. Merge
 ```
 Merge #IssueNumber -> develop
 ex) Merge #1 -> develop
 
-❗main 브랜치가 아닌 develop 브랜치로 merge❗
+❗main 브랜치가 아닌 develop 브랜치로 merge 바랍니다❗
 ```
 
 ### Type
