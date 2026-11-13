@@ -21,6 +21,18 @@
             android:name=".presentation.onboarding.activity.OnboardingActivity"
             android:exported="false" />
         <activity
+            android:name=".presentation.signup.activity.SignupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.signup.activity.SignupCodeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.signup.activity.SignupProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.signup.activity.SignupCompleteActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.splash.activity.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Submate">
