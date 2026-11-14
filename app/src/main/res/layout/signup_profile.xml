@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appwhite"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="364dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="회원가입"
+        android:textColor="@color/appblack"
+        style="@style/typo_title_b1" />
+
+    <LinearLayout
+        android:layout_width="364dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/pri700" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@color/pri700" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@color/pri700" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="364dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="3. 비밀번호를 설정해 주세요"
+        android:textColor="@color/appblack"
+        style="@style/typo_body_m1" />
+
+    <com.example.submate.presentation.common.view.SubmateEditText
+        android:id="@+id/et_password"
+        android:layout_width="364dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/bg_submate_edittext"
+        android:hint="비밀번호"
+        android:inputType="textPassword"
+        android:paddingHorizontal="20dp"
+        style="@style/typo_body_m1" />
+
+    <com.example.submate.presentation.common.view.SubmateEditText
+        android:id="@+id/et_password_confirm"
+        android:layout_width="364dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/bg_submate_edittext"
+        android:hint="비밀번호 확인"
+        android:inputType="textPassword"
+        android:paddingHorizontal="20dp"
+        style="@style/typo_body_m1" />
+
+    <TextView
+        android:id="@+id/tv_password_status"
+        android:layout_width="364dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="입력하신 비밀번호가 일치하지 않아요"
+        android:textColor="@color/gray500"
+        style="@style/typo_body_r1" />
+
+    <TextView
+        android:layout_width="364dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="4. 닉네임을 설정해 주세요"
+        android:textColor="@color/appblack"
+        style="@style/typo_body_m1" />
+
+    <com.example.submate.presentation.common.view.SubmateEditText
+        android:id="@+id/et_nickname"
+        android:layout_width="364dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/bg_submate_edittext"
+        android:hint="한글, 영문, 숫자만 가능해요 (최대 8자)"
+        android:inputType="text"
+        android:maxLength="8"
+        android:paddingHorizontal="20dp"
+        style="@style/typo_body_m1" />
+
+    <!-- 임시로 android:enabled="true"로 설정함 -->
+    <com.example.submate.presentation.common.view.SubmateButton
+        android:id="@+id/btn_signup_complete"
+        android:layout_width="364dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/bg_submate_button"
+        android:backgroundTint="@color/gray300"
+        android:enabled="true"
+        android:text="회원가입 완료"
+        android:textColor="@color/appwhite"
+        style="@style/typo_body_m1" />
+
+</LinearLayout>
