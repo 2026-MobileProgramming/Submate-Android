@@ -41,6 +41,8 @@ dependencies {
     implementation(libs.lifecycle.livedata)
     implementation(libs.hilt.android)
     annotationProcessor(libs.hilt.compiler)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)

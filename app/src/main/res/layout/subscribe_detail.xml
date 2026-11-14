@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/subscribe_detail_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appwhite"
+    android:orientation="vertical">
+
+    <!-- 상단 바 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="16dp">
+
+        <ImageView
+            android:id="@+id/iv_subscribe_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="뒤로가기"
+            android:padding="8dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            style="@style/typo_body_b2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="구독 목록"
+            android:textColor="@color/appblack"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="24dp">
+
+            <!-- 카테고리 -->
+            <TextView
+                style="@style/subscribe_detail_label"
+                android:layout_marginTop="8dp"
+                android:text="카테고리" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cg_subscribe_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp" />
+
+            <!-- 서비스명 -->
+            <TextView
+                style="@style/subscribe_detail_label"
+                android:text="서비스명" />
+
+            <FrameLayout
+                android:id="@+id/layout_subscribe_service"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/subscribe_field_height"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_subscribe_field">
+
+                <EditText
+                    android:id="@+id/et_subscribe_service"
+                    style="@style/subscribe_detail_field_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:hint="서비스를 선택하세요"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:maxLength="30"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="48dp" />
+
+                <ImageView
+                    android:id="@+id/iv_subscribe_service_arrow"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:contentDescription="서비스 목록 열기"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_arrow_down" />
+            </FrameLayout>
+
+            <!-- 상태 -->
+            <TextView
+                style="@style/subscribe_detail_label"
+                android:text="상태" />
+
+            <LinearLayout
+                android:id="@+id/ll_subscribe_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal" />
+
+            <!-- 결제 주기 · 결제일 -->
+            <TextView
+                style="@style/subscribe_detail_label"
+                android:text="결제 주기 · 결제일" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/subscribe_field_height"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:id="@+id/layout_subscribe_cycle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_subscribe_field"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:id="@+id/tv_subscribe_cycle"
+                        style="@style/subscribe_detail_field_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="40dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_subscribe_cycle_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="12dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_arrow_down" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tv_subscribe_payment_date"
+                    style="@style/subscribe_detail_field_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_subscribe_field"
+                    android:gravity="center_vertical"
+                    android:hint="결제일"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+            </LinearLayout>
+
+            <!-- 결제 금액 -->
+            <TextView
+                style="@style/subscribe_detail_label"
+                android:text="결제 금액" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/subscribe_field_height"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:id="@+id/layout_subscribe_currency"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/bg_subscribe_field"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:id="@+id/tv_subscribe_currency"
+                        style="@style/subscribe_detail_field_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="36dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_subscribe_currency_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="12dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_arrow_down" />
+                </FrameLayout>
+
+                <EditText
+                    android:id="@+id/et_subscribe_amount"
+                    style="@style/subscribe_detail_field_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:background="@drawable/bg_subscribe_field"
+                    android:digits="0123456789.,"
+                    android:hint="금액을 입력하세요"
+                    android:importantForAutofill="no"
+                    android:inputType="numberDecimal"
+                    android:maxLength="15"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_subscribe_amount_helper"
+                style="@style/typo_cap_r1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/gray500" />
+
+            <!-- 메모 -->
+            <TextView
+                style="@style/subscribe_detail_label"
+                android:text="메모 (선택)" />
+
+            <EditText
+                android:id="@+id/et_subscribe_memo"
+                style="@style/subscribe_detail_field_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_subscribe_field"
+                android:gravity="top|start"
+                android:hint="결제수단 : OO은행 자동 계좌 이체"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine"
+                android:maxLength="100"
+                android:minHeight="80dp"
+                android:padding="16dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 하단 버튼 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:id="@+id/tv_subscribe_delete"
+            style="@style/typo_body_r1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="8dp"
+            android:text="구독 삭제하기"
+            android:textColor="@color/error500"
+            android:visibility="gone" />
+
+        <com.example.submate.presentation.common.view.SubmateButton
+            android:id="@+id/btn_subscribe_save"
+            style="@style/typo_body_m2"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_submate_button"
+            android:text="저장하기"
+            android:textAllCaps="false"
+            android:textColor="@color/appwhite" />
+    </LinearLayout>
+</LinearLayout>

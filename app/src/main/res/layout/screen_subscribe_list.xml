@@ -1,21 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/appwhite">
+
+    <!-- 상단 제목 + 알림 -->
+    <TextView
+        android:id="@+id/tv_subscribe_title"
+        style="@style/typo_title_b2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="구독 목록"
+        android:textColor="@color/appblack"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@id/iv_subscribe_notification"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_subscribe_notification"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="알림"
+        android:padding="8dp"
+        android:src="@drawable/ic_bell"
+        app:layout_constraintBottom_toBottomOf="@id/tv_subscribe_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_subscribe_title" />
+
+    <!-- 필터 칩 -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-        <com.example.submate.presentation.common.view.SubmateButton
-            android:layout_width="364dp"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_submate_button"
-            android:backgroundTint="@color/gray800"
-            android:fontFamily="@font/pretendard_medium"
-            android:text="구독목록 탭"
-            android:textAllCaps="false"
-            android:textColor="@color/appwhite"
-            android:textSize="18sp" />
+        android:id="@+id/ll_subscribe_filter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_subscribe_title">
+
+        <TextView
+            android:id="@+id/tv_filter_all"
+            style="@style/subscribe_filter_chip" />
+
+        <TextView
+            android:id="@+id/tv_filter_active"
+            style="@style/subscribe_filter_chip" />
+
+        <TextView
+            android:id="@+id/tv_filter_scheduled"
+            style="@style/subscribe_filter_chip" />
+
+        <TextView
+            android:id="@+id/tv_filter_canceled"
+            style="@style/subscribe_filter_chip" />
     </LinearLayout>
-</FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_subscribe_summary"
+        style="@style/typo_cap_r1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/gray600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_subscribe_filter" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_subscribe_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="96dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_subscribe_summary" />
+
+    <TextView
+        android:id="@+id/tv_subscribe_empty"
+        style="@style/typo_body_r1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="등록된 구독이 없어요"
+        android:textColor="@color/gray500"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/rv_subscribe_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rv_subscribe_list" />
+
+    <!-- 구독 추가 버튼 -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_subscribe_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="구독 추가"
+        android:src="@drawable/ic_plus"
+        app:backgroundTint="@color/pri700"
+        app:elevation="2dp"
+        app:shapeAppearanceOverlay="@style/subscribe_fab_shape"
+        app:tint="@color/appwhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

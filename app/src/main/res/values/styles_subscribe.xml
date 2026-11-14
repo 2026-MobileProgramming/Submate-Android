@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 구독 목록 상단 필터 칩 -->
+    <style name="subscribe_filter_chip">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/subscribe_chip_height</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_subscribe_chip</item>
+        <item name="android:textColor">@color/subscribe_chip_text</item>
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <!-- 구독 상세 화면 항목 제목 (카테고리, 서비스명 ...) -->
+    <style name="subscribe_detail_label" parent="typo_body_b3">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:textColor">@color/appblack</item>
+    </style>
+
+    <!-- 드롭다운처럼 보이는 입력칸의 글자 -->
+    <style name="subscribe_detail_field_text" parent="typo_body_m2">
+        <item name="android:textColor">@color/gray800</item>
+        <item name="android:textColorHint">@color/gray400</item>
+    </style>
+
+    <style name="subscribe_fab_shape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

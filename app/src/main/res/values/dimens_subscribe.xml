@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="submate_toast_bottom_margin">104dp</dimen>
+    <dimen name="subscribe_field_height">48dp</dimen>
+    <dimen name="subscribe_chip_height">32dp</dimen>
+    <dimen name="subscribe_chip_gap">8dp</dimen>
+</resources>
