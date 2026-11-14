@@ -33,6 +33,18 @@
             android:name=".presentation.signup.activity.SignupCompleteActivity"
             android:exported="false" />
         <activity
+            android:name=".presentation.resetpassword.activity.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.resetpassword.activity.ResetPasswordCodeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.resetpassword.activity.ResetPasswordNewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.resetpassword.activity.ResetPasswordCompleteActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.splash.activity.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Submate">
