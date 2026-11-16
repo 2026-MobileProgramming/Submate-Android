@@ -20,7 +20,8 @@ public final class ServicePreset {
                         "라프텔", "YouTube"));
                 break;
             case MUSIC:
-                services.addAll(Arrays.asList("멜론", "Spotify", "Apple Music", "지니뮤직", "FLO"));
+                services.addAll(Arrays.asList("멜론", "벅스", "YouTube Music Premium", "Spotify",
+                        "Apple Music", "지니뮤직", "FLO"));
                 break;
             case FOOD:
                 services.addAll(Arrays.asList("배달의민족", "쿠팡이츠", "요기요"));
@@ -29,7 +30,7 @@ public final class ServicePreset {
                 services.addAll(Arrays.asList("쿠팡 와우", "N+스토어", "컬리멤버스", "SSG 유니버스"));
                 break;
             case AI:
-                services.addAll(Arrays.asList("ChatGPT", "Gemini", "Copilot", "Perplexity"));
+                services.addAll(Arrays.asList("ChatGPT", "Claude", "Gemini", "Copilot", "Perplexity"));
                 break;
             case DIGITAL_CONTENT:
                 services.addAll(Arrays.asList("밀리의 서재", "리디셀렉트", "네이버 웹툰", "카카오페이지"));

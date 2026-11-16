@@ -28,9 +28,9 @@ public enum SubscribeFilter {
             case CANCEL_SCHEDULED:
                 return item.getStatus() == SubscribeStatus.CANCEL_SCHEDULED;
             case CANCELED:
-                return item.getStatus() == SubscribeStatus.CANCELED;
+                return item.isCanceled();
             default:
-                return item.getStatus() != SubscribeStatus.CANCELED;
+                return !item.isCanceled();
         }
     }
 }

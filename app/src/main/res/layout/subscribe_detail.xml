@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/appwhite"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
+
+    <!-- 화면이 열릴 때 입력칸 대신 여기에 포커스를 두어 키보드가 먼저 올라오지 않게 합니다. -->
 
     <!-- 상단 바 -->
     <LinearLayout
@@ -99,6 +103,16 @@
                     android:src="@drawable/ic_arrow_down" />
             </FrameLayout>
 
+            <!-- 서비스명과 같은 이름의 앱이 설치되어 있는지 안내 (사용량 기록 연결 여부) -->
+            <TextView
+                android:id="@+id/tv_subscribe_service_helper"
+                style="@style/typo_cap_r1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/gray500"
+                android:visibility="gone" />
+
             <!-- 상태 -->
             <TextView
                 style="@style/subscribe_detail_label"
@@ -151,17 +165,47 @@
                         android:src="@drawable/ic_arrow_down" />
                 </FrameLayout>
 
-                <TextView
-                    android:id="@+id/tv_subscribe_payment_date"
-                    style="@style/subscribe_detail_field_text"
+                <!-- 결제일: 숫자만 입력하고 '월', '일'은 고정 텍스트입니다. 월 칸은 연간 결제·무료 체험일 때만 보입니다. -->
+                <LinearLayout
+                    android:id="@+id/layout_subscribe_payment_date"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/bg_subscribe_field"
+                    android:clickable="true"
                     android:gravity="center_vertical"
-                    android:hint="결제일"
+                    android:orientation="horizontal"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp">
+
+                    <EditText
+                        android:id="@+id/et_subscribe_payment_month"
+                        style="@style/subscribe_detail_date_input"
+                        android:imeOptions="actionNext"
+                        android:nextFocusForward="@+id/et_subscribe_payment_day"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_subscribe_payment_month_unit"
+                        style="@style/subscribe_detail_field_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="월"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/et_subscribe_payment_day"
+                        style="@style/subscribe_detail_date_input"
+                        android:imeOptions="actionDone" />
+
+                    <TextView
+                        android:id="@+id/tv_subscribe_payment_day_unit"
+                        style="@style/subscribe_detail_field_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="일" />
+                </LinearLayout>
             </LinearLayout>
 
             <!-- 결제 금액 -->

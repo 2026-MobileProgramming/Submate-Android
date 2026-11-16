@@ -28,6 +28,20 @@
         <item name="android:textColorHint">@color/gray400</item>
     </style>
 
+    <!-- 결제일 칸 안의 숫자(월/일) 입력칸 -->
+    <style name="subscribe_detail_date_input" parent="subscribe_detail_field_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:minWidth">24dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:hint">00</item>
+        <item name="android:importantForAutofill">no</item>
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">2</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
     <style name="subscribe_fab_shape">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>

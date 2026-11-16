@@ -6,19 +6,28 @@ import com.example.submate.domain.model.SubscribeCategory;
 import com.example.submate.domain.model.SubscribeCurrency;
 import com.example.submate.domain.model.SubscribeItem;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 /** 구독 정보를 화면에 보여줄 문자열/색상으로 바꿔주는 도우미입니다. */
 public final class SubscribeFormatter {
-    private static final DecimalFormat NUMBER = new DecimalFormat("#,##0");
-    private static final DecimalFormat DECIMAL = new DecimalFormat("#,##0.00");
+    // 기기 언어와 상관없이 항상 1,234.56 형태로 표시합니다.
+    private static final DecimalFormatSymbols SYMBOLS = DecimalFormatSymbols.getInstance(Locale.US);
+    private static final DecimalFormat NUMBER = new DecimalFormat("#,##0", SYMBOLS);
+    private static final DecimalFormat DECIMAL = new DecimalFormat("#,##0.00", SYMBOLS);
+    private static final DecimalFormat RATE = new DecimalFormat("#,##0.##", SYMBOLS);
 
     private SubscribeFormatter() {
     }
 
+    /** ex) 4,250 */
+    public static String formatNumber(long number) {
+        return NUMBER.format(number);
+    }
+
     /** ex) ₩4,250 */
     public static String formatKrw(long krw) {
-        return "₩" + NUMBER.format(krw);
+        return "₩" + formatNumber(krw);
     }
 
     /** ex) ₩4,250 / $14.00 / ¥1,000 / 무료체험 */
@@ -30,7 +39,7 @@ public final class SubscribeFormatter {
         if (currency == SubscribeCurrency.USD) {
             return currency.getSymbol() + DECIMAL.format(item.getAmount());
         }
-        return currency.getSymbol() + NUMBER.format(Math.round(item.getAmount()));
+        return currency.getSymbol() + formatNumber(Math.round(item.getAmount()));
     }
 
     /** 외화일 때만 원화 환산 금액을 돌려줍니다. ex) ≈₩19,000 */
@@ -53,26 +62,45 @@ public final class SubscribeFormatter {
         return cycle + " · 매월 " + item.getPaymentDay() + "일";
     }
 
-    /** 상세 화면 결제일 칸에 들어갈 문자열. ex) 15일 / 1월 21일 */
-    public static String formatPaymentDate(boolean needMonth, int month, int day) {
-        if (day <= 0) {
-            return "";
-        }
-        if (needMonth) {
-            return month + "월 " + day + "일";
-        }
-        return day + "일";
-    }
-
     /** 금액 입력칸에 처음 보여줄 문자열. ex) 7,450 / 14.00 */
     public static String formatAmountInput(SubscribeItem item) {
         if (item.isFreeTrial()) {
             return "";
         }
         if (item.getCurrency() == SubscribeCurrency.USD) {
-            return String.format(Locale.US, "%,.2f", item.getAmount());
+            return DECIMAL.format(item.getAmount());
         }
-        return NUMBER.format(Math.round(item.getAmount()));
+        return formatNumber(Math.round(item.getAmount()));
+    }
+
+    /** 금액 입력칸의 글자를 숫자로 바꿉니다. 비어 있거나 숫자가 아니면 0 */
+    public static double parseAmount(String text) {
+        if (text == null) {
+            return 0;
+        }
+        try {
+            return Double.parseDouble(text.replace(",", "").trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    /** 숫자 입력칸(월, 일)의 글자를 정수로 바꿉니다. 비어 있거나 숫자가 아니면 0 */
+    public static int parseNumber(String text) {
+        if (text == null) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(text.trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    /** 외화 금액 아래에 보여줄 환산 안내. ex) ≈₩19,000 · 오늘 환율 1 USD = ₩1,357 기준 */
+    public static String formatExchangePreview(SubscribeCurrency currency, double amount) {
+        return "≈" + formatKrw(currency.toKrw(amount))
+                + " · 오늘 환율 1 " + currency.name() + " = ₩" + RATE.format(currency.getKrwRate()) + " 기준";
     }
 
     public static int categoryColor(SubscribeCategory category) {

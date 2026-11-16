@@ -4,6 +4,14 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- 구독 목록: 서비스명과 같은 이름의 설치된 앱을 찾기 위해 실행 가능한 앱 목록을 조회합니다. (Android 11+ 필수) -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
     <application
         android:name=".SubmateApplication"
         android:allowBackup="true"

@@ -14,9 +14,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public abstract class NetworkModule {
     // TODO: 서버 배포 후 실제 주소로 변경 (반드시 '/'로 끝나야 합니다)
     public static final String BASE_URL = "http://10.0.2.2:8080/api/";
+    public static final String EXCHANGE_RATE_URL = "https://api.frankfurter.dev/";
 
-    // 서버가 준비되기 전까지는 true: 앱 내부 임시 데이터로 동작합니다.
-    public static final boolean USE_MOCK_SERVER = true;
+    // true: 구독 데이터를 기기 안에 저장합니다. (서버 준비 전)
+    // false: BASE_URL의 서버와 통신합니다.
+    public static final boolean USE_LOCAL_DATA = true;
 
     private NetworkModule() {
     }
@@ -24,15 +26,26 @@ public abstract class NetworkModule {
     @Provides
     @Singleton
     static Retrofit provideRetrofit() {
-        return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        return createRetrofit(BASE_URL);
     }
 
     @Provides
     @Singleton
     static SubscribeApi provideSubscribeApi(Retrofit retrofit) {
         return retrofit.create(SubscribeApi.class);
+    }
+
+    // 환율 API는 주소가 달라서 Retrofit을 따로 만듭니다.
+    @Provides
+    @Singleton
+    static ExchangeRateApi provideExchangeRateApi() {
+        return createRetrofit(EXCHANGE_RATE_URL).create(ExchangeRateApi.class);
+    }
+
+    private static Retrofit createRetrofit(String baseUrl) {
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
     }
 }

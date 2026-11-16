@@ -65,6 +65,9 @@ public class SubscribeListFragment extends Fragment {
             emptyView.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
         });
         viewModel.getSummary().observe(getViewLifecycleOwner(), tvSummary::setText);
+        // 환율이 바뀌면 외화 구독의 원화 환산 금액을 다시 그립니다.
+        viewModel.getExchangeRateUpdatedAt().observe(getViewLifecycleOwner(), updatedAt ->
+                adapter.notifyItemRangeChanged(0, adapter.getItemCount()));
         viewModel.getAllCount().observe(getViewLifecycleOwner(), count ->
                 filterChips[0].setText(SubscribeFilter.ALL.getLabel() + " " + count));
         viewModel.getSelectedFilter().observe(getViewLifecycleOwner(), this::renderFilter);

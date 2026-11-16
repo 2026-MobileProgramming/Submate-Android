@@ -22,4 +22,7 @@ public class SubscribeRequest {
     public double amount;
     @SerializedName("memo")
     public String memo;
+    /** 서비스명과 같은 이름의 설치된 앱 패키지명. 없으면 "" (리포트 사용량 조회용) */
+    @SerializedName("packageName")
+    public String packageName;
 }

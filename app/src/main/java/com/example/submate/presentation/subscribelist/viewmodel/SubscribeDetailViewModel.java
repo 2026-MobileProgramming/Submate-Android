@@ -4,30 +4,45 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.submate.domain.model.BillingCycle;
+import com.example.submate.domain.model.InstalledApp;
 import com.example.submate.domain.model.SubscribeCategory;
 import com.example.submate.domain.model.SubscribeCurrency;
 import com.example.submate.domain.model.SubscribeItem;
 import com.example.submate.domain.model.SubscribeStatus;
+import com.example.submate.domain.repository.InstalledAppRepository;
 import com.example.submate.domain.repository.ResultCallback;
 import com.example.submate.domain.repository.SubscribeRepository;
+import com.example.submate.presentation.subscribelist.util.ServicePreset;
+import com.example.submate.presentation.subscribelist.util.SubscribeFormatter;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import java.util.List;
 import javax.inject.Inject;
 
-/** 구독 추가/수정/삭제 화면의 상태를 관리합니다. */
+/**
+ * 구독 추가/수정/삭제 화면의 상태를 관리합니다.
+ * 칩·드롭다운으로 고르는 값은 여기서 LiveData로 보관하고,
+ * 키보드로 입력하는 값(서비스명, 결제일, 금액, 메모)은 저장할 때 화면에서 전달받습니다.
+ * 저장할 때 서비스명과 같은 이름의 설치된 앱이 있으면 그 앱의 패키지명을 함께 저장합니다. (리포트 사용량 조회용)
+ */
 @HiltViewModel
 public class SubscribeDetailViewModel extends ViewModel {
-    public enum Result { ADDED, UPDATED, DELETED }
+    public enum Result { ADDED, UPDATED, DELETED, NOT_FOUND }
 
     public static final long NEW_SUBSCRIBE = -1L;
+    public static final int MAX_MONTH = 12;
+    public static final int MAX_DAY = 31;
+    // 월별 마지막 날 (2월은 윤년을 고려해 29일까지 허용)
+    private static final int[] LAST_DAY_OF_MONTH = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    public static final int SUGGESTION_LIMIT = 6;
 
     private final SubscribeRepository repository;
+    private final InstalledAppRepository installedAppRepository;
 
     private final MutableLiveData<SubscribeCategory> category = new MutableLiveData<>(SubscribeCategory.OTT);
-    private final MutableLiveData<String> serviceName = new MutableLiveData<>("");
     private final MutableLiveData<Boolean> directInput = new MutableLiveData<>(false);
     private final MutableLiveData<SubscribeStatus> status = new MutableLiveData<>(SubscribeStatus.ACTIVE);
     private final MutableLiveData<BillingCycle> billingCycle = new MutableLiveData<>(BillingCycle.MONTHLY);
-    private final MutableLiveData<int[]> paymentDate = new MutableLiveData<>(new int[]{0, 0});
     private final MutableLiveData<SubscribeCurrency> currency = new MutableLiveData<>(SubscribeCurrency.KRW);
     private final MutableLiveData<Boolean> saving = new MutableLiveData<>(false);
     private final MutableLiveData<String> message = new MutableLiveData<>();
@@ -38,30 +53,36 @@ public class SubscribeDetailViewModel extends ViewModel {
     private boolean changed = false;
 
     @Inject
-    public SubscribeDetailViewModel(SubscribeRepository repository) {
+    public SubscribeDetailViewModel(SubscribeRepository repository,
+                                    InstalledAppRepository installedAppRepository) {
         this.repository = repository;
+        this.installedAppRepository = installedAppRepository;
+        installedAppRepository.refresh();
     }
 
     /**
-     * 화면을 처음 열 때 한 번만 호출합니다.
-     * 수정 모드면 기존 구독을 돌려주고(입력칸 채우기용), 추가 모드면 null을 돌려줍니다.
+     * 화면을 처음 열 때 한 번만 동작합니다.
+     * 수정 모드면 기존 구독을 돌려주고(입력칸 채우기용), 추가 모드이거나 이미 초기화했으면 null을 돌려줍니다.
      */
     public SubscribeItem init(long id) {
         if (initialized) {
             return null;
         }
         initialized = true;
+        if (id == NEW_SUBSCRIBE) {
+            return null;
+        }
         SubscribeItem item = repository.findSubscribe(id);
         if (item == null) {
+            result.setValue(Result.NOT_FOUND);
             return null;
         }
         subscribeId = id;
         category.setValue(item.getCategory());
-        serviceName.setValue(item.getServiceName());
-        directInput.setValue(false);
+        // 선택지에 없는 서비스명은 직접 입력한 것이므로 바로 고칠 수 있게 합니다.
+        directInput.setValue(!ServicePreset.getServices(item.getCategory()).contains(item.getServiceName()));
         status.setValue(item.getStatus());
         billingCycle.setValue(item.getBillingCycle());
-        paymentDate.setValue(new int[]{item.getPaymentMonth(), item.getPaymentDay()});
         currency.setValue(item.getCurrency());
         return item;
     }
@@ -70,6 +91,7 @@ public class SubscribeDetailViewModel extends ViewModel {
         return subscribeId != NEW_SUBSCRIBE;
     }
 
+    /** 입력을 시작했는지 (뒤로 갈 때 '작성을 취소하시겠습니까?'를 물어볼지 결정) */
     public boolean isChanged() {
         return changed;
     }
@@ -80,36 +102,49 @@ public class SubscribeDetailViewModel extends ViewModel {
 
     /** 결제일에 월까지 필요한지 (연간 결제 또는 무료 체험 종료일) */
     public boolean needPaymentMonth() {
-        return billingCycle.getValue() == BillingCycle.YEARLY
-                || currency.getValue() == SubscribeCurrency.FREE_TRIAL;
+        return billingCycle.getValue() == BillingCycle.YEARLY || isFreeTrial();
     }
 
-    public void selectCategory(SubscribeCategory value) {
+    public boolean isFreeTrial() {
+        return currency.getValue() == SubscribeCurrency.FREE_TRIAL;
+    }
+
+    /** 설치된 앱 목록이 준비되면 알려줍니다. (서비스명 아래 연결 안내를 다시 그리기 위해 관찰) */
+    public LiveData<List<InstalledApp>> getInstalledApps() {
+        return installedAppRepository.observeInstalledApps();
+    }
+
+    /** 서비스명과 같은 이름의 설치된 앱. 없으면 null */
+    public InstalledApp findInstalledApp(String serviceName) {
+        return installedAppRepository.findInstalledApp(serviceName);
+    }
+
+    /** 직접 입력 중 추천할 설치된 앱 목록 */
+    public List<InstalledApp> searchInstalledApps(String keyword) {
+        return installedAppRepository.searchInstalledApps(keyword, SUGGESTION_LIMIT);
+    }
+
+    /** 카테고리가 실제로 바뀌었으면 true (서비스 선택지가 달라지므로 화면에서 서비스명을 비웁니다) */
+    public boolean selectCategory(SubscribeCategory value) {
         if (value == category.getValue()) {
-            return;
+            return false;
         }
         category.setValue(value);
-        // 카테고리가 바뀌면 서비스 선택지도 바뀌므로 선택한 서비스명을 비웁니다.
-        serviceName.setValue("");
+        directInput.setValue(false);
+        changed = true;
+        return true;
+    }
+
+    /** 드롭다운에서 서비스를 골랐을 때 */
+    public void selectService() {
         directInput.setValue(false);
         changed = true;
     }
 
-    public void selectService(String name) {
-        serviceName.setValue(name);
-        directInput.setValue(false);
-        changed = true;
-    }
-
+    /** 드롭다운에서 '직접 입력'을 골랐을 때 */
     public void startDirectInput() {
-        serviceName.setValue("");
         directInput.setValue(true);
         changed = true;
-    }
-
-    /** 직접 입력 중 글자가 바뀔 때 호출 (LiveData 갱신 없이 값만 저장) */
-    public void setDirectServiceName(String name) {
-        serviceName.setValue(name);
     }
 
     public void selectStatus(SubscribeStatus value) {
@@ -118,80 +153,45 @@ public class SubscribeDetailViewModel extends ViewModel {
     }
 
     public void selectBillingCycle(BillingCycle value) {
-        if (value == billingCycle.getValue()) {
-            return;
-        }
         billingCycle.setValue(value);
-        resetPaymentDateIfNeeded();
         changed = true;
     }
 
     public void selectCurrency(SubscribeCurrency value) {
-        if (value == currency.getValue()) {
-            return;
-        }
-        boolean beforeNeedMonth = needPaymentMonth();
         currency.setValue(value);
-        if (beforeNeedMonth != needPaymentMonth()) {
-            paymentDate.setValue(new int[]{0, 0});
-        }
         changed = true;
     }
 
-    public void selectPaymentDate(int month, int day) {
-        paymentDate.setValue(new int[]{month, day});
-        changed = true;
-    }
-
-    private void resetPaymentDateIfNeeded() {
-        int[] date = paymentDate.getValue();
-        if (date == null) {
-            return;
-        }
-        // 월간으로 바뀌면 일만 남기고, 연간으로 바뀌면 월을 다시 고르도록 비웁니다.
-        if (needPaymentMonth()) {
-            paymentDate.setValue(new int[]{0, 0});
-        } else {
-            paymentDate.setValue(new int[]{0, date[1]});
-        }
-    }
-
-    public void save(String amountText, String memo) {
+    /** 입력값을 확인하고 저장합니다. 잘못된 값이 있으면 안내 메시지만 보여줍니다. */
+    public void save(String serviceText, String monthText, String dayText,
+                     String amountText, String memoText) {
         if (Boolean.TRUE.equals(saving.getValue())) {
             return;
         }
-        String name = serviceName.getValue() == null ? "" : serviceName.getValue().trim();
-        int[] date = paymentDate.getValue();
-        SubscribeCurrency selectedCurrency = currency.getValue();
+        String serviceName = serviceText == null ? "" : serviceText.trim();
+        int month = needPaymentMonth() ? SubscribeFormatter.parseNumber(monthText) : 0;
+        int day = SubscribeFormatter.parseNumber(dayText);
+        double amount = isFreeTrial() ? 0 : SubscribeFormatter.parseAmount(amountText);
 
-        if (name.isEmpty()) {
-            message.setValue("서비스명을 선택해주세요.");
+        String error = validate(serviceName, month, day, amount);
+        if (error != null) {
+            message.setValue(error);
             return;
         }
-        if (date == null || date[1] <= 0 || (needPaymentMonth() && date[0] <= 0)) {
-            message.setValue("결제일을 선택해주세요.");
-            return;
-        }
-        double amount = 0;
-        if (selectedCurrency != SubscribeCurrency.FREE_TRIAL) {
-            amount = parseAmount(amountText);
-            if (amount <= 0) {
-                message.setValue("결제 금액을 입력해주세요.");
-                return;
-            }
-        }
 
+        InstalledApp linkedApp = installedAppRepository.findInstalledApp(serviceName);
         SubscribeItem item = new SubscribeItem(
                 subscribeId,
                 category.getValue(),
-                name,
+                serviceName,
                 status.getValue(),
                 billingCycle.getValue(),
-                needPaymentMonth() ? date[0] : 0,
-                date[1],
-                selectedCurrency,
+                month,
+                day,
+                currency.getValue(),
                 amount,
-                memo == null ? "" : memo.trim());
+                memoText == null ? "" : memoText.trim(),
+                linkedApp == null ? "" : linkedApp.getPackageName());
 
         saving.setValue(true);
         ResultCallback<SubscribeItem> callback = new ResultCallback<SubscribeItem>() {
@@ -212,6 +212,29 @@ public class SubscribeDetailViewModel extends ViewModel {
         } else {
             repository.addSubscribe(item, callback);
         }
+    }
+
+    /** 문제가 있으면 안내 문구를, 없으면 null을 돌려줍니다. */
+    private String validate(String serviceName, int month, int day, double amount) {
+        boolean direct = Boolean.TRUE.equals(directInput.getValue());
+        String dateName = isFreeTrial() ? "체험 종료일" : "결제일";
+
+        if (serviceName.isEmpty()) {
+            return direct ? "서비스명을 입력해주세요." : "서비스명을 선택해주세요.";
+        }
+        if (needPaymentMonth() && (month < 1 || month > MAX_MONTH)) {
+            return dateName + "의 월을 1~12 사이로 입력해주세요.";
+        }
+        if (day < 1 || day > MAX_DAY) {
+            return dateName + "을 1~31 사이로 입력해주세요.";
+        }
+        if (needPaymentMonth() && day > LAST_DAY_OF_MONTH[month - 1]) {
+            return month + "월은 " + LAST_DAY_OF_MONTH[month - 1] + "일까지 있어요.";
+        }
+        if (!isFreeTrial() && amount <= 0) {
+            return "결제 금액을 입력해주세요.";
+        }
+        return null;
     }
 
     public void delete() {
@@ -239,25 +262,35 @@ public class SubscribeDetailViewModel extends ViewModel {
         message.setValue(null);
     }
 
-    private double parseAmount(String text) {
-        if (text == null) {
-            return 0;
-        }
-        try {
-            return Double.parseDouble(text.replace(",", "").trim());
-        } catch (NumberFormatException e) {
-            return 0;
-        }
+    public LiveData<SubscribeCategory> getCategory() {
+        return category;
     }
 
-    public LiveData<SubscribeCategory> getCategory() { return category; }
-    public LiveData<String> getServiceName() { return serviceName; }
-    public LiveData<Boolean> getDirectInput() { return directInput; }
-    public LiveData<SubscribeStatus> getStatus() { return status; }
-    public LiveData<BillingCycle> getBillingCycle() { return billingCycle; }
-    public LiveData<int[]> getPaymentDate() { return paymentDate; }
-    public LiveData<SubscribeCurrency> getCurrency() { return currency; }
-    public LiveData<Boolean> getSaving() { return saving; }
-    public LiveData<String> getMessage() { return message; }
-    public LiveData<Result> getResult() { return result; }
+    public LiveData<Boolean> getDirectInput() {
+        return directInput;
+    }
+
+    public LiveData<SubscribeStatus> getStatus() {
+        return status;
+    }
+
+    public LiveData<BillingCycle> getBillingCycle() {
+        return billingCycle;
+    }
+
+    public LiveData<SubscribeCurrency> getCurrency() {
+        return currency;
+    }
+
+    public LiveData<Boolean> getSaving() {
+        return saving;
+    }
+
+    public LiveData<String> getMessage() {
+        return message;
+    }
+
+    public LiveData<Result> getResult() {
+        return result;
+    }
 }
