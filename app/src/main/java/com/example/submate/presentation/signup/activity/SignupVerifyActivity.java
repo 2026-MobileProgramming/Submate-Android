@@ -7,14 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.submate.R;
 
-public class SignupProfileActivity extends AppCompatActivity {
+public class SignupVerifyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.signup_profile);
+        setContentView(R.layout.signup_verify);
 
-        findViewById(R.id.btn_signup_complete).setOnClickListener(view -> {
-            startActivity(new Intent(this, SignupCompleteActivity.class));
+        findViewById(R.id.btn_verify_code).setOnClickListener(view -> {
+            startActivity(new Intent(this, SignupSetActivity.class));
             finish();
         });
     }

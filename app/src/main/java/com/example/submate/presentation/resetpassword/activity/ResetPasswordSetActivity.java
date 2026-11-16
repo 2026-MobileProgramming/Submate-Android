@@ -7,14 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.submate.R;
 
-public class ResetPasswordActivity extends AppCompatActivity {
+public class ResetPasswordSetActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.resetpassword);
+        setContentView(R.layout.resetpassword_set);
 
-        findViewById(R.id.btn_send_code).setOnClickListener(view -> {
-            startActivity(new Intent(this, ResetPasswordCodeActivity.class));
+        findViewById(R.id.btn_resetpassword_complete).setOnClickListener(view -> {
+            startActivity(new Intent(this, ResetPasswordCompletedActivity.class));
             finish();
         });
     }

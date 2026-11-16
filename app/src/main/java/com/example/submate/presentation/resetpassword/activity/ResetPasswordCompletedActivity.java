@@ -6,15 +6,16 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.submate.R;
+import com.example.submate.presentation.onboarding.activity.OnboardingActivity;
 
-public class ResetPasswordNewActivity extends AppCompatActivity {
+public class ResetPasswordCompletedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.resetpassword_new);
+        setContentView(R.layout.resetpassword_completed);
 
-        findViewById(R.id.btn_resetpassword_complete).setOnClickListener(view -> {
-            startActivity(new Intent(this, ResetPasswordCompleteActivity.class));
+        findViewById(R.id.btn_go_login).setOnClickListener(view -> {
+            startActivity(new Intent(this, OnboardingActivity.class));
             finish();
         });
     }

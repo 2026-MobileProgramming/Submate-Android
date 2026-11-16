@@ -6,8 +6,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.submate.R;
-import com.example.submate.presentation.resetpassword.activity.ResetPasswordActivity;
-import com.example.submate.presentation.signup.activity.SignupActivity;
+import com.example.submate.presentation.resetpassword.activity.ResetPasswordEmailActivity;
+import com.example.submate.presentation.signup.activity.SignupEmailActivity;
 import com.example.submate.presentation.subscribelist.activity.MainActivity;
 
 public class OnboardingActivity extends AppCompatActivity {
@@ -22,12 +22,12 @@ public class OnboardingActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.tv_find_password).setOnClickListener(view -> {
-            startActivity(new Intent(this, ResetPasswordActivity.class));
+            startActivity(new Intent(this, ResetPasswordEmailActivity.class));
             finish();
         });
 
         findViewById(R.id.tv_signup).setOnClickListener(view -> {
-            startActivity(new Intent(this, SignupActivity.class));
+            startActivity(new Intent(this, SignupEmailActivity.class));
             finish();
         });
     }

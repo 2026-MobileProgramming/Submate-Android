@@ -21,28 +21,28 @@
             android:name=".presentation.onboarding.activity.OnboardingActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.signup.activity.SignupActivity"
+            android:name=".presentation.signup.activity.SignupEmailActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.signup.activity.SignupCodeActivity"
+            android:name=".presentation.signup.activity.SignupVerifyActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.signup.activity.SignupProfileActivity"
+            android:name=".presentation.signup.activity.SignupSetActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.signup.activity.SignupCompleteActivity"
+            android:name=".presentation.signup.activity.SignupCompletedActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.resetpassword.activity.ResetPasswordActivity"
+            android:name=".presentation.resetpassword.activity.ResetPasswordEmailActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.resetpassword.activity.ResetPasswordCodeActivity"
+            android:name=".presentation.resetpassword.activity.ResetPasswordVerifyActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.resetpassword.activity.ResetPasswordNewActivity"
+            android:name=".presentation.resetpassword.activity.ResetPasswordSetActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.resetpassword.activity.ResetPasswordCompleteActivity"
+            android:name=".presentation.resetpassword.activity.ResetPasswordCompletedActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.splash.activity.SplashActivity"
