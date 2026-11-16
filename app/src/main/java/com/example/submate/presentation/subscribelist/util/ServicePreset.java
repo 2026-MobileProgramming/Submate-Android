@@ -41,4 +41,17 @@ public final class ServicePreset {
         services.add(DIRECT_INPUT);
         return services;
     }
+
+    /** 모든 카테고리의 서비스명 ("직접 입력" 제외). 직접 입력한 이름을 정식 이름으로 맞출 때 씁니다. */
+    public static List<String> getAllServices() {
+        List<String> all = new ArrayList<>();
+        for (SubscribeCategory category : SubscribeCategory.values()) {
+            for (String service : getServices(category)) {
+                if (!DIRECT_INPUT.equals(service)) {
+                    all.add(service);
+                }
+            }
+        }
+        return all;
+    }
 }

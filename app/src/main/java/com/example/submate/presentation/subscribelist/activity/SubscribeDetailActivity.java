@@ -238,10 +238,11 @@ public class SubscribeDetailActivity extends AppCompatActivity {
             boolean monthEmpty = etPaymentMonth.getVisibility() == View.VISIBLE && etPaymentMonth.length() == 0;
             showKeyboard(monthEmpty ? etPaymentMonth : etPaymentDay);
         });
-        // 서비스명 칸에서 벗어나면 추천 목록을 닫습니다.
+        // 서비스명 칸에서 벗어나면 추천 목록을 닫고, 이미 있는 이름이면 그 이름으로 맞춥니다. (netflix → Netflix)
         etService.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 dropdown.dismissSuggestions();
+                applyResolvedServiceName();
             }
         });
 
@@ -335,19 +336,32 @@ public class SubscribeDetailActivity extends AppCompatActivity {
         tvServiceHelper.setVisibility(View.VISIBLE);
     }
 
-    /** 직접 입력 중에는 입력한 글자가 들어간 설치된 앱 이름을 추천합니다. 고르면 앱 이름 그대로 들어갑니다. */
+    /**
+     * 직접 입력한 이름이 이미 있는 이름과 대소문자·띄어쓰기만 다르거나 별명이면 정식 이름으로 바꿉니다.
+     * 입력하는 도중에는 바꾸지 않습니다. (한글 조합이 깨지거나 커서가 튀지 않게)
+     */
+    private void applyResolvedServiceName() {
+        if (!isDirectInput()) {
+            return;
+        }
+        String current = etService.getText().toString();
+        String resolved = viewModel.resolveServiceName(current);
+        if (!resolved.equals(current)) {
+            applyingSuggestion = true;
+            etService.setText(resolved);
+            applyingSuggestion = false;
+        }
+    }
+
+    /** 직접 입력 중에는 서비스 목록(별명 포함)과 설치된 앱 이름을 추천합니다. 고르면 그 이름 그대로 들어갑니다. */
     private void showServiceSuggestions() {
         if (applyingSuggestion || !isDirectInput() || !etService.hasFocus()) {
             return;
         }
-        List<InstalledApp> apps = viewModel.searchInstalledApps(etService.getText().toString());
-        if (apps.isEmpty()) {
+        List<String> labels = viewModel.searchServiceNames(etService.getText().toString());
+        if (labels.isEmpty()) {
             dropdown.dismissSuggestions();
             return;
-        }
-        List<String> labels = new ArrayList<>();
-        for (InstalledApp app : apps) {
-            labels.add(app.getLabel());
         }
         // 키보드는 그대로 둔 채 목록만 띄웁니다. 다른 칸이나 버튼은 그대로 누를 수 있습니다.
         dropdown.showSuggestions(findViewById(R.id.layout_subscribe_service), labels, position -> {

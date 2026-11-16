@@ -12,6 +12,7 @@ import com.example.submate.domain.model.SubscribeStatus;
 import com.example.submate.domain.repository.InstalledAppRepository;
 import com.example.submate.domain.repository.ResultCallback;
 import com.example.submate.domain.repository.SubscribeRepository;
+import com.example.submate.presentation.subscribelist.util.ServiceNameMatcher;
 import com.example.submate.presentation.subscribelist.util.ServicePreset;
 import com.example.submate.presentation.subscribelist.util.SubscribeFormatter;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -114,14 +115,40 @@ public class SubscribeDetailViewModel extends ViewModel {
         return installedAppRepository.observeInstalledApps();
     }
 
-    /** 서비스명과 같은 이름의 설치된 앱. 없으면 null */
+    /** 서비스명과 같은 이름의 설치된 앱. 없으면 null (넷플릭스처럼 별명으로 써도 정식 이름으로 찾습니다) */
     public InstalledApp findInstalledApp(String serviceName) {
-        return installedAppRepository.findInstalledApp(serviceName);
+        return installedAppRepository.findInstalledApp(resolveServiceName(serviceName));
     }
 
-    /** 직접 입력 중 추천할 설치된 앱 목록 */
-    public List<InstalledApp> searchInstalledApps(String keyword) {
-        return installedAppRepository.searchInstalledApps(keyword, SUGGESTION_LIMIT);
+    /**
+     * 직접 입력한 서비스명을 이미 있는 이름으로 맞춥니다. (대소문자·띄어쓰기 무시)
+     * 1) 서비스 목록·별명 표: "netflix", "넷플릭스" → "Netflix"
+     * 2) 설치된 앱 이름: "chrome" → "Chrome"
+     * 3) 둘 다 없으면 입력한 그대로 (앞뒤 공백만 정리)
+     */
+    public String resolveServiceName(String serviceText) {
+        String serviceName = serviceText == null ? "" : serviceText.trim();
+        if (serviceName.isEmpty()) {
+            return serviceName;
+        }
+        String presetName = ServiceNameMatcher.findPresetName(serviceName);
+        if (presetName != null) {
+            return presetName;
+        }
+        InstalledApp app = installedAppRepository.findInstalledApp(serviceName);
+        return app == null ? serviceName : app.getLabel();
+    }
+
+    /** 직접 입력 중 추천할 이름 목록: 서비스 목록(별명 포함) 먼저, 그다음 설치된 앱. 중복은 한 번만 */
+    public List<String> searchServiceNames(String keyword) {
+        List<String> names = ServiceNameMatcher.searchPresetNames(keyword, SUGGESTION_LIMIT);
+        for (InstalledApp app : installedAppRepository.searchInstalledApps(keyword, SUGGESTION_LIMIT)) {
+            if (names.size() >= SUGGESTION_LIMIT) {
+                break;
+            }
+            ServiceNameMatcher.addOnce(names, app.getLabel());
+        }
+        return names;
     }
 
     /** 카테고리가 실제로 바뀌었으면 true (서비스 선택지가 달라지므로 화면에서 서비스명을 비웁니다) */
@@ -168,7 +195,7 @@ public class SubscribeDetailViewModel extends ViewModel {
         if (Boolean.TRUE.equals(saving.getValue())) {
             return;
         }
-        String serviceName = serviceText == null ? "" : serviceText.trim();
+        String serviceName = resolveServiceName(serviceText);
         int month = needPaymentMonth() ? SubscribeFormatter.parseNumber(monthText) : 0;
         int day = SubscribeFormatter.parseNumber(dayText);
         double amount = isFreeTrial() ? 0 : SubscribeFormatter.parseAmount(amountText);
