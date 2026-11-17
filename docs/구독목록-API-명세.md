@@ -65,11 +65,13 @@ public class SettingViewModel extends ViewModel {
     @Inject
     public SettingViewModel(SubscribeRepository repository) {
         subscribeList = repository.observeSubscribeList();   // 해지완료 포함 전체
+        repository.refresh(null);                            // 목록 불러오기 (꼭 호출)
     }
 }
 ```
+- **`refresh()`를 꼭 호출해야 함.** Repository는 만들어질 때 스스로 목록을 불러오지 않음(중복 조회 방지). 그 화면의 ViewModel이 처음 만들어질 때 한 번 호출하면 됨. 실패 안내가 필요하면 `null` 대신 `ResultCallback`을 넘기기
 - 구독이 추가/수정/삭제되거나 환율이 바뀌면 LiveData가 자동으로 다시 전달됨
-- 화면이 아닌 곳(결제일 알림 작업 등)에서는 `repository.getSubscribeList()`로 바로 가져오면 됨. 어느 스레드에서 불러도 안전하고, 읽기 전용 목록이라 수정하면 오류가 남(추가·수정·삭제는 repository 메서드로)
+- 화면이 아닌 곳(결제일 알림 작업 등)에서는 `repository.getSubscribeList()`로 바로 가져오면 됨. 어느 스레드에서 불러도 안전하고, 읽기 전용 목록이라 수정하면 오류가 남(추가·수정·삭제는 repository 메서드로). 단, 아직 `refresh()`가 한 번도 끝나지 않았으면 빈 목록이므로, 앱이 막 시작된 상태라면 `refresh(callback)`의 결과를 쓰기
 - 요약 값: `SubscribeSummary.from(list)` (피그마 예시 데이터 기준 구독중 5 / 무료체험 1 / 해지예정 1)
   - `getSubscribingCount()` 해지완료 제외 전체 (목록 '전체' 칩 숫자, 무료체험·해지예정 포함)
   - `getFreeTrialCount()` 무료체험
