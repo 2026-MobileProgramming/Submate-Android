@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="90dp"
     android:layout_marginBottom="16dp"
-    android:background="@drawable/bg_notification_read"
+    android:background="@drawable/bg_notification_unread"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="24dp">
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
     <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:contentDescription="알림"
         android:src="@drawable/ic_setting_notification"
         android:tint="@color/pri700" />
@@ -20,16 +23,16 @@
         android:layout_weight="1"
         android:orientation="vertical">
         <TextView
-            style="@style/typo_body_m1"
+            style="@style/typo_body_m2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="배민클럽 무료체험이 3일 뒤 끝나요"
             android:textColor="@color/appblack" />
         <TextView
-            style="@style/typo_body_m2"
+            style="@style/typo_body_r1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="체험 종료 후 자동으로 결제될 수 있어요"
             android:textColor="@color/gray600" />
     </LinearLayout>
