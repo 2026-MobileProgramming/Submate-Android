@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appwhite"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_sub_header" />
+
+    <FrameLayout
+        android:layout_width="350dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_container_gray50_round16">
+
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="start|top"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="35dp"
+            android:contentDescription="프로필 이미지"
+            android:src="@drawable/ic_profile_pic" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/nickname_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="쥐이카와 님"
+                    android:textColor="@color/appblack"
+                    style="@style/typo_body_m1" />
+
+                <EditText
+                    android:id="@+id/nickname_edit"
+                    android:layout_width="100dp"
+                    android:layout_height="32dp"
+                    android:background="@null"
+                    android:inputType="text"
+                    android:maxLength="8"
+                    android:padding="0dp"
+                    android:textColor="@color/appblack"
+                    android:visibility="gone"
+                    style="@style/typo_body_m1" />
+
+                <ImageView
+                    android:id="@+id/nickname_edit_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="닉네임 수정"
+                    android:src="@drawable/ic_profile_edit" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="한글, 영문, 숫자만 가능해요(최대 8자)"
+                android:textColor="@color/gray600"
+                style="@style/typo_cap_r1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="20220201@sungshin.ac.kr"
+                android:textColor="@color/gray600"
+                style="@style/typo_body_m3" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/nickname_cancel"
+            android:layout_width="125dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_outline_account_button"
+            android:gravity="center"
+            android:text="취소하기"
+            android:textColor="@color/appblack"
+            style="@style/typo_body_m1" />
+
+        <TextView
+            android:id="@+id/nickname_save"
+            android:layout_width="125dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bg_submate_button"
+            android:gravity="center"
+            android:text="저장하기"
+            android:textColor="@color/appwhite"
+            style="@style/typo_body_m1" />
+    </LinearLayout>
+</LinearLayout>

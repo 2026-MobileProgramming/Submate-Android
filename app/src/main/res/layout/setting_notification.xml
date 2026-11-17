@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/appwhite" android:orientation="vertical">
+    <include layout="@layout/common_sub_header" />
+    <LinearLayout android:id="@+id/notification_push" android:layout_width="match_parent" android:layout_height="60dp" android:background="@color/gray50" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:paddingStart="20dp" android:paddingEnd="30dp">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="PUSH 알림 수신 동의" android:textColor="@color/appblack" style="@style/typo_body_m1" />
+        <TextView android:id="@+id/notification_push_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="동의" android:textColor="@color/pri800" style="@style/typo_body_m1" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/notification_payment" android:layout_width="match_parent" android:layout_height="60dp" android:background="@color/appwhite" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:paddingStart="20dp" android:paddingEnd="30dp">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="결제일 알림" android:textColor="@color/appblack" style="@style/typo_body_m1" />
+        <TextView android:id="@+id/notification_payment_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ON" android:textColor="@color/pri800" style="@style/typo_body_m1" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/notification_expiring" android:layout_width="match_parent" android:layout_height="60dp" android:background="@color/gray50" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:paddingStart="20dp" android:paddingEnd="30dp">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="해지예정 구독 알림" android:textColor="@color/appblack" style="@style/typo_body_m1" />
+        <TextView android:id="@+id/notification_expiring_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ON" android:textColor="@color/pri800" style="@style/typo_body_m1" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/notification_trial" android:layout_width="match_parent" android:layout_height="60dp" android:background="@color/appwhite" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:paddingStart="20dp" android:paddingEnd="30dp">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="무료체험 종료 알림" android:textColor="@color/appblack" style="@style/typo_body_m1" />
+        <TextView android:id="@+id/notification_trial_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ON" android:textColor="@color/pri800" style="@style/typo_body_m1" />
+    </LinearLayout>
+</LinearLayout>
