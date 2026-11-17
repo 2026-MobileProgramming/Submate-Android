@@ -14,7 +14,7 @@
         android:layout_marginTop="24dp"
         android:background="@drawable/bg_container_gray50_round16"
         android:gravity="center"
-        android:lineSpacingMultiplier="1.5"
+        android:lineSpacingMultiplier="1.2"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:text="구독 서비스의 실제 이용 시간을 확인하기 위해\n휴대폰의 앱 사용 기록에 접근합니다.\n사용 시간은 구독 서비스 이용량을 분석하고\n구독 유지 여부를 추천하는 데에만 사용됩니다."
