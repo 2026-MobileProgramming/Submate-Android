@@ -17,7 +17,7 @@
         <ImageView
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="120dp"
+            android:layout_marginTop="110dp"
             android:adjustViewBounds="true"
             android:contentDescription="Submate 로고"
             android:scaleType="fitCenter"
@@ -29,12 +29,14 @@
             android:layout_marginTop="48dp"
             android:background="@drawable/bg_container_gray50_round16"
             android:gravity="center"
-            android:lineSpacingMultiplier="1.25"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            android:includeFontPadding="false"
+            android:lineSpacingMultiplier="1.0"
+            android:lineSpacingExtra="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:text="앱 이용과 관련하여 문의사항이 있으시다면\nsubmate@mail.com 으로 문의 부탁드립니다.\n감사합니다 : )"
             android:textColor="@color/gray700"
-            style="@style/typo_body_m1" />
+            style="@style/typo_body_m2" />
 
         <TextView
             android:id="@+id/contact_copy_email"
