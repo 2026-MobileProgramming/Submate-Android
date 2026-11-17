@@ -51,5 +51,31 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout container = findViewById(R.id.tab_container);
         container.removeAllViews();
         LayoutInflater.from(this).inflate(layoutId, container, true);
+        if (layoutId == R.layout.screen_setting) {
+            bindSettingMenu();
+        }
+    }
+
+    private void bindSettingMenu() {
+        findViewById(R.id.setting_account).setOnClickListener(v -> showSettingDetail(R.layout.setting_account, "계정"));
+        findViewById(R.id.setting_list).setOnClickListener(v -> showSettingDetail(R.layout.setting_list, "구독 목록"));
+        findViewById(R.id.setting_notification).setOnClickListener(v -> showSettingDetail(R.layout.setting_notification, "알림 설정"));
+        findViewById(R.id.setting_access).setOnClickListener(v -> showSettingDetail(R.layout.setting_access, "앱 내 권한"));
+        findViewById(R.id.setting_contact).setOnClickListener(v -> showSettingDetail(R.layout.setting_contact, "문의하기"));
+    }
+
+    private void showSettingDetail(int layoutId, String title) {
+        FrameLayout container = findViewById(R.id.tab_container);
+        container.removeAllViews();
+        LayoutInflater.from(this).inflate(layoutId, container, true);
+        findViewById(R.id.common_sub_header).setOnClickListener(v -> showSettingMenu());
+        ((android.widget.TextView) findViewById(R.id.common_sub_header_title)).setText(title);
+    }
+
+    private void showSettingMenu() {
+        FrameLayout container = findViewById(R.id.tab_container);
+        container.removeAllViews();
+        LayoutInflater.from(this).inflate(R.layout.screen_setting, container, true);
+        bindSettingMenu();
     }
 }
