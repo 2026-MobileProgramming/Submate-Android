@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showPushDialog() {
-        Dialog dialog = createDialog(R.layout.modal_push, 350, 380);
+        Dialog dialog = createDialog(R.layout.modal_push, 380, 200);
         dialog.findViewById(R.id.modal_reject).setOnClickListener(v -> {
             setToggleValue(R.id.notification_push_value, "거부", R.color.error500);
             dialog.dismiss();
@@ -103,11 +103,11 @@ public class MainActivity extends AppCompatActivity {
             dialog.dismiss();
         });
         dialog.show();
-        resizeDialog(dialog, 350, 380);
+        resizeDialog(dialog, 380, 200);
     }
 
     private void showCommonNotificationDialog(String title, int valueId) {
-        Dialog dialog = createDialog(R.layout.common_modal, 350, 200);
+        Dialog dialog = createDialog(R.layout.common_modal, 380, 200);
         ((android.widget.TextView) dialog.findViewById(R.id.modal_title)).setText(title + "을 변경하시겠습니까?");
         dialog.findViewById(R.id.modal_no).setOnClickListener(v -> {
             setToggleValue(valueId, "OFF", R.color.error500);
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.dismiss();
         });
         dialog.show();
-        resizeDialog(dialog, 350, 200);
+        resizeDialog(dialog, 380, 200);
     }
 
     private Dialog createDialog(int layoutId, int width, int height) {
