@@ -26,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
     private SubscribeListViewModel viewModel;
+    private String currentNickname = "쥐이카와";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             bindContactEmailCopy();
         }
         if (layoutId == R.layout.setting_account) {
+            ((android.widget.TextView) findViewById(R.id.account_nickname)).setText(currentNickname + " 님");
             findViewById(R.id.account_edit_nickname).setOnClickListener(v -> showNicknameEdit());
         }
     }
@@ -99,11 +101,21 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater.from(this).inflate(R.layout.setting_acount_nickname, container, true);
         findViewById(R.id.common_sub_header).setOnClickListener(v -> showSettingDetail(R.layout.setting_account, "계정"));
         ((android.widget.TextView) findViewById(R.id.common_sub_header_title)).setText("계정");
+        ((android.widget.EditText) findViewById(R.id.nickname_edit)).setText(currentNickname);
+        ((android.widget.EditText) findViewById(R.id.nickname_edit)).setSelection(currentNickname.length());
+        ((android.widget.TextView) findViewById(R.id.nickname_display)).setText(currentNickname + " 님");
         findViewById(R.id.nickname_display).setOnClickListener(v -> beginNicknameEdit());
         findViewById(R.id.nickname_edit_icon).setOnClickListener(v -> beginNicknameEdit());
         View.OnClickListener returnToAccount = v -> showSettingDetail(R.layout.setting_account, "계정");
         findViewById(R.id.nickname_cancel).setOnClickListener(returnToAccount);
-        findViewById(R.id.nickname_save).setOnClickListener(returnToAccount);
+        findViewById(R.id.nickname_save).setOnClickListener(v -> {
+            android.widget.EditText nicknameEdit = findViewById(R.id.nickname_edit);
+            String nickname = nicknameEdit.getText().toString().trim();
+            if (!nickname.isEmpty()) {
+                currentNickname = nickname;
+            }
+            showSettingDetail(R.layout.setting_account, "계정");
+        });
     }
 
     private void beginNicknameEdit() {
