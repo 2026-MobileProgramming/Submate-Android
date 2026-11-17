@@ -1,8 +1,11 @@
 package com.example.submate.presentation.subscribelist.activity;
 
 import android.os.Bundle;
+import android.app.Dialog;
 import android.content.Intent;
 import android.provider.Settings;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -81,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             showScreen(R.layout.screen_calendar);
         }
+        if (tabId == R.id.navigation_report && !UsageStatsUtil.hasUsageAccess(this)) {
+            showAccessDialog();
+        }
     }
 
     /** 아직 Fragment가 없는 탭은 레이아웃만 보여줍니다. */
@@ -130,6 +136,32 @@ public class MainActivity extends AppCompatActivity {
         TextView button = findViewById(R.id.access_permission_button);
         button.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)));
         updateUsageAccessButton(button);
+    }
+
+    private void showAccessDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.access_modal);
+        dialog.setCanceledOnTouchOutside(true);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.dimAmount = 0.35f;
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            window.setAttributes(params);
+        }
+        dialog.findViewById(R.id.access_modal_close).setOnClickListener(v -> dialog.dismiss());
+        dialog.findViewById(R.id.access_modal_open_settings).setOnClickListener(v -> {
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+            dialog.dismiss();
+        });
+        dialog.show();
+        if (window != null) window.setLayout(dp(350), dp(400));
+    }
+
+    private int dp(int value) {
+        return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
     }
 
     private void updateUsageAccessButton(TextView button) {
