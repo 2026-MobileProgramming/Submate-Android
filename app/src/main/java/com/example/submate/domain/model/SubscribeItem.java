@@ -137,12 +137,12 @@ public final class SubscribeItem {
 
     /**
      * 해당 연/월에 결제되는 날짜(일)를 돌려줍니다. 그 달에 결제가 없으면 0입니다. (캘린더용)
-     * 31일 결제처럼 그 달에 없는 날짜는 말일로 맞춥니다. 무료 체험은 결제가 없으므로 항상 0입니다.
+     * 31일 결제처럼 그 달에 없는 날짜는 말일로 맞춥니다. 무료 체험과 해지완료는 결제가 없으므로 항상 0입니다.
      *
      * @param month 1~12
      */
     public int getPaymentDayIn(int year, int month) {
-        if (isFreeTrial()) {
+        if (isFreeTrial() || isCanceled()) {
             return 0;
         }
         if (billingCycle == BillingCycle.YEARLY && paymentMonth != month) {
