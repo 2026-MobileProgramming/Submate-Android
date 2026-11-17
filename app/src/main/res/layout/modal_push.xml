@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="350dp" android:layout_height="380dp" android:background="@drawable/bg_modal" android:gravity="center_horizontal" android:orientation="vertical" android:paddingStart="16dp" android:paddingEnd="16dp">
+    <Space android:layout_width="match_parent" android:layout_height="88dp" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="PUSH 알림 수신에 동의하시겠습니까?" android:textColor="@color/appblack" android:gravity="center" style="@style/typo_body_m1" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:gravity="center" android:text="거부하시면 섭메이트의 모든 알림을\n받으실 수 없어요 ㅠㅠ" android:textColor="@color/gray500" style="@style/typo_cap_r1" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginTop="32dp" android:orientation="horizontal">
+        <TextView android:id="@+id/modal_reject" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_modal_reject" android:clickable="true" android:focusable="true" android:gravity="center" android:text="거부" android:textColor="@color/error800" style="@style/typo_body_b2" />
+        <Space android:layout_width="8dp" android:layout_height="match_parent" />
+        <TextView android:id="@+id/modal_agree" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_modal_agree" android:clickable="true" android:focusable="true" android:gravity="center" android:text="동의" android:textColor="@color/appwhite" style="@style/typo_body_b2" />
+    </LinearLayout>
+</LinearLayout>
