@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/bg_notification_unread"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="24dp">
+    <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@drawable/ic_bell" android:tint="@color/pri700" android:contentDescription="알림" />
+    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:orientation="vertical">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="오늘은 라프텔 결제일이에요" android:textColor="@color/appblack" style="@style/typo_body_m1" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="(10/11) ₩3,725원이 결제될 예정이에요" android:textColor="@color/gray600" style="@style/typo_body_m2" />
+    </LinearLayout>
+</LinearLayout>
