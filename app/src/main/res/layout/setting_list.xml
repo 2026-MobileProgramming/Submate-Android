@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
-        android:text="자세한 내용은 구독 목록 탭에서 확인하세요!"
+        android:text="자세한 내용은 구독목록 탭에서 확인하세요!"
         android:textColor="@color/appblack"
         style="@style/typo_body_m2" />
 </LinearLayout>

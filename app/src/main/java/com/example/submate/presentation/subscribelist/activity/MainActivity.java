@@ -95,16 +95,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void bindSubscribeListLink() {
         android.widget.TextView link = findViewById(R.id.subscribe_list_link);
-        String message = "자세한 내용은 구독 목록 탭에서 확인하세요!";
+        String message = "자세한 내용은 구독목록 탭에서 확인하세요!";
         SpannableString spannable = new SpannableString(message);
-        int start = message.indexOf("구독 목록");
-        int end = start + "구독 목록".length();
-        spannable.setSpan(new android.text.style.ForegroundColorSpan(getColor(R.color.pri700)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = message.indexOf("구독목록");
+        int end = start + "구독목록".length();
         spannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 View subscribeList = findViewById(R.id.navigation_subscribe_list);
                 selectTab(subscribeList, R.layout.screen_subscribe_list);
+            }
+
+            @Override
+            public void updateDrawState(android.text.TextPaint drawState) {
+                drawState.setColor(getColor(R.color.pri700));
+                drawState.setUnderlineText(false);
             }
 
         }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
