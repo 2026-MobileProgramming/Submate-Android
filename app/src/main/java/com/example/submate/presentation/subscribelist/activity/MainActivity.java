@@ -177,9 +177,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUsageAccessButton(TextView button) {
-        button.setText(UsageStatsUtil.hasUsageAccess(this)
-                ? "접근 권한 허용됨"
-                : "접근 허용하러 가기");
+        boolean hasAccess = UsageStatsUtil.hasUsageAccess(this);
+        button.setText(hasAccess ? "접근 권한 허용됨" : "접근 허용하러 가기");
+        button.setBackgroundResource(hasAccess
+                ? R.drawable.bg_access_permission_granted
+                : R.drawable.bg_access_permission_button);
     }
 
     @Override
