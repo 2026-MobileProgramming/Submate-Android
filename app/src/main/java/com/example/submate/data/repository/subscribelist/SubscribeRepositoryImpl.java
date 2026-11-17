@@ -17,6 +17,7 @@ import javax.inject.Inject;
  * 불러온 구독 목록을 보관하고, 목록이나 환율이 바뀔 때마다 화면에 알려줍니다.
  * 화면이 아닌 곳(알림 작업 등 백그라운드 스레드)에서 불러도 안전하도록,
  * 목록은 내부 변수(current)에 먼저 저장하고 LiveData에는 스레드에 맞는 방법으로 전달합니다.
+ * 목록을 언제 불러올지는 Repository가 아니라 ViewModel이 정합니다(refresh 호출).
  */
 public class SubscribeRepositoryImpl implements SubscribeRepository {
     private final SubscribeService service;
@@ -34,7 +35,7 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
         // 환율이 바뀌면 원화 환산 금액이 달라지므로 목록을 다시 알려줍니다.
         subscribeList.addSource(exchangeRateRepository.observeUpdatedAt(),
                 updatedAt -> publish(current));
-        refresh(null);
+        // 생성자에서는 네트워크 요청을 하지 않습니다. 목록 조회는 화면(ViewModel)이 refresh()로 요청합니다.
     }
 
     @Override

@@ -8,6 +8,7 @@ import java.util.List;
  * 구독 데이터를 앱 전체에서 공유하는 저장소입니다. (앱에 하나만 존재)
  * 캘린더/리포트/설정 탭도 ViewModel에 주입받아 observeSubscribeList()를 관찰하면
  * 구독이 추가/수정/삭제되거나 환율이 바뀔 때마다 최신 목록을 받습니다.
+ * Repository는 스스로 목록을 불러오지 않으므로, 목록이 필요한 화면의 ViewModel이 처음 만들어질 때 refresh()를 호출해주세요.
  */
 public interface SubscribeRepository {
     /** 해지완료를 포함한 전체 구독 목록 (화면에서 관찰용) */
@@ -16,6 +17,7 @@ public interface SubscribeRepository {
     /**
      * 지금 가지고 있는 전체 구독 목록 (해지완료 포함, 읽기 전용).
      * 알림 작업처럼 화면이 아닌 곳에서 바로 값이 필요할 때 사용합니다. 어느 스레드에서 불러도 됩니다.
+     * 아직 refresh()가 한 번도 끝나지 않았다면 빈 목록이므로, 앱이 막 시작된 경우에는 refresh(callback)의 결과를 사용해주세요.
      */
     List<SubscribeItem> getSubscribeList();
 
