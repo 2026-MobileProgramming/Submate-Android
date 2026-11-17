@@ -8,6 +8,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.submate.R;
+import com.example.submate.core.util.CommonToast;
 import com.example.submate.presentation.subscribelist.viewmodel.SubscribeListViewModel;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,6 +85,17 @@ public class MainActivity extends AppCompatActivity {
         if (layoutId == R.layout.setting_list) {
             bindSubscribeListLink();
         }
+        if (layoutId == R.layout.setting_contact) {
+            bindContactEmailCopy();
+        }
+    }
+
+    private void bindContactEmailCopy() {
+        findViewById(R.id.contact_copy_email).setOnClickListener(v -> {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            clipboard.setPrimaryClip(android.content.ClipData.newPlainText("문의 이메일", "submate@mail.com"));
+            CommonToast.show(this, "이메일이 복사되었습니다");
+        });
     }
 
     private void showSettingMenu() {

@@ -1,5 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/appwhite" android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appwhite"
+    android:orientation="vertical">
+
     <include layout="@layout/common_sub_header" />
-    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="Submate 로고"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logo_big" />
+
+        <TextView
+            android:layout_width="350dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="48dp"
+            android:background="@drawable/bg_container_gray50_round16"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.25"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="앱 이용과 관련하여 문의사항이 있으시다면\nsubmate@mail.com 으로 문의 부탁드립니다.\n감사합니다 : )"
+            android:textColor="@color/gray700"
+            style="@style/typo_body_m1" />
+
+        <TextView
+            android:id="@+id/contact_copy_email"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/bg_outline_account_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="이메일 주소 복사하기"
+            android:textColor="@color/pri700"
+            style="@style/typo_body_m2" />
+    </LinearLayout>
 </LinearLayout>
