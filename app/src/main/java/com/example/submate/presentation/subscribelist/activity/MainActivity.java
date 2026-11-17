@@ -8,25 +8,24 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.submate.R;
+import com.example.submate.core.util.ClipboardUtil;
 import com.example.submate.core.util.CommonToast;
+import com.example.submate.presentation.common.dialog.NotificationDialogManager;
 import com.example.submate.presentation.subscribelist.viewmodel.SubscribeListViewModel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.app.Dialog;
-import android.view.Window;
-import android.view.WindowManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.view.View;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
     private SubscribeListViewModel viewModel;
     private String currentNickname = "쥐이카와";
+    private NotificationDialogManager notificationDialogManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         viewModel = new ViewModelProvider(this).get(SubscribeListViewModel.class);
+        notificationDialogManager = new NotificationDialogManager(this, this::setToggleValue);
         View calendar = findViewById(R.id.navigation_calendar);
         View subscribeList = findViewById(R.id.navigation_subscribe_list);
         View report = findViewById(R.id.navigation_report);
@@ -127,8 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void bindContactEmailCopy() {
         findViewById(R.id.contact_copy_email).setOnClickListener(v -> {
-            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-            clipboard.setPrimaryClip(android.content.ClipData.newPlainText("문의 이메일", "submate@mail.com"));
+            ClipboardUtil.copy(this, "문의 이메일", "submate@mail.com");
             CommonToast.show(this, "이메일이 복사되었습니다");
         });
     }
@@ -166,68 +165,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bindNotificationSettings() {
-        findViewById(R.id.notification_push).setOnClickListener(v -> showPushDialog());
-        findViewById(R.id.notification_payment).setOnClickListener(v -> showCommonNotificationDialog("결제일 알림", R.id.notification_payment_value));
-        findViewById(R.id.notification_expiring).setOnClickListener(v -> showCommonNotificationDialog("해지예정 구독 알림", R.id.notification_expiring_value));
-        findViewById(R.id.notification_trial).setOnClickListener(v -> showCommonNotificationDialog("무료체험 종료 알림", R.id.notification_trial_value));
-    }
-
-    private void showPushDialog() {
-        Dialog dialog = createDialog(R.layout.modal_push, 380, 250);
-        dialog.findViewById(R.id.modal_close).setOnClickListener(v -> dialog.dismiss());
-        dialog.findViewById(R.id.modal_reject).setOnClickListener(v -> {
-            setToggleValue(R.id.notification_push_value, "거부", R.color.error500);
-            dialog.dismiss();
-        });
-        dialog.findViewById(R.id.modal_agree).setOnClickListener(v -> {
-            setToggleValue(R.id.notification_push_value, "동의", R.color.pri800);
-            dialog.dismiss();
-        });
-        dialog.show();
-        resizeDialog(dialog, 380, 250);
-    }
-
-    private void showCommonNotificationDialog(String title, int valueId) {
-        Dialog dialog = createDialog(R.layout.common_modal, 380, 200);
-        dialog.findViewById(R.id.modal_close).setOnClickListener(v -> dialog.dismiss());
-        ((android.widget.TextView) dialog.findViewById(R.id.modal_title)).setText(title + "을 받으시겠습니까?");
-        dialog.findViewById(R.id.modal_no).setOnClickListener(v -> {
-            setToggleValue(valueId, "OFF", R.color.error500);
-            dialog.dismiss();
-        });
-        dialog.findViewById(R.id.modal_yes).setOnClickListener(v -> {
-            setToggleValue(valueId, "ON", R.color.pri800);
-            dialog.dismiss();
-        });
-        dialog.show();
-        resizeDialog(dialog, 380, 200);
-    }
-
-    private Dialog createDialog(int layoutId, int width, int height) {
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(layoutId);
-        dialog.setCanceledOnTouchOutside(true);
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setBackgroundDrawableResource(android.R.color.transparent);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            WindowManager.LayoutParams params = window.getAttributes();
-            params.dimAmount = 0.35f;
-            window.setAttributes(params);
-        }
-        return dialog;
-    }
-
-    private void resizeDialog(Dialog dialog, int width, int height) {
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setLayout(dp(width), dp(height));
-        }
-    }
-
-    private int dp(int value) {
-        return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
+        findViewById(R.id.notification_push).setOnClickListener(v -> notificationDialogManager.showPushDialog());
+        findViewById(R.id.notification_payment).setOnClickListener(v -> notificationDialogManager.showCommonNotificationDialog("결제일 알림", R.id.notification_payment_value));
+        findViewById(R.id.notification_expiring).setOnClickListener(v -> notificationDialogManager.showCommonNotificationDialog("해지예정 구독 알림", R.id.notification_expiring_value));
+        findViewById(R.id.notification_trial).setOnClickListener(v -> notificationDialogManager.showCommonNotificationDialog("무료체험 종료 알림", R.id.notification_trial_value));
     }
 
     private void setToggleValue(int viewId, String value, int colorId) {
