@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showPushDialog() {
-        Dialog dialog = createDialog(R.layout.modal_push, 380, 200);
+        Dialog dialog = createDialog(R.layout.modal_push, 380, 250);
         dialog.findViewById(R.id.modal_close).setOnClickListener(v -> dialog.dismiss());
         dialog.findViewById(R.id.modal_reject).setOnClickListener(v -> {
             setToggleValue(R.id.notification_push_value, "거부", R.color.error500);
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.dismiss();
         });
         dialog.show();
-        resizeDialog(dialog, 380, 200);
+        resizeDialog(dialog, 380, 250);
     }
 
     private void showCommonNotificationDialog(String title, int valueId) {
