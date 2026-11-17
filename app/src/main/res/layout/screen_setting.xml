@@ -11,7 +11,7 @@
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="내 구독 현황" android:textColor="@color/appblack" style="@style/typo_body_m1" />
         </LinearLayout>
         <LinearLayout android:id="@+id/setting_notification" android:layout_width="match_parent" android:layout_height="60dp" android:background="@color/gray50" android:clickable="true" android:focusable="true" android:gravity="center_vertical">
-            <ImageView android:layout_width="30dp" android:layout_height="30dp" android:layout_marginStart="20dp" android:contentDescription="알림 설정" android:src="@drawable/ic_setting_notification" />
+            <ImageView android:layout_width="30dp" android:layout_height="30dp" android:layout_marginStart="20dp" android:contentDescription="알림 설정" android:src="@drawable/ic_notification" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="알림 설정" android:textColor="@color/appblack" style="@style/typo_body_m1" />
         </LinearLayout>
         <LinearLayout android:id="@+id/setting_access" android:layout_width="match_parent" android:layout_height="60dp" android:clickable="true" android:focusable="true" android:gravity="center_vertical">
