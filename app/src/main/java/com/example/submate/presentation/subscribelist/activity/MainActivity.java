@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     private void showCommonNotificationDialog(String title, int valueId) {
         Dialog dialog = createDialog(R.layout.common_modal, 380, 200);
         dialog.findViewById(R.id.modal_close).setOnClickListener(v -> dialog.dismiss());
-        ((android.widget.TextView) dialog.findViewById(R.id.modal_title)).setText(title + "을 변경하시겠습니까?");
+        ((android.widget.TextView) dialog.findViewById(R.id.modal_title)).setText(title + "을 받으시겠습니까?");
         dialog.findViewById(R.id.modal_no).setOnClickListener(v -> {
             setToggleValue(valueId, "OFF", R.color.error500);
             dialog.dismiss();
