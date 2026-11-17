@@ -79,6 +79,10 @@ public class SubscribeDetailActivity extends AppCompatActivity {
     private SubscribeDropdown dropdown;
     // 추천 목록에서 고른 앱 이름을 칸에 넣을 때 추천 목록이 다시 뜨지 않게 합니다.
     private boolean applyingSuggestion = false;
+    // 수정 모드로 처음 열었을 때만 기존 값을 채웁니다. (화면 회전·복원 시에는 EditText가 스스로 복원)
+    private boolean needFillInputs;
+    // 기존 값을 채우는 동안에는 '변경됨'으로 보지 않습니다.
+    private boolean fillingInputs = false;
 
     public static Intent newIntent(Context context, long subscribeId) {
         Intent intent = new Intent(context, SubscribeDetailActivity.class);
@@ -100,11 +104,8 @@ public class SubscribeDetailActivity extends AppCompatActivity {
         setupStatusChips();
         setupInputs();
 
-        // 수정 모드로 처음 열었을 때만 기존 값을 입력칸에 채웁니다. (화면 회전 시에는 EditText가 스스로 복원)
-        SubscribeItem item = viewModel.init(getIntent().getLongExtra(EXTRA_SUBSCRIBE_ID, NO_ID));
-        if (item != null && savedInstanceState == null) {
-            fillInputs(item);
-        }
+        needFillInputs = savedInstanceState == null;
+        viewModel.init(getIntent().getLongExtra(EXTRA_SUBSCRIBE_ID, NO_ID));
         findViewById(R.id.tv_subscribe_delete)
                 .setVisibility(viewModel.isEditMode() ? View.VISIBLE : View.GONE);
 
@@ -200,6 +201,9 @@ public class SubscribeDetailActivity extends AppCompatActivity {
     }
 
     private void fillInputs(SubscribeItem item) {
+        fillingInputs = true;
+        // 금액을 넣기 전에 소수점 허용 여부를 먼저 맞춥니다. (안 그러면 $14.99가 14로 잘립니다)
+        amountTextWatcher.setAllowDecimal(item.getCurrency() == SubscribeCurrency.USD);
         etService.setText(item.getServiceName());
         if (item.getPaymentMonth() > 0) {
             etPaymentMonth.setText(String.valueOf(item.getPaymentMonth()));
@@ -207,6 +211,7 @@ public class SubscribeDetailActivity extends AppCompatActivity {
         etPaymentDay.setText(String.valueOf(item.getPaymentDay()));
         etAmount.setText(SubscribeFormatter.formatAmountInput(item));
         etMemo.setText(item.getMemo());
+        fillingInputs = false;
     }
 
     private void setupListeners() {
@@ -249,7 +254,7 @@ public class SubscribeDetailActivity extends AppCompatActivity {
         // 사용자가 직접 입력할 때(포커스가 있을 때)만 변경된 것으로 봅니다. (화면 복원/자동 포맷 제외)
         for (EditText input : new EditText[]{etService, etPaymentMonth, etPaymentDay, etAmount, etMemo}) {
             input.addTextChangedListener(new SimpleTextWatcher(() -> {
-                if (input.hasFocus()) {
+                if (input.hasFocus() && !fillingInputs) {
                     viewModel.markChanged();
                 }
             }));
@@ -274,6 +279,12 @@ public class SubscribeDetailActivity extends AppCompatActivity {
     }
 
     private void observeViewModel() {
+        viewModel.getEditingItem().observe(this, item -> {
+            if (item != null && needFillInputs) {
+                needFillInputs = false;
+                fillInputs(item);
+            }
+        });
         viewModel.getCategory().observe(this, selected -> {
             SubscribeCategory[] categories = SubscribeCategory.values();
             for (int i = 0; i < categoryChips.size(); i++) {

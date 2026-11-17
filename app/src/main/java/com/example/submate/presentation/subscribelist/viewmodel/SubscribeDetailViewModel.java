@@ -48,6 +48,7 @@ public class SubscribeDetailViewModel extends ViewModel {
     private final MutableLiveData<Boolean> saving = new MutableLiveData<>(false);
     private final MutableLiveData<String> message = new MutableLiveData<>();
     private final MutableLiveData<Result> result = new MutableLiveData<>();
+    private final MutableLiveData<SubscribeItem> editingItem = new MutableLiveData<>();
 
     private long subscribeId = NEW_SUBSCRIBE;
     private boolean initialized = false;
@@ -62,30 +63,60 @@ public class SubscribeDetailViewModel extends ViewModel {
     }
 
     /**
-     * 화면을 처음 열 때 한 번만 동작합니다.
-     * 수정 모드면 기존 구독을 돌려주고(입력칸 채우기용), 추가 모드이거나 이미 초기화했으면 null을 돌려줍니다.
+     * 화면을 처음 열 때 한 번만 동작합니다. 수정 모드면 기존 구독을 찾아 getEditingItem()으로 알려줍니다.
+     * 앱이 종료됐다가 이 화면부터 복원되면 목록이 아직 비어 있으므로, 한 번 불러온 뒤 다시 찾습니다.
      */
-    public SubscribeItem init(long id) {
+    public void init(long id) {
         if (initialized) {
-            return null;
+            return;
         }
         initialized = true;
         if (id == NEW_SUBSCRIBE) {
-            return null;
-        }
-        SubscribeItem item = repository.findSubscribe(id);
-        if (item == null) {
-            result.setValue(Result.NOT_FOUND);
-            return null;
+            return;
         }
         subscribeId = id;
+        SubscribeItem item = repository.findSubscribe(id);
+        if (item != null) {
+            applyEditingItem(item);
+            return;
+        }
+        repository.refresh(new ResultCallback<List<SubscribeItem>>() {
+            @Override
+            public void onSuccess(List<SubscribeItem> list) {
+                SubscribeItem found = repository.findSubscribe(id);
+                if (found == null) {
+                    result.setValue(Result.NOT_FOUND);
+                } else {
+                    applyEditingItem(found);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                // 화면이 바로 닫히므로 목록 화면에서 '찾을 수 없습니다' 안내만 보여줍니다.
+                result.setValue(Result.NOT_FOUND);
+            }
+        });
+    }
+
+    private void applyEditingItem(SubscribeItem item) {
         category.setValue(item.getCategory());
         // 선택지에 없는 서비스명은 직접 입력한 것이므로 바로 고칠 수 있게 합니다.
         directInput.setValue(!ServicePreset.getServices(item.getCategory()).contains(item.getServiceName()));
         status.setValue(item.getStatus());
         billingCycle.setValue(item.getBillingCycle());
         currency.setValue(item.getCurrency());
-        return item;
+        editingItem.setValue(item);
+    }
+
+    /** 수정 모드에서 불러온 기존 구독 (입력칸 채우기용). 추가 모드이거나 아직 불러오는 중이면 null */
+    public LiveData<SubscribeItem> getEditingItem() {
+        return editingItem;
+    }
+
+    /** 수정 모드인데 기존 구독을 아직 불러오는 중인지 */
+    private boolean isLoading() {
+        return isEditMode() && editingItem.getValue() == null;
     }
 
     public boolean isEditMode() {
@@ -192,7 +223,7 @@ public class SubscribeDetailViewModel extends ViewModel {
     /** 입력값을 확인하고 저장합니다. 잘못된 값이 있으면 안내 메시지만 보여줍니다. */
     public void save(String serviceText, String monthText, String dayText,
                      String amountText, String memoText) {
-        if (Boolean.TRUE.equals(saving.getValue())) {
+        if (Boolean.TRUE.equals(saving.getValue()) || isLoading()) {
             return;
         }
         String serviceName = resolveServiceName(serviceText);
@@ -265,7 +296,7 @@ public class SubscribeDetailViewModel extends ViewModel {
     }
 
     public void delete() {
-        if (!isEditMode() || Boolean.TRUE.equals(saving.getValue())) {
+        if (!isEditMode() || isLoading() || Boolean.TRUE.equals(saving.getValue())) {
             return;
         }
         saving.setValue(true);
