@@ -8,8 +8,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.content.res.ColorStateList;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -243,6 +246,34 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout container = findViewById(R.id.tab_container);
         container.removeAllViews();
         LayoutInflater.from(this).inflate(R.layout.notification, container, true);
+        findViewById(R.id.notification_header_back).setOnClickListener(v -> showSubscribeList());
+        findViewById(R.id.notification_past).setOnClickListener(v -> selectTab(R.id.navigation_calendar));
+        findViewById(R.id.notification_read_all).setOnClickListener(v -> {
+            markNotificationRead(findViewById(R.id.notification_unread));
+            markNotificationRead(findViewById(R.id.notification_trial));
+        });
+    }
+
+    private void markNotificationRead(View card) {
+        card.setBackgroundResource(R.drawable.bg_notification_read);
+        card.setOnClickListener(v -> selectTab(R.id.navigation_calendar));
+        markNotificationReadChildren(card, 0);
+    }
+
+    private int markNotificationReadChildren(View view, int textIndex) {
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageTintList(ColorStateList.valueOf(getColor(R.color.gray600)));
+        } else if (view instanceof TextView) {
+            ((TextView) view).setTextColor(getColor(textIndex == 0 ? R.color.gray500 : R.color.gray400));
+            textIndex++;
+        }
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                textIndex = markNotificationReadChildren(group.getChildAt(i), textIndex);
+            }
+        }
+        return textIndex;
     }
 
     private void bindSubscribeListLink() {
