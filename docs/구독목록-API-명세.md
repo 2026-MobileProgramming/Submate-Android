@@ -16,7 +16,7 @@
 {
   "id": 1,
   "category": "OTT",            // OTT, MUSIC, FOOD, SHOPPING, AI, DIGITAL_CONTENT, ETC
-  "serviceName": "넷플릭스",
+  "serviceName": "Netflix",
   "status": "ACTIVE",           // ACTIVE(구독중), CANCEL_SCHEDULED(해지예정), CANCELED(해지완료)
   "billingCycle": "MONTHLY",    // MONTHLY(월간), YEARLY(연간)
   "paymentMonth": 0,            // 연간 결제·무료체험일 때만 1~12, 월간이면 0
@@ -78,7 +78,7 @@ public class SettingViewModel extends ViewModel {
   - `getCancelScheduledCount()` 해지예정 (무료체험은 제외)
   - `getCanceledCount()` 해지완료
   - `getMonthlyKrwAmount()` 월 구독료 합계(해지완료·무료체험 제외)
-- 캘린더: `item.getPaymentDayIn(year, month)` → 그 달의 결제일(없으면 0). 31일 결제는 말일로 맞춤. 무료체험은 0이고 종료일은 `getPaymentMonth()/getPaymentDay()`
+- 캘린더: `item.getPaymentDayIn(year, month)` → 그 달의 결제일(없으면 0). 31일 결제는 말일로 맞춤. 무료체험·해지완료는 0이고 무료체험 종료일은 `getPaymentMonth()/getPaymentDay()`
 - 리포트: 4번 참고
 - 화면 표시 문자열: `SubscribeFormatter` (`formatPrice`, `formatConvertedPrice`, `formatSchedule`, `formatKrw`, `categoryColor`)
 
