@@ -12,6 +12,9 @@ import com.example.submate.presentation.subscribelist.viewmodel.SubscribeListVie
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.app.Dialog;
+import android.view.Window;
+import android.view.WindowManager;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -70,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater.from(this).inflate(layoutId, container, true);
         findViewById(R.id.common_sub_header).setOnClickListener(v -> showSettingMenu());
         ((android.widget.TextView) findViewById(R.id.common_sub_header_title)).setText(title);
+        if (layoutId == R.layout.setting_notification) {
+            bindNotificationSettings();
+        }
     }
 
     private void showSettingMenu() {
@@ -77,5 +83,74 @@ public class MainActivity extends AppCompatActivity {
         container.removeAllViews();
         LayoutInflater.from(this).inflate(R.layout.screen_setting, container, true);
         bindSettingMenu();
+    }
+
+    private void bindNotificationSettings() {
+        findViewById(R.id.notification_push).setOnClickListener(v -> showPushDialog());
+        findViewById(R.id.notification_payment).setOnClickListener(v -> showCommonNotificationDialog("결제일 알림", R.id.notification_payment_value));
+        findViewById(R.id.notification_expiring).setOnClickListener(v -> showCommonNotificationDialog("해지예정 구독 알림", R.id.notification_expiring_value));
+        findViewById(R.id.notification_trial).setOnClickListener(v -> showCommonNotificationDialog("무료체험 종료 알림", R.id.notification_trial_value));
+    }
+
+    private void showPushDialog() {
+        Dialog dialog = createDialog(R.layout.modal_push, 350, 380);
+        dialog.findViewById(R.id.modal_reject).setOnClickListener(v -> {
+            setToggleValue(R.id.notification_push_value, "거부", R.color.error500);
+            dialog.dismiss();
+        });
+        dialog.findViewById(R.id.modal_agree).setOnClickListener(v -> {
+            setToggleValue(R.id.notification_push_value, "동의", R.color.pri800);
+            dialog.dismiss();
+        });
+        dialog.show();
+        resizeDialog(dialog, 350, 380);
+    }
+
+    private void showCommonNotificationDialog(String title, int valueId) {
+        Dialog dialog = createDialog(R.layout.common_modal, 350, 200);
+        ((android.widget.TextView) dialog.findViewById(R.id.modal_title)).setText(title + "을 변경하시겠습니까?");
+        dialog.findViewById(R.id.modal_no).setOnClickListener(v -> {
+            setToggleValue(valueId, "OFF", R.color.error500);
+            dialog.dismiss();
+        });
+        dialog.findViewById(R.id.modal_yes).setOnClickListener(v -> {
+            setToggleValue(valueId, "ON", R.color.pri800);
+            dialog.dismiss();
+        });
+        dialog.show();
+        resizeDialog(dialog, 350, 200);
+    }
+
+    private Dialog createDialog(int layoutId, int width, int height) {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(layoutId);
+        dialog.setCanceledOnTouchOutside(true);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.dimAmount = 0.35f;
+            window.setAttributes(params);
+        }
+        return dialog;
+    }
+
+    private void resizeDialog(Dialog dialog, int width, int height) {
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(dp(width), dp(height));
+        }
+    }
+
+    private int dp(int value) {
+        return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    private void setToggleValue(int viewId, String value, int colorId) {
+        android.widget.TextView valueView = findViewById(viewId);
+        valueView.setText(value);
+        valueView.setTextColor(getColor(colorId));
     }
 }
