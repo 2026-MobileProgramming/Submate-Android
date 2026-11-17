@@ -88,6 +88,29 @@ public class MainActivity extends AppCompatActivity {
         if (layoutId == R.layout.setting_contact) {
             bindContactEmailCopy();
         }
+        if (layoutId == R.layout.setting_account) {
+            findViewById(R.id.account_edit_nickname).setOnClickListener(v -> showNicknameEdit());
+        }
+    }
+
+    private void showNicknameEdit() {
+        FrameLayout container = findViewById(R.id.tab_container);
+        container.removeAllViews();
+        LayoutInflater.from(this).inflate(R.layout.setting_acount_nickname, container, true);
+        findViewById(R.id.common_sub_header).setOnClickListener(v -> showSettingDetail(R.layout.setting_account, "계정"));
+        ((android.widget.TextView) findViewById(R.id.common_sub_header_title)).setText("계정");
+        findViewById(R.id.nickname_display).setOnClickListener(v -> beginNicknameEdit());
+        findViewById(R.id.nickname_edit_icon).setOnClickListener(v -> beginNicknameEdit());
+        View.OnClickListener returnToAccount = v -> showSettingDetail(R.layout.setting_account, "계정");
+        findViewById(R.id.nickname_cancel).setOnClickListener(returnToAccount);
+        findViewById(R.id.nickname_save).setOnClickListener(returnToAccount);
+    }
+
+    private void beginNicknameEdit() {
+        findViewById(R.id.nickname_display).setVisibility(View.GONE);
+        findViewById(R.id.nickname_edit).setVisibility(View.VISIBLE);
+        findViewById(R.id.nickname_edit_icon).setVisibility(View.GONE);
+        findViewById(R.id.nickname_edit).requestFocus();
     }
 
     private void bindContactEmailCopy() {
