@@ -247,7 +247,6 @@ public class MainActivity extends AppCompatActivity {
         container.removeAllViews();
         LayoutInflater.from(this).inflate(R.layout.notification, container, true);
         findViewById(R.id.notification_header_back).setOnClickListener(v -> showSubscribeList());
-        findViewById(R.id.notification_past).setOnClickListener(v -> selectTab(R.id.navigation_calendar));
         findViewById(R.id.notification_read_all).setOnClickListener(v -> {
             markNotificationRead(findViewById(R.id.notification_unread));
             markNotificationRead(findViewById(R.id.notification_trial));
@@ -256,7 +255,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void markNotificationRead(View card) {
         card.setBackgroundResource(R.drawable.bg_notification_read);
-        card.setOnClickListener(v -> selectTab(R.id.navigation_calendar));
         markNotificationReadChildren(card, 0);
     }
 
