@@ -16,6 +16,7 @@
     <color name="sec500">#B5B674</color>
     <color name="sec800">#818251</color>
     <color name="appwhite">#FFFFFF</color>
+    <color name="gray50">#F8F8F8</color>
     <color name="gray100">#EDEFF3</color>
     <color name="gray200">#DBDFE9</color>
     <color name="gray300">#C7CBDB</color>

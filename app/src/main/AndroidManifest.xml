@@ -35,6 +35,30 @@
             android:name=".presentation.onboarding.activity.OnboardingActivity"
             android:exported="false" />
         <activity
+            android:name=".presentation.signup.activity.SignupEmailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.signup.activity.SignupVerifyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.signup.activity.SignupSetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.signup.activity.SignupCompletedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.resetpassword.activity.ResetPasswordEmailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.resetpassword.activity.ResetPasswordVerifyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.resetpassword.activity.ResetPasswordSetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.resetpassword.activity.ResetPasswordCompletedActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.splash.activity.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Submate">
