@@ -15,6 +15,11 @@ import android.widget.FrameLayout;
 import android.app.Dialog;
 import android.view.Window;
 import android.view.WindowManager;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.view.View;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -61,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void bindSettingMenu() {
         findViewById(R.id.setting_account).setOnClickListener(v -> showSettingDetail(R.layout.setting_account, "계정"));
-        findViewById(R.id.setting_list).setOnClickListener(v -> showSettingDetail(R.layout.setting_list, "구독 목록"));
+        findViewById(R.id.setting_list).setOnClickListener(v -> showSettingDetail(R.layout.setting_list, "내 구독 현황"));
         findViewById(R.id.setting_notification).setOnClickListener(v -> showSettingDetail(R.layout.setting_notification, "알림 설정"));
         findViewById(R.id.setting_access).setOnClickListener(v -> showSettingDetail(R.layout.setting_access, "앱 내 권한"));
         findViewById(R.id.setting_contact).setOnClickListener(v -> showSettingDetail(R.layout.setting_contact, "문의하기"));
@@ -76,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
         if (layoutId == R.layout.setting_notification) {
             bindNotificationSettings();
         }
+        if (layoutId == R.layout.setting_list) {
+            bindSubscribeListLink();
+        }
     }
 
     private void showSettingMenu() {
@@ -83,6 +91,26 @@ public class MainActivity extends AppCompatActivity {
         container.removeAllViews();
         LayoutInflater.from(this).inflate(R.layout.screen_setting, container, true);
         bindSettingMenu();
+    }
+
+    private void bindSubscribeListLink() {
+        android.widget.TextView link = findViewById(R.id.subscribe_list_link);
+        String message = "자세한 내용은 구독 목록 탭에서 확인하세요!";
+        SpannableString spannable = new SpannableString(message);
+        int start = message.indexOf("구독 목록");
+        int end = start + "구독 목록".length();
+        spannable.setSpan(new android.text.style.ForegroundColorSpan(getColor(R.color.pri700)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                View subscribeList = findViewById(R.id.navigation_subscribe_list);
+                selectTab(subscribeList, R.layout.screen_subscribe_list);
+            }
+
+        }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        link.setText(spannable);
+        link.setMovementMethod(LinkMovementMethod.getInstance());
+        link.setHighlightColor(android.graphics.Color.TRANSPARENT);
     }
 
     private void bindNotificationSettings() {
