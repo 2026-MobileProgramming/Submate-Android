@@ -1,24 +1,21 @@
 package com.example.submate.presentation.subscribelist.activity;
 
 import android.os.Bundle;
-import android.content.Intent;
-import android.provider.Settings;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.FrameLayout;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.fragment.app.Fragment;
 import com.example.submate.R;
 import com.example.submate.core.util.ClipboardUtil;
 import com.example.submate.core.util.CommonToast;
-import com.example.submate.core.util.UsageStatsUtil;
 import com.example.submate.presentation.common.dialog.NotificationDialogManager;
-import com.example.submate.presentation.subscribelist.viewmodel.SubscribeListViewModel;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
+import com.example.submate.presentation.subscribelist.fragment.SubscribeListFragment;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -27,7 +24,16 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
-    private SubscribeListViewModel viewModel;
+    private static final String TAG_SUBSCRIBE_LIST = "subscribe_list";
+    private static final String KEY_SELECTED_TAB = "selected_tab";
+    private static final int[] TAB_IDS = {
+            R.id.navigation_calendar,
+            R.id.navigation_subscribe_list,
+            R.id.navigation_report,
+            R.id.navigation_setting
+    };
+
+    private int selectedTabId;
     private String currentNickname = "쥐이카와";
     private NotificationDialogManager notificationDialogManager;
 
@@ -36,18 +42,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        viewModel = new ViewModelProvider(this).get(SubscribeListViewModel.class);
         notificationDialogManager = new NotificationDialogManager(this, this::setToggleValue);
-        View calendar = findViewById(R.id.navigation_calendar);
-        View subscribeList = findViewById(R.id.navigation_subscribe_list);
-        View report = findViewById(R.id.navigation_report);
-        View setting = findViewById(R.id.navigation_setting);
-
-        calendar.setOnClickListener(v -> selectTab(calendar, R.layout.screen_calendar));
-        subscribeList.setOnClickListener(v -> selectTab(subscribeList, R.layout.screen_subscribe_list));
-        report.setOnClickListener(v -> selectTab(report, R.layout.screen_report));
-        setting.setOnClickListener(v -> selectTab(setting, R.layout.screen_setting));
-        selectTab(calendar, R.layout.screen_calendar);
+        for (int tabId : TAB_IDS) {
+            findViewById(tabId).setOnClickListener(v -> selectTab(tabId));
+        }
+        // 화면이 회전되어 다시 만들어져도 보고 있던 탭을 유지합니다.
+        selectTab(savedInstanceState == null
+                ? R.id.navigation_calendar
+                : savedInstanceState.getInt(KEY_SELECTED_TAB, R.id.navigation_calendar));
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -55,13 +57,31 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void selectTab(View selectedTab, int layoutId) {
-        findViewById(R.id.navigation_calendar).setSelected(false);
-        findViewById(R.id.navigation_subscribe_list).setSelected(false);
-        findViewById(R.id.navigation_report).setSelected(false);
-        findViewById(R.id.navigation_setting).setSelected(false);
-        selectedTab.setSelected(true);
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_SELECTED_TAB, selectedTabId);
+    }
 
+    private void selectTab(int tabId) {
+        selectedTabId = tabId;
+        for (int id : TAB_IDS) {
+            findViewById(id).setSelected(id == tabId);
+        }
+        if (tabId == R.id.navigation_subscribe_list) {
+            showSubscribeList();
+        } else if (tabId == R.id.navigation_report) {
+            showScreen(R.layout.screen_report);
+        } else if (tabId == R.id.navigation_setting) {
+            showScreen(R.layout.screen_setting);
+        } else {
+            showScreen(R.layout.screen_calendar);
+        }
+    }
+
+    /** 아직 Fragment가 없는 탭은 레이아웃만 보여줍니다. */
+    private void showScreen(int layoutId) {
+        removeSubscribeListFragment();
         FrameLayout container = findViewById(R.id.tab_container);
         container.removeAllViews();
         LayoutInflater.from(this).inflate(layoutId, container, true);
@@ -97,28 +117,6 @@ public class MainActivity extends AppCompatActivity {
             ((android.widget.TextView) findViewById(R.id.account_nickname)).setText(currentNickname + " 님");
             findViewById(R.id.account_edit_nickname).setOnClickListener(v -> showNicknameEdit());
         }
-        if (layoutId == R.layout.setting_access) {
-            bindUsageAccess();
-        }
-    }
-
-    private void bindUsageAccess() {
-        TextView button = findViewById(R.id.access_permission_button);
-        button.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)));
-        updateUsageAccessButton(button);
-    }
-
-    private void updateUsageAccessButton(TextView button) {
-        button.setText(UsageStatsUtil.hasUsageAccess(this)
-                ? "접근 권한 허용됨"
-                : "접근 허용하러 가기");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        TextView button = findViewById(R.id.access_permission_button);
-        if (button != null) updateUsageAccessButton(button);
     }
 
     private void showNicknameEdit() {
@@ -174,8 +172,7 @@ public class MainActivity extends AppCompatActivity {
         spannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                View subscribeList = findViewById(R.id.navigation_subscribe_list);
-                selectTab(subscribeList, R.layout.screen_subscribe_list);
+                selectTab(R.id.navigation_subscribe_list);
             }
 
             @Override
@@ -201,5 +198,24 @@ public class MainActivity extends AppCompatActivity {
         android.widget.TextView valueView = findViewById(viewId);
         valueView.setText(value);
         valueView.setTextColor(getColor(colorId));
+    }
+
+    /** 구독 목록 탭은 Fragment로 보여줍니다. */
+    private void showSubscribeList() {
+        if (getSupportFragmentManager().findFragmentByTag(TAG_SUBSCRIBE_LIST) != null) {
+            return;
+        }
+        FrameLayout container = findViewById(R.id.tab_container);
+        container.removeAllViews();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.tab_container, new SubscribeListFragment(), TAG_SUBSCRIBE_LIST)
+                .commit();
+    }
+
+    private void removeSubscribeListFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_SUBSCRIBE_LIST);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commitNow();
+        }
     }
 }

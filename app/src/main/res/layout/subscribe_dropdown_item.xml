@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 드롭다운 목록의 한 줄 -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/typo_body_r1"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/subscribe_dropdown_item_height"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:textColor="@color/gray800" />
