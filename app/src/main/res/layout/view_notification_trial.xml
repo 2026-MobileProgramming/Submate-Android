@@ -1,2 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<include xmlns:android="http://schemas.android.com/apk/res/android" layout="@layout/view_notification_payment" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/bg_notification_read"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="24dp">
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="알림"
+        android:src="@drawable/ic_setting_notification"
+        android:tint="@color/pri700" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            style="@style/typo_body_m1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="배민클럽 무료체험이 3일 뒤 끝나요"
+            android:textColor="@color/appblack" />
+        <TextView
+            style="@style/typo_body_m2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="체험 종료 후 자동으로 결제될 수 있어요"
+            android:textColor="@color/gray600" />
+    </LinearLayout>
+</LinearLayout>

@@ -3,7 +3,7 @@
     android:layout_width="match_parent" android:layout_height="160dp"
     android:background="@drawable/bg_notification_read" android:gravity="center_vertical"
     android:orientation="horizontal" android:padding="24dp">
-    <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@drawable/ic_bell" android:tint="@color/gray600" android:contentDescription="이전 알림" />
+    <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@drawable/ic_setting_notification" android:tint="@color/gray600" android:contentDescription="이전 알림" />
     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:orientation="vertical">
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="오늘은 넷플릭스 결제일이에요" android:textColor="@color/gray500" style="@style/typo_body_m1" />
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="(9/12) $5.00 원이 결제될 예정이에요" android:textColor="@color/gray400" style="@style/typo_body_m2" />
