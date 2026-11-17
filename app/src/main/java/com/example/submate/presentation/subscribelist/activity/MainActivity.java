@@ -238,6 +238,13 @@ public class MainActivity extends AppCompatActivity {
         bindSettingMenu();
     }
 
+    public void openNotifications() {
+        removeSubscribeListFragment();
+        FrameLayout container = findViewById(R.id.tab_container);
+        container.removeAllViews();
+        LayoutInflater.from(this).inflate(R.layout.notification, container, true);
+    }
+
     private void bindSubscribeListLink() {
         android.widget.TextView link = findViewById(R.id.subscribe_list_link);
         String message = "자세한 내용은 구독목록 탭에서 확인하세요!";
