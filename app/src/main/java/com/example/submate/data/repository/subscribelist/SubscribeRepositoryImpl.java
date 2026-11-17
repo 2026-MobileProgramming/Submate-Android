@@ -18,6 +18,7 @@ import javax.inject.Inject;
  * 화면이 아닌 곳(알림 작업 등 백그라운드 스레드)에서 불러도 안전하도록,
  * 목록은 내부 변수(current)에 먼저 저장하고 LiveData에는 스레드에 맞는 방법으로 전달합니다.
  * 목록을 언제 불러올지는 Repository가 아니라 ViewModel이 정합니다(refresh 호출).
+ * 여러 스레드에서 동시에 추가/수정/삭제해도 변경이 사라지지 않도록 목록을 바꾸는 부분은 lock으로 막습니다.
  */
 public class SubscribeRepositoryImpl implements SubscribeRepository {
     private final SubscribeService service;
@@ -26,6 +27,7 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
             new MediatorLiveData<>(Collections.emptyList());
     // 항상 최신 목록. 외부에서 고칠 수 없도록 읽기 전용 목록으로 보관합니다.
     private volatile List<SubscribeItem> current = Collections.emptyList();
+    private final Object lock = new Object();
 
     @Inject
     public SubscribeRepositoryImpl(SubscribeService service,
@@ -34,7 +36,11 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
         this.exchangeRateRepository = exchangeRateRepository;
         // 환율이 바뀌면 원화 환산 금액이 달라지므로 목록을 다시 알려줍니다.
         subscribeList.addSource(exchangeRateRepository.observeUpdatedAt(),
-                updatedAt -> publish(current));
+                updatedAt -> {
+                    synchronized (lock) {
+                        publish(current);
+                    }
+                });
         // 생성자에서는 네트워크 요청을 하지 않습니다. 목록 조회는 화면(ViewModel)이 refresh()로 요청합니다.
     }
 
@@ -54,7 +60,9 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
         service.getSubscribeList(new ResultCallback<List<SubscribeItem>>() {
             @Override
             public void onSuccess(List<SubscribeItem> result) {
-                publish(result);
+                synchronized (lock) {
+                    publish(result);
+                }
                 if (callback != null) {
                     callback.onSuccess(current);
                 }
@@ -84,9 +92,11 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
         service.addSubscribe(item, new ResultCallback<SubscribeItem>() {
             @Override
             public void onSuccess(SubscribeItem saved) {
-                List<SubscribeItem> list = new ArrayList<>(current);
-                list.add(saved);
-                publish(list);
+                synchronized (lock) {
+                    List<SubscribeItem> list = new ArrayList<>(current);
+                    list.add(saved);
+                    publish(list);
+                }
                 callback.onSuccess(saved);
             }
 
@@ -102,13 +112,15 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
         service.updateSubscribe(item, new ResultCallback<SubscribeItem>() {
             @Override
             public void onSuccess(SubscribeItem saved) {
-                List<SubscribeItem> list = new ArrayList<>(current);
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getId() == saved.getId()) {
-                        list.set(i, saved);
+                synchronized (lock) {
+                    List<SubscribeItem> list = new ArrayList<>(current);
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId() == saved.getId()) {
+                            list.set(i, saved);
+                        }
                     }
+                    publish(list);
                 }
-                publish(list);
                 callback.onSuccess(saved);
             }
 
@@ -124,13 +136,15 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
         service.deleteSubscribe(id, new ResultCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
-                List<SubscribeItem> list = new ArrayList<>(current);
-                for (int i = list.size() - 1; i >= 0; i--) {
-                    if (list.get(i).getId() == id) {
-                        list.remove(i);
+                synchronized (lock) {
+                    List<SubscribeItem> list = new ArrayList<>(current);
+                    for (int i = list.size() - 1; i >= 0; i--) {
+                        if (list.get(i).getId() == id) {
+                            list.remove(i);
+                        }
                     }
+                    publish(list);
                 }
-                publish(list);
                 callback.onSuccess(null);
             }
 

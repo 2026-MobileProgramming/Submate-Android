@@ -22,6 +22,7 @@ import javax.inject.Inject;
  * 서버 대신 기기 안(SharedPreferences)에 구독 목록을 저장하는 구현체입니다.
  * 서버와 같은 JSON 형식으로 저장하므로 앱을 껐다 켜도 목록이 유지됩니다.
  * NetworkModule.USE_LOCAL_DATA 값을 false로 바꾸면 SubscribeServiceImpl(서버)을 사용합니다.
+ * 알림 작업 같은 백그라운드 스레드와 화면이 동시에 불러도 목록·id가 꼬이지 않도록 lock으로 막습니다.
  */
 public class SubscribeLocalServiceImpl implements SubscribeService {
     private static final String PREFS_NAME = "subscribe_list";
@@ -32,6 +33,8 @@ public class SubscribeLocalServiceImpl implements SubscribeService {
     private final Gson gson = new Gson();
     private final List<SubscribeItem> items = new ArrayList<>();
     private long nextId = 1L;
+    // items, nextId를 바꿀 때 잡는 잠금. 콜백은 잠금을 푼 뒤에 부릅니다. (콜백 안에서 다른 잠금을 잡아도 서로 기다리며 멈추지 않게)
+    private final Object lock = new Object();
 
     @Inject
     public SubscribeLocalServiceImpl(@ApplicationContext Context context) {
@@ -44,39 +47,58 @@ public class SubscribeLocalServiceImpl implements SubscribeService {
 
     @Override
     public void getSubscribeList(ResultCallback<List<SubscribeItem>> callback) {
-        callback.onSuccess(new ArrayList<>(items));
+        List<SubscribeItem> copy;
+        synchronized (lock) {
+            copy = new ArrayList<>(items);
+        }
+        callback.onSuccess(copy);
     }
 
     @Override
     public void addSubscribe(SubscribeItem item, ResultCallback<SubscribeItem> callback) {
-        SubscribeItem saved = item.withId(nextId++);
-        items.add(saved);
-        save();
+        SubscribeItem saved;
+        synchronized (lock) {
+            saved = item.withId(nextId++);
+            items.add(saved);
+            save();
+        }
         callback.onSuccess(saved);
     }
 
     @Override
     public void updateSubscribe(SubscribeItem item, ResultCallback<SubscribeItem> callback) {
-        int index = indexOf(item.getId());
-        if (index < 0) {
-            callback.onError(NOT_FOUND);
-            return;
+        boolean found;
+        synchronized (lock) {
+            int index = indexOf(item.getId());
+            found = index >= 0;
+            if (found) {
+                items.set(index, item);
+                save();
+            }
         }
-        items.set(index, item);
-        save();
-        callback.onSuccess(item);
+        if (found) {
+            callback.onSuccess(item);
+        } else {
+            callback.onError(NOT_FOUND);
+        }
     }
 
     @Override
     public void deleteSubscribe(long id, ResultCallback<Void> callback) {
-        int index = indexOf(id);
-        if (index < 0) {
-            callback.onError(NOT_FOUND);
-            return;
+        boolean found;
+        synchronized (lock) {
+            int index = indexOf(id);
+            found = index >= 0;
+            if (found) {
+                items.remove(index);
+                save();
+            }
         }
-        items.remove(index);
-        save();
-        callback.onSuccess(null);
+        if (found) {
+            callback.onSuccess(null);
+        } else {
+            callback.onError(NOT_FOUND);
+        }
     }
 
     private int indexOf(long id) {
@@ -120,7 +142,7 @@ public class SubscribeLocalServiceImpl implements SubscribeService {
 
     /** 앱을 처음 실행했을 때 보여줄 피그마 예시 데이터 */
     private void insertSampleItems() {
-        insert(SubscribeCategory.OTT, "넷플릭스", SubscribeStatus.ACTIVE,
+        insert(SubscribeCategory.OTT, "Netflix", SubscribeStatus.ACTIVE,
                 BillingCycle.MONTHLY, 0, 3, SubscribeCurrency.KRW, 4250);
         insert(SubscribeCategory.OTT, "라프텔", SubscribeStatus.ACTIVE,
                 BillingCycle.MONTHLY, 0, 15, SubscribeCurrency.KRW, 7450);
