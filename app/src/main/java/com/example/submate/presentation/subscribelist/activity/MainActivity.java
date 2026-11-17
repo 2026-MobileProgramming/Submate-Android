@@ -1,9 +1,12 @@
 package com.example.submate.presentation.subscribelist.activity;
 
 import android.os.Bundle;
+import android.content.Intent;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.submate.R;
 import com.example.submate.core.util.ClipboardUtil;
 import com.example.submate.core.util.CommonToast;
+import com.example.submate.core.util.UsageStatsUtil;
 import com.example.submate.presentation.common.dialog.NotificationDialogManager;
 import com.example.submate.presentation.subscribelist.fragment.SubscribeListFragment;
 import android.text.SpannableString;
@@ -117,6 +121,28 @@ public class MainActivity extends AppCompatActivity {
             ((android.widget.TextView) findViewById(R.id.account_nickname)).setText(currentNickname + " 님");
             findViewById(R.id.account_edit_nickname).setOnClickListener(v -> showNicknameEdit());
         }
+        if (layoutId == R.layout.setting_access) {
+            bindUsageAccess();
+        }
+    }
+
+    private void bindUsageAccess() {
+        TextView button = findViewById(R.id.access_permission_button);
+        button.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)));
+        updateUsageAccessButton(button);
+    }
+
+    private void updateUsageAccessButton(TextView button) {
+        button.setText(UsageStatsUtil.hasUsageAccess(this)
+                ? "접근 권한 허용됨"
+                : "접근 허용하러 가기");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TextView button = findViewById(R.id.access_permission_button);
+        if (button != null) updateUsageAccessButton(button);
     }
 
     private void showNicknameEdit() {
