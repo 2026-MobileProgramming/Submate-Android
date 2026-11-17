@@ -152,7 +152,7 @@ public class SubscribeLocalServiceImpl implements SubscribeService {
                 BillingCycle.MONTHLY, 0, 27, SubscribeCurrency.KRW, 29000);
         insert(SubscribeCategory.OTT, "YouTube", SubscribeStatus.ACTIVE,
                 BillingCycle.YEARLY, 1, 21, SubscribeCurrency.USD, 14.00);
-        insert(SubscribeCategory.SHOPPING, "N+스토어", SubscribeStatus.CANCELED,
+        insert(SubscribeCategory.SHOPPING, "네이버플러스 멤버십", SubscribeStatus.CANCELED,
                 BillingCycle.YEARLY, 10, 17, SubscribeCurrency.KRW, 46800);
         insert(SubscribeCategory.MUSIC, "Apple Music", SubscribeStatus.CANCELED,
                 BillingCycle.MONTHLY, 0, 4, SubscribeCurrency.KRW, 2250);
