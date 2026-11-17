@@ -1,9 +1,16 @@
 package com.example.submate.data.service.subscribelist;
 
 import com.example.submate.domain.model.SubscribeItem;
+import com.example.submate.domain.repository.ResultCallback;
 import java.util.List;
 
-/** External data source boundary. Replace with Retrofit/Room implementation later. */
+/** 구독 데이터를 가져오는 외부 데이터 소스(서버)의 경계입니다. */
 public interface SubscribeService {
-    List<SubscribeItem> getSubscribeList();
+    void getSubscribeList(ResultCallback<List<SubscribeItem>> callback);
+
+    void addSubscribe(SubscribeItem item, ResultCallback<SubscribeItem> callback);
+
+    void updateSubscribe(SubscribeItem item, ResultCallback<SubscribeItem> callback);
+
+    void deleteSubscribe(long id, ResultCallback<Void> callback);
 }
