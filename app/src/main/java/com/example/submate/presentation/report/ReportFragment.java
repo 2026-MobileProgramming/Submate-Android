@@ -27,6 +27,9 @@ public class ReportFragment extends Fragment {
     private TextView btnPeriodMonth;
     private TextView btnPeriodAll;
 
+    // 기간 선택 영역
+    private View layoutPeriod;
+
     // 리포트 콘텐츠
     private View layoutUsageReport;
     private View layoutExpenseReport;
@@ -64,6 +67,8 @@ public class ReportFragment extends Fragment {
         btnUsageReport = view.findViewById(R.id.btnUsageReport);
         btnExpenseReport = view.findViewById(R.id.btnExpenseReport);
 
+        layoutPeriod = view.findViewById(R.id.layoutPeriod);
+
         btnPeriod10Days = view.findViewById(R.id.btnPeriod10Days);
         btnPeriodMonth = view.findViewById(R.id.btnPeriodMonth);
         btnPeriodAll = view.findViewById(R.id.btnPeriodAll);
@@ -91,7 +96,12 @@ public class ReportFragment extends Fragment {
                 isUsageReport ? View.GONE : View.VISIBLE
         );
 
-        // 선택 상태 변경
+        // 누적 지출 탭에서만 기간 선택 표시
+        layoutPeriod.setVisibility(
+                isUsageReport ? View.GONE : View.VISIBLE
+        );
+
+        // 선택된 버튼 스타일
         btnUsageReport.setSelected(isUsageReport);
         btnExpenseReport.setSelected(!isUsageReport);
 
@@ -103,12 +113,12 @@ public class ReportFragment extends Fragment {
         );
 
         btnExpenseReport.setBackgroundResource(
-                !isUsageReport
-                        ? R.drawable.bg_report_type_selected
-                        : android.R.color.transparent
+                isUsageReport
+                        ? android.R.color.transparent
+                        : R.drawable.bg_report_type_selected
         );
 
-        // 선택된 버튼 글자색
+        // 선택된 버튼 색상
         btnUsageReport.setTextColor(
                 isUsageReport
                         ? getResources().getColor(R.color.appblack)
@@ -116,9 +126,9 @@ public class ReportFragment extends Fragment {
         );
 
         btnExpenseReport.setTextColor(
-                !isUsageReport
-                        ? getResources().getColor(R.color.appblack)
-                        : getResources().getColor(R.color.gray500)
+                isUsageReport
+                        ? getResources().getColor(R.color.gray500)
+                        : getResources().getColor(R.color.appblack)
         );
     }
 
