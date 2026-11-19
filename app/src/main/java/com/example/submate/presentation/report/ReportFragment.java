@@ -16,11 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.submate.presentation.report.adapter.UsageReportAdapter;
+import com.example.submate.presentation.report.data.ReportDummyData;
 import com.example.submate.presentation.report.model.UsageReportItem;
 import com.example.submate.presentation.report.adapter.ExpenseReportAdapter;
 import com.example.submate.presentation.report.model.ExpenseReportItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.example.submate.R;
@@ -50,6 +50,8 @@ public class ReportFragment extends Fragment {
     // 리포트 콘텐츠
     private View layoutUsageReport;
     private View layoutExpenseReport;
+
+    private TextView tvReportDescription;
 
     @Nullable
     @Override
@@ -98,6 +100,8 @@ public class ReportFragment extends Fragment {
 
         rvUsageReport = view.findViewById(R.id.rvUsageReport);
         rvExpenseReport = view.findViewById(R.id.rvExpenseReport);
+
+        tvReportDescription = view.findViewById(R.id.tvReportDescription);
     }
 
     // 사용량 / 누적 지출 버튼 설정
@@ -119,6 +123,9 @@ public class ReportFragment extends Fragment {
                 (!isUsageReport && btnPeriodMonth.isSelected())
                         ? View.VISIBLE
                         : View.GONE
+        );
+        tvReportDescription.setText(
+                isUsageReport ? "앱 사용 시간 (월)" : "월별 구독료"
         );
 
         // 누적 지출 탭에서만 기간 선택 표시
@@ -196,35 +203,8 @@ public class ReportFragment extends Fragment {
 
     private void setupUsageReportRecyclerView() {
 
-        // 임시 사용량 데이터
-        List<UsageReportItem> usageList = new ArrayList<>();
-
-        usageList.add(new UsageReportItem(
-                "넷플릭스",
-                "넷",
-                "18시간",
-                100,
-                getResources().getColor(R.color.pastel_red),
-                getResources().getColor(R.color.pastel_red)
-        ));
-
-        usageList.add(new UsageReportItem(
-                "Gemini",
-                "G",
-                "7시간",
-                39,
-                getResources().getColor(R.color.pastel_blue),
-                getResources().getColor(R.color.pastel_blue)
-        ));
-
-        usageList.add(new UsageReportItem(
-                "라프텔",
-                "라",
-                "1시간",
-                6,
-                getResources().getColor(R.color.pastel_red),
-                getResources().getColor(R.color.pastel_red)
-        ));
+        List<UsageReportItem> usageList =
+                ReportDummyData.getUsageReportData(requireContext());
 
         // RecyclerView 설정
         rvUsageReport.setLayoutManager(
@@ -240,52 +220,8 @@ public class ReportFragment extends Fragment {
     private void setupExpenseReportRecyclerView() {
 
         // 임시 지출 데이터
-        List<ExpenseReportItem> expenseList = new ArrayList<>();
-
-        expenseList.add(new ExpenseReportItem(
-                "Claude",
-                "C",
-                5000,
-                100,
-                getResources().getColor(R.color.pastel_blue),
-                getResources().getColor(R.color.pastel_blue)
-        ));
-
-        expenseList.add(new ExpenseReportItem(
-                "Gemini",
-                "G",
-                4881,
-                98,
-                getResources().getColor(R.color.pastel_blue),
-                getResources().getColor(R.color.pastel_blue)
-        ));
-
-        expenseList.add(new ExpenseReportItem(
-                "넷플릭스",
-                "넷",
-                4269,
-                85,
-                getResources().getColor(R.color.pastel_red),
-                getResources().getColor(R.color.pastel_red)
-        ));
-
-        expenseList.add(new ExpenseReportItem(
-                "라프텔",
-                "라",
-                3725,
-                75,
-                getResources().getColor(R.color.pastel_red),
-                getResources().getColor(R.color.pastel_red)
-        ));
-
-        expenseList.add(new ExpenseReportItem(
-                "배달의민족",
-                "배",
-                1500,
-                30,
-                getResources().getColor(R.color.pastel_yellow),
-                getResources().getColor(R.color.pastel_yellow)
-        ));
+        List<ExpenseReportItem> expenseList =
+                ReportDummyData.getExpenseReportData(requireContext());
 
         // RecyclerView 설정
         rvExpenseReport.setLayoutManager(
