@@ -32,9 +32,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:orientation="horizontal"
-                android:background="#F1F4FC"
+                android:background="@drawable/bg_report_type_container"
                 android:padding="4dp">
 
+                <!-- 사용량 탭 -->
                 <TextView
                     android:id="@+id/btnUsageReport"
                     android:layout_width="0dp"
@@ -42,11 +43,12 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="사용량"
-                    android:textColor="#333333"
+                    android:textColor="@color/appblack"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:background="#00FFFFFF" />
+                    android:background="@drawable/bg_report_type_selected" />
 
+                <!-- 누적 지출 탭 -->
                 <TextView
                     android:id="@+id/btnExpenseReport"
                     android:layout_width="0dp"
@@ -54,10 +56,10 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="누적 지출"
-                    android:textColor="#888888"
+                    android:textColor="@color/gray500"
+                    android:textStyle="bold"
                     android:textSize="14sp"
-                    android:background="#00FFFFFF"
-                    />
+                    android:background="@android:color/transparent" />
 
             </LinearLayout>
 
@@ -73,13 +75,13 @@
                 <TextView
                     android:id="@+id/btnPeriod10Days"
                     style="@style/subscribe_filter_chip"
-                    android:text="10일" />
+                    android:text="월" />
 
                 <!-- 월 -->
                 <TextView
                     android:id="@+id/btnPeriodMonth"
                     style="@style/subscribe_filter_chip"
-                    android:text="월" />
+                    android:text="연" />
 
                 <!-- 전체 -->
                 <TextView

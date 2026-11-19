@@ -91,25 +91,34 @@ public class ReportFragment extends Fragment {
                 isUsageReport ? View.GONE : View.VISIBLE
         );
 
-        // 선택된 버튼 스타일
+        // 선택 상태 변경
         btnUsageReport.setSelected(isUsageReport);
         btnExpenseReport.setSelected(!isUsageReport);
 
-        // 선택된 버튼 색상
-        btnUsageReport.setBackgroundColor(
-                isUsageReport ? 0xFFFFFFFF : 0x00FFFFFF
+        // 선택된 버튼 배경
+        btnUsageReport.setBackgroundResource(
+                isUsageReport
+                        ? R.drawable.bg_report_type_selected
+                        : android.R.color.transparent
         );
 
-        btnExpenseReport.setBackgroundColor(
-                isUsageReport ? 0x00FFFFFF : 0xFFFFFFFF
+        btnExpenseReport.setBackgroundResource(
+                !isUsageReport
+                        ? R.drawable.bg_report_type_selected
+                        : android.R.color.transparent
         );
 
+        // 선택된 버튼 글자색
         btnUsageReport.setTextColor(
-                isUsageReport ? 0xFF333333 : 0xFF888888
+                isUsageReport
+                        ? getResources().getColor(R.color.appblack)
+                        : getResources().getColor(R.color.gray500)
         );
 
         btnExpenseReport.setTextColor(
-                isUsageReport ? 0xFF888888 : 0xFF333333
+                !isUsageReport
+                        ? getResources().getColor(R.color.appblack)
+                        : getResources().getColor(R.color.gray500)
         );
     }
 
