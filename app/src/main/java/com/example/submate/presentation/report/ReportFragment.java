@@ -12,15 +12,28 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.submate.presentation.report.adapter.UsageReportAdapter;
+import com.example.submate.presentation.report.model.UsageReportItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.example.submate.R;
 
 public class ReportFragment extends Fragment {
 
     private ReportViewModel viewModel;
 
+
     // 리포트 종류 버튼
     private TextView btnUsageReport;
     private TextView btnExpenseReport;
+
+    private RecyclerView rvUsageReport;
+    private UsageReportAdapter usageReportAdapter;
 
     // 기간 선택 버튼
     private TextView btnPeriod10Days;
@@ -54,6 +67,8 @@ public class ReportFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(ReportViewModel.class);
 
         initViews(view);
+        setupUsageReportRecyclerView();
+
         setupReportTypeButtons();
         setupPeriodButtons();
 
@@ -75,6 +90,8 @@ public class ReportFragment extends Fragment {
 
         layoutUsageReport = view.findViewById(R.id.layoutUsageReport);
         layoutExpenseReport = view.findViewById(R.id.layoutExpenseReport);
+
+        rvUsageReport = view.findViewById(R.id.rvUsageReport);
     }
 
     // 사용량 / 누적 지출 버튼 설정
@@ -159,5 +176,47 @@ public class ReportFragment extends Fragment {
         for (TextView button : periodButtons) {
             button.setSelected(button == selectedButton);
         }
+    }
+
+    private void setupUsageReportRecyclerView() {
+
+        // 임시 사용량 데이터
+        List<UsageReportItem> usageList = new ArrayList<>();
+
+        usageList.add(new UsageReportItem(
+                "넷플릭스",
+                "넷",
+                "18시간",
+                100,
+                getResources().getColor(R.color.pastel_red),
+                getResources().getColor(R.color.pastel_red)
+        ));
+
+        usageList.add(new UsageReportItem(
+                "Gemini",
+                "G",
+                "7시간",
+                39,
+                getResources().getColor(R.color.pastel_blue),
+                getResources().getColor(R.color.pastel_blue)
+        ));
+
+        usageList.add(new UsageReportItem(
+                "라프텔",
+                "라",
+                "1시간",
+                6,
+                getResources().getColor(R.color.pastel_red),
+                getResources().getColor(R.color.pastel_red)
+        ));
+
+        // RecyclerView 설정
+        rvUsageReport.setLayoutManager(
+                new LinearLayoutManager(requireContext())
+        );
+
+        usageReportAdapter = new UsageReportAdapter(usageList);
+
+        rvUsageReport.setAdapter(usageReportAdapter);
     }
 }
