@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.submate.presentation.report.adapter.UsageReportAdapter;
 import com.example.submate.presentation.report.model.UsageReportItem;
+import com.example.submate.presentation.report.adapter.ExpenseReportAdapter;
+import com.example.submate.presentation.report.model.ExpenseReportItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +36,12 @@ public class ReportFragment extends Fragment {
 
     private RecyclerView rvUsageReport;
     private UsageReportAdapter usageReportAdapter;
+    private RecyclerView rvExpenseReport;
+    private ExpenseReportAdapter expenseReportAdapter;
 
     // 기간 선택 버튼
-    private TextView btnPeriod10Days;
     private TextView btnPeriodMonth;
+    private TextView btnPeriodYear;
     private TextView btnPeriodAll;
 
     // 기간 선택 영역
@@ -68,13 +72,14 @@ public class ReportFragment extends Fragment {
 
         initViews(view);
         setupUsageReportRecyclerView();
+        setupExpenseReportRecyclerView();
 
         setupReportTypeButtons();
         setupPeriodButtons();
 
         // 초기 화면 설정
         selectReportType(true);
-        selectPeriod(btnPeriod10Days);
+        selectPeriod(btnPeriodMonth);
     }
 
     // XML에 있는 View 연결
@@ -84,14 +89,15 @@ public class ReportFragment extends Fragment {
 
         layoutPeriod = view.findViewById(R.id.layoutPeriod);
 
-        btnPeriod10Days = view.findViewById(R.id.btnPeriod10Days);
         btnPeriodMonth = view.findViewById(R.id.btnPeriodMonth);
+        btnPeriodYear = view.findViewById(R.id.btnPeriodYear);
         btnPeriodAll = view.findViewById(R.id.btnPeriodAll);
 
         layoutUsageReport = view.findViewById(R.id.layoutUsageReport);
         layoutExpenseReport = view.findViewById(R.id.layoutExpenseReport);
 
         rvUsageReport = view.findViewById(R.id.rvUsageReport);
+        rvExpenseReport = view.findViewById(R.id.rvExpenseReport);
     }
 
     // 사용량 / 누적 지출 버튼 설정
@@ -110,7 +116,9 @@ public class ReportFragment extends Fragment {
         );
 
         layoutExpenseReport.setVisibility(
-                isUsageReport ? View.GONE : View.VISIBLE
+                (!isUsageReport && btnPeriodMonth.isSelected())
+                        ? View.VISIBLE
+                        : View.GONE
         );
 
         // 누적 지출 탭에서만 기간 선택 표시
@@ -151,12 +159,12 @@ public class ReportFragment extends Fragment {
 
     // 기간 선택 버튼 설정
     private void setupPeriodButtons() {
-        btnPeriod10Days.setOnClickListener(v ->
-                selectPeriod(btnPeriod10Days)
-        );
-
         btnPeriodMonth.setOnClickListener(v ->
                 selectPeriod(btnPeriodMonth)
+        );
+
+        btnPeriodYear.setOnClickListener(v ->
+                selectPeriod(btnPeriodYear)
         );
 
         btnPeriodAll.setOnClickListener(v ->
@@ -165,18 +173,26 @@ public class ReportFragment extends Fragment {
     }
 
     // 기간 버튼 선택 상태 변경
-    private void selectPeriod(TextView selectedButton) {
 
+    private void selectPeriod(TextView selectedButton) {
         TextView[] periodButtons = {
-                btnPeriod10Days,
                 btnPeriodMonth,
+                btnPeriodYear,
                 btnPeriodAll
         };
 
         for (TextView button : periodButtons) {
             button.setSelected(button == selectedButton);
         }
+
+        // 누적 지출 탭에서는 '월'을 선택했을 때만 리포트 표시
+        if (btnExpenseReport.isSelected()) {
+            layoutExpenseReport.setVisibility(
+                    selectedButton == btnPeriodMonth ? View.VISIBLE : View.GONE
+            );
+        }
     }
+
 
     private void setupUsageReportRecyclerView() {
 
@@ -218,5 +234,66 @@ public class ReportFragment extends Fragment {
         usageReportAdapter = new UsageReportAdapter(usageList);
 
         rvUsageReport.setAdapter(usageReportAdapter);
+    }
+
+    // 누적 지출 RecyclerView 설정
+    private void setupExpenseReportRecyclerView() {
+
+        // 임시 지출 데이터
+        List<ExpenseReportItem> expenseList = new ArrayList<>();
+
+        expenseList.add(new ExpenseReportItem(
+                "Claude",
+                "C",
+                5000,
+                100,
+                getResources().getColor(R.color.pastel_blue),
+                getResources().getColor(R.color.pastel_blue)
+        ));
+
+        expenseList.add(new ExpenseReportItem(
+                "Gemini",
+                "G",
+                4881,
+                98,
+                getResources().getColor(R.color.pastel_blue),
+                getResources().getColor(R.color.pastel_blue)
+        ));
+
+        expenseList.add(new ExpenseReportItem(
+                "넷플릭스",
+                "넷",
+                4269,
+                85,
+                getResources().getColor(R.color.pastel_red),
+                getResources().getColor(R.color.pastel_red)
+        ));
+
+        expenseList.add(new ExpenseReportItem(
+                "라프텔",
+                "라",
+                3725,
+                75,
+                getResources().getColor(R.color.pastel_red),
+                getResources().getColor(R.color.pastel_red)
+        ));
+
+        expenseList.add(new ExpenseReportItem(
+                "배달의민족",
+                "배",
+                1500,
+                30,
+                getResources().getColor(R.color.pastel_yellow),
+                getResources().getColor(R.color.pastel_yellow)
+        ));
+
+        // RecyclerView 설정
+        rvExpenseReport.setLayoutManager(
+                new LinearLayoutManager(requireContext())
+        );
+
+        expenseReportAdapter = new ExpenseReportAdapter(expenseList);
+
+        rvExpenseReport.setAdapter(expenseReportAdapter);
     }
 }
