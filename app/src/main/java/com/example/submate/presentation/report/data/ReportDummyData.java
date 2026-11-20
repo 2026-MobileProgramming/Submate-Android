@@ -6,6 +6,7 @@ import com.example.submate.R;
 import com.example.submate.presentation.report.model.UsageReportItem;
 import com.example.submate.presentation.report.model.ExpenseReportItem;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
+import com.example.submate.presentation.report.model.AllExpenseData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +153,41 @@ public class ReportDummyData {
         return new AnnualExpenseData(
                 totalExpense,
                 monthlyList,
+                categoryList
+        );
+    }
+    // 전체 누적 지출 리포트 임시 데이터
+    public static AllExpenseData getAllExpenseData() {
+
+        // 연도별 지출
+        List<AllExpenseData.YearlyExpense> yearlyList =
+                new ArrayList<>();
+
+        yearlyList.add(new AllExpenseData.YearlyExpense(2024, 90000));
+        yearlyList.add(new AllExpenseData.YearlyExpense(2025, 145000));
+        yearlyList.add(new AllExpenseData.YearlyExpense(2026, 177300));
+
+        // 카테고리별 누적 지출
+        List<AllExpenseData.CategoryExpense> categoryList =
+                new ArrayList<>();
+
+        categoryList.add(
+                new AllExpenseData.CategoryExpense("OTT", 197900)
+        );
+
+        categoryList.add(
+                new AllExpenseData.CategoryExpense("AI", 181400)
+        );
+
+        categoryList.add(
+                new AllExpenseData.CategoryExpense("음식", 33000)
+        );
+
+        // 전체 누적 지출 데이터 반환
+        return new AllExpenseData(
+                412300,
+                6,
+                yearlyList,
                 categoryList
         );
     }

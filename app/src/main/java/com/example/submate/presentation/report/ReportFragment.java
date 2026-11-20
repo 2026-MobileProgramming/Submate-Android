@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.submate.presentation.report.adapter.UsageReportAdapter;
 import com.example.submate.presentation.report.data.ReportDummyData;
+import com.example.submate.presentation.report.model.AllExpenseData;
 import com.example.submate.presentation.report.model.UsageReportItem;
 import com.example.submate.presentation.report.adapter.ExpenseReportAdapter;
 import com.example.submate.presentation.report.model.ExpenseReportItem;
@@ -78,6 +79,18 @@ public class ReportFragment extends Fragment {
     private LinearLayout layoutAnnualCategoryLegend;
     private TextView tvReportDescription;
 
+    // 전체 누적 지출 리포트
+    private View layoutAllExpenseReport;
+
+    private TextView tvAllExpensePeriod;
+    private TextView tvAllTotalExpense;
+    private TextView tvAllServiceCount;
+
+    private LinearLayout layoutAllYearlyChart;
+    private LinearLayout layoutAllCategoryBar;
+    private LinearLayout layoutAllCategoryList;
+    private LinearLayout layoutReportPeriodNavigation;
+
     @Nullable
     @Override
     public View onCreateView(
@@ -99,11 +112,19 @@ public class ReportFragment extends Fragment {
 
         initViews(view);
         setupChartColors();
+
         setupUsageReportRecyclerView();
         setupExpenseReportRecyclerView();
+
+        // 연간 지출 리포트
         setupAnnualExpenseSummary();
         setupAnnualMonthlyChart();
         setupAnnualCategoryChart();
+
+        // 전체 지출 리포트
+        setupAllExpenseSummary();
+        setupAllYearlyChart();
+        setupAllCategoryChart();
 
         setupReportTypeButtons();
         setupPeriodButtons();
@@ -147,6 +168,30 @@ public class ReportFragment extends Fragment {
 
         layoutAnnualCategoryLegend =
                 view.findViewById(R.id.layoutAnnualCategoryLegend);
+        // 전체 누적 지출 화면
+        layoutAllExpenseReport =
+                view.findViewById(R.id.layoutAllExpenseReport);
+
+        tvAllExpensePeriod =
+                view.findViewById(R.id.tvAllExpensePeriod);
+
+        tvAllTotalExpense =
+                view.findViewById(R.id.tvAllTotalExpense);
+
+        tvAllServiceCount =
+                view.findViewById(R.id.tvAllServiceCount);
+
+        layoutAllYearlyChart =
+                view.findViewById(R.id.layoutAllYearlyChart);
+
+        layoutAllCategoryBar =
+                view.findViewById(R.id.layoutAllCategoryBar);
+
+        layoutAllCategoryList =
+                view.findViewById(R.id.layoutAllCategoryList);
+
+        layoutReportPeriodNavigation =
+                view.findViewById(R.id.layoutReportPeriodNavigation);
     }
 
     // 사용량 / 누적 지출 버튼 설정
@@ -207,25 +252,38 @@ public class ReportFragment extends Fragment {
 
         boolean isMonth = selectedPeriodButton == btnPeriodMonth;
         boolean isYear = selectedPeriodButton == btnPeriodYear;
+        boolean isAll = selectedPeriodButton == btnPeriodAll;
 
-        // 사용량 화면
+        // 사용량 리포트
         layoutUsageReport.setVisibility(
                 isUsageReportSelected ? View.VISIBLE : View.GONE
         );
 
-        // 월간 지출 화면
+        // 월별 지출 리포트
         layoutExpenseReport.setVisibility(
                 !isUsageReportSelected && isMonth
                         ? View.VISIBLE : View.GONE
         );
 
-        // 연간 지출 화면
+        // 연간 지출 리포트
         layoutAnnualExpenseReport.setVisibility(
                 !isUsageReportSelected && isYear
                         ? View.VISIBLE : View.GONE
         );
 
-        // 설명 문구
+        // 전체 누적 지출 리포트
+        layoutAllExpenseReport.setVisibility(
+                !isUsageReportSelected && isAll
+                        ? View.VISIBLE : View.GONE
+        );
+        // 전체 탭에서는 기존 월간 이동 영역 숨기기
+        layoutReportPeriodNavigation.setVisibility(
+                !isUsageReportSelected && isAll
+                        ? View.GONE
+                        : View.VISIBLE
+        );
+
+        // 화면 설명
         if (isUsageReportSelected) {
             tvReportDescription.setText("앱 사용 시간 (월)");
         } else if (isMonth) {
@@ -589,11 +647,302 @@ public class ReportFragment extends Fragment {
             // 완성된 한 줄을 목록에 추가
             layoutAnnualCategoryLegend.addView(row);
         }
-    }private void setupChartColors() {
+    }
+    private void setupAllYearlyChart() {
+
+        layoutAllYearlyChart.removeAllViews();
+
+        AllExpenseData allData =
+                ReportDummyData.getAllExpenseData();
+
+        List<AllExpenseData.YearlyExpense> yearlyList =
+                allData.getYearlyExpenses();
+
+        int maxExpense = 0;
+
+        for (AllExpenseData.YearlyExpense item : yearlyList) {
+            maxExpense = Math.max(maxExpense, item.getAmount());
+        }
+
+        if (maxExpense <= 0) {
+            return;
+        }
+
+        int[] barColors = {
+                getResources().getColor(R.color.pri200),
+                getResources().getColor(R.color.pri400),
+                getResources().getColor(R.color.pri700)
+        };
+
+        for (int i = 0; i < yearlyList.size(); i++) {
+
+            AllExpenseData.YearlyExpense item = yearlyList.get(i);
+
+            LinearLayout column = new LinearLayout(requireContext());
+            column.setOrientation(LinearLayout.VERTICAL);
+            column.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+
+            LinearLayout.LayoutParams columnParams =
+                    new LinearLayout.LayoutParams(
+                            0,
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            1
+                    );
+
+            column.setLayoutParams(columnParams);
+
+            // 막대그래프 영역
+            LinearLayout barArea = new LinearLayout(requireContext());
+            barArea.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+
+            LinearLayout.LayoutParams barAreaParams =
+                    new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            dpToPx(90)
+                    );
+
+            column.addView(barArea, barAreaParams);
+
+            // 지출 금액에 비례한 막대 높이
+            int barHeight = Math.max(
+                    dpToPx(8),
+                    Math.round(item.getAmount() / (float) maxExpense * dpToPx(90))
+            );
+
+            View bar = new View(requireContext());
+
+            GradientDrawable barBackground = new GradientDrawable();
+            barBackground.setColor(barColors[i % barColors.length]);
+            barBackground.setCornerRadius(dpToPx(6));
+
+            bar.setBackground(barBackground);
+
+            LinearLayout.LayoutParams barParams =
+                    new LinearLayout.LayoutParams(
+                            dpToPx(38),
+                            barHeight
+                    );
+
+            barArea.addView(bar, barParams);
+
+            // 연도 표시
+            TextView yearText = new TextView(requireContext());
+            yearText.setText(String.valueOf(item.getYear()));
+            yearText.setTextSize(10);
+
+            yearText.setTextColor(
+                    getResources().getColor(
+                            i == yearlyList.size() - 1
+                                    ? R.color.pri700
+                                    : R.color.gray400
+                    )
+            );
+
+            yearText.setGravity(Gravity.CENTER);
+            yearText.setTypeface(
+                    null,
+                    i == yearlyList.size() - 1
+                            ? android.graphics.Typeface.BOLD
+                            : android.graphics.Typeface.NORMAL
+            );
+
+            LinearLayout.LayoutParams yearParams =
+                    new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            dpToPx(22)
+                    );
+
+            column.addView(yearText, yearParams);
+
+            layoutAllYearlyChart.addView(column);
+        }
+    }
+
+    private void setupAllCategoryChart() {
+
+        layoutAllCategoryBar.removeAllViews();
+        layoutAllCategoryList.removeAllViews();
+
+        AllExpenseData allData =
+                ReportDummyData.getAllExpenseData();
+
+        List<AllExpenseData.CategoryExpense> categoryList =
+                allData.getCategoryExpenses();
+
+        int totalExpense = allData.getTotalExpense();
+
+        int[] categoryColors = {
+                colorOtt,
+                colorAi,
+                colorFood
+        };
+
+        if (totalExpense <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < categoryList.size(); i++) {
+
+            AllExpenseData.CategoryExpense item = categoryList.get(i);
+
+            int amount = item.getAmount();
+
+            if (amount <= 0) {
+                continue;
+            }
+
+            int percent = Math.round(amount * 100f / totalExpense);
+
+            // 1. 위쪽 비율 막대
+            View segment = new View(requireContext());
+
+            GradientDrawable segmentBackground = new GradientDrawable();
+            segmentBackground.setColor(
+                    categoryColors[i % categoryColors.length]
+            );
+            segmentBackground.setCornerRadius(dpToPx(5));
+
+            segment.setBackground(segmentBackground);
+
+            LinearLayout.LayoutParams segmentParams =
+                    new LinearLayout.LayoutParams(
+                            0,
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            amount
+                    );
+
+            segmentParams.setMargins(
+                    0,
+                    0,
+                    dpToPx(2),
+                    0
+            );
+
+            layoutAllCategoryBar.addView(segment, segmentParams);
+
+            // 2. 카테고리별 목록 한 줄
+            LinearLayout row = new LinearLayout(requireContext());
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(Gravity.CENTER_VERTICAL);
+
+            LinearLayout.LayoutParams rowParams =
+                    new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            dpToPx(38)
+                    );
+
+            row.setLayoutParams(rowParams);
+
+            // 카테고리 색상 표시
+            TextView categoryBadge = new TextView(requireContext());
+            categoryBadge.setText(item.getCategoryName());
+            categoryBadge.setTextSize(10);
+            categoryBadge.setTextColor(
+                    getResources().getColor(R.color.appblack)
+            );
+            categoryBadge.setGravity(Gravity.CENTER);
+
+            GradientDrawable badgeBackground = new GradientDrawable();
+            badgeBackground.setColor(
+                    categoryColors[i % categoryColors.length]
+            );
+            badgeBackground.setCornerRadius(dpToPx(9));
+
+            categoryBadge.setBackground(badgeBackground);
+
+            LinearLayout.LayoutParams badgeParams =
+                    new LinearLayout.LayoutParams(
+                            dpToPx(34),
+                            dpToPx(30)
+                    );
+
+            row.addView(categoryBadge, badgeParams);
+
+            // 카테고리 이름
+            TextView nameText = new TextView(requireContext());
+            nameText.setText(item.getCategoryName());
+            nameText.setTextSize(11);
+            nameText.setTextColor(
+                    getResources().getColor(R.color.appblack)
+            );
+
+            LinearLayout.LayoutParams nameParams =
+                    new LinearLayout.LayoutParams(
+                            0,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            1
+                    );
+
+            nameParams.leftMargin = dpToPx(10);
+            row.addView(nameText, nameParams);
+
+            // 지출 비율
+            TextView percentText = new TextView(requireContext());
+            percentText.setText(percent + "%");
+            percentText.setTextSize(10);
+            percentText.setTextColor(
+                    getResources().getColor(R.color.gray500)
+            );
+
+            LinearLayout.LayoutParams percentParams =
+                    new LinearLayout.LayoutParams(
+                            dpToPx(40),
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+
+            row.addView(percentText, percentParams);
+
+            // 지출 금액
+            TextView amountText = new TextView(requireContext());
+            amountText.setText(
+                    String.format(Locale.KOREA, "₩%,d", amount)
+            );
+            amountText.setTextSize(11);
+            amountText.setTypeface(
+                    null,
+                    android.graphics.Typeface.BOLD
+            );
+            amountText.setTextColor(
+                    getResources().getColor(R.color.appblack)
+            );
+            amountText.setGravity(Gravity.END);
+
+            LinearLayout.LayoutParams amountParams =
+                    new LinearLayout.LayoutParams(
+                            dpToPx(75),
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+
+            row.addView(amountText, amountParams);
+
+            layoutAllCategoryList.addView(row);
+        }
+    }
+
+    private void setupAllExpenseSummary() {
+
+        AllExpenseData allData =
+                ReportDummyData.getAllExpenseData();
+
+        tvAllTotalExpense.setText(
+                String.format(
+                        Locale.KOREA,
+                        "₩%,d",
+                        allData.getTotalExpense()
+                )
+        );
+
+        tvAllServiceCount.setText(
+                "구독 서비스 " + allData.getServiceCount() + "개"
+        );
+    }
+
+    private void setupChartColors() {
         colorOtt = getResources().getColor(R.color.pastel_red);
         colorAi = getResources().getColor(R.color.pastel_blue);
         colorFood = getResources().getColor(R.color.pastel_yellow);
     }
+
 
     // dp를 px로 변환
     private int dpToPx(float dp) {

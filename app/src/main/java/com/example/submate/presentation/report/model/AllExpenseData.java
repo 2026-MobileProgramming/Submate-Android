@@ -1,0 +1,86 @@
+package com.example.submate.presentation.report.model;
+
+import java.util.List;
+
+public class AllExpenseData {
+
+    // 전체 누적 지출 금액
+    private final int totalExpense;
+
+    // 구독 서비스 개수
+    private final int serviceCount;
+
+    // 연도별 지출 목록
+    private final List<YearlyExpense> yearlyExpenses;
+
+    // 카테고리별 누적 지출 목록
+    private final List<CategoryExpense> categoryExpenses;
+
+    public AllExpenseData(
+            int totalExpense,
+            int serviceCount,
+            List<YearlyExpense> yearlyExpenses,
+            List<CategoryExpense> categoryExpenses
+    ) {
+        this.totalExpense = totalExpense;
+        this.serviceCount = serviceCount;
+        this.yearlyExpenses = yearlyExpenses;
+        this.categoryExpenses = categoryExpenses;
+    }
+
+    public int getTotalExpense() {
+        return totalExpense;
+    }
+
+    public int getServiceCount() {
+        return serviceCount;
+    }
+
+    public List<YearlyExpense> getYearlyExpenses() {
+        return yearlyExpenses;
+    }
+
+    public List<CategoryExpense> getCategoryExpenses() {
+        return categoryExpenses;
+    }
+
+    // 연도별 지출 데이터
+    public static class YearlyExpense {
+
+        private final int year;
+        private final int amount;
+
+        public YearlyExpense(int year, int amount) {
+            this.year = year;
+            this.amount = amount;
+        }
+
+        public int getYear() {
+            return year;
+        }
+
+        public int getAmount() {
+            return amount;
+        }
+    }
+
+    // 카테고리별 지출 데이터
+    public static class CategoryExpense {
+
+        private final String categoryName;
+        private final int amount;
+
+        public CategoryExpense(String categoryName, int amount) {
+            this.categoryName = categoryName;
+            this.amount = amount;
+        }
+
+        public String getCategoryName() {
+            return categoryName;
+        }
+
+        public int getAmount() {
+            return amount;
+        }
+    }
+}
