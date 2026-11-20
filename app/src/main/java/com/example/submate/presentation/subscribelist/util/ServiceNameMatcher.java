@@ -28,6 +28,7 @@ public final class ServiceNameMatcher {
         alias("쿠팡플레이", "coupangplay", "coupang play");
         alias("라프텔", "laftel");
         alias("YouTube", "유튜브", "유튜브프리미엄", "youtubepremium");
+        alias("Apple TV", "Apple TV+", "애플티비", "애플tv", "애플티비플러스", "appletvplus");
         // 음악
         alias("멜론", "melon");
         alias("벅스", "bugs");
@@ -41,9 +42,9 @@ public final class ServiceNameMatcher {
         alias("쿠팡이츠", "coupangeats");
         alias("요기요", "yogiyo");
         // 쇼핑
-        alias("쿠팡 와우", "coupangwow");
-        alias("N+스토어", "네이버플러스", "네이버플러스스토어", "naverplus");
-        alias("컬리멤버스", "컬리", "kurly");
+        alias("쿠팡 와우", "와우멤버십", "coupangwow");
+        alias("네이버플러스 멤버십", "N+스토어", "네이버플러스", "네이버플러스스토어", "네이버멤버십", "naverplus");
+        alias("컬리멤버스", "컬리", "마켓컬리", "kurly");
         alias("SSG 유니버스", "신세계유니버스");
         // AI
         alias("ChatGPT", "챗지피티", "챗gpt", "gpt");
@@ -54,8 +55,12 @@ public final class ServiceNameMatcher {
         // 디지털 콘텐츠
         alias("밀리의 서재", "밀리", "millie");
         alias("리디셀렉트", "리디", "ridi", "ridiselect");
-        alias("네이버 웹툰", "naverwebtoon");
+        alias("네이버 웹툰·시리즈", "네이버웹툰", "네이버시리즈", "네이버웹툰시리즈", "naverwebtoon", "naverseries");
         alias("카카오페이지", "kakaopage");
+        // 기타 (클라우드 저장공간)
+        alias("Google One", "구글원", "구글드라이브", "googledrive");
+        alias("네이버 MYBOX", "마이박스", "mybox");
+        alias("iCloud+", "아이클라우드", "아이클라우드플러스", "icloud");
     }
 
     private ServiceNameMatcher() {
