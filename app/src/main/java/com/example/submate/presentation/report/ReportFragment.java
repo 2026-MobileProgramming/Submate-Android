@@ -6,11 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.view.Gravity;
-import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +23,10 @@ import com.example.submate.presentation.report.adapter.ExpenseReportAdapter;
 import com.example.submate.presentation.report.model.ExpenseReportItem;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
 import com.example.submate.presentation.report.view.AnnualExpenseDonutView;
+import com.example.submate.presentation.report.view.AnnualMonthlyChartRenderer;
+import com.example.submate.presentation.report.view.AllYearlyChartRenderer;
+import com.example.submate.presentation.report.view.AllCategoryChartRenderer;
+import com.example.submate.presentation.report.view.AnnualCategoryLegendRenderer;
 
 import java.util.Locale;
 import java.util.List;
@@ -78,6 +77,8 @@ public class ReportFragment extends Fragment {
     private AnnualExpenseDonutView annualDonutChart;
     private LinearLayout layoutAnnualCategoryLegend;
     private TextView tvReportDescription;
+    // 연간 월별 지출 그래프
+    private LinearLayout layoutAnnualMonthlyChart;
 
     // 전체 누적 지출 리포트
     private View layoutAllExpenseReport;
@@ -149,6 +150,9 @@ public class ReportFragment extends Fragment {
 
         layoutUsageReport = view.findViewById(R.id.layoutUsageReport);
         layoutExpenseReport = view.findViewById(R.id.layoutExpenseReport);
+
+        layoutAnnualMonthlyChart =
+                view.findViewById(R.id.layoutAnnualMonthlyChart);
 
         layoutAnnualExpenseReport =
                 view.findViewById(R.id.layoutAnnualExpenseReport);
@@ -385,538 +389,73 @@ public class ReportFragment extends Fragment {
         );
     }
 
+    // 연간 월별 지출 그래프 설정
     private void setupAnnualMonthlyChart() {
-
-        LinearLayout chartLayout =
-                getView().findViewById(R.id.layoutAnnualMonthlyChart);
-
-        chartLayout.removeAllViews();
 
         AnnualExpenseData annualData =
                 ReportDummyData.getAnnualExpenseData();
 
-        List<AnnualExpenseData.MonthlyExpense> monthlyList =
-                annualData.getMonthlyExpenses();
-
-        // 그래프에서 가장 큰 월 지출 금액 찾기
-        int maxExpense = 1;
-
-        for (AnnualExpenseData.MonthlyExpense item : monthlyList) {
-            maxExpense = Math.max(maxExpense, item.getTotalExpense());
-        }
-
-        // 월별 막대 생성
-        for (AnnualExpenseData.MonthlyExpense item : monthlyList) {
-
-            LinearLayout monthColumn = new LinearLayout(requireContext());
-            monthColumn.setOrientation(LinearLayout.VERTICAL);
-            monthColumn.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
-
-            LinearLayout.LayoutParams columnParams =
-                    new LinearLayout.LayoutParams(
-                            dpToPx(34),
-                            dpToPx(150)
-                    );
-
-            columnParams.setMargins(dpToPx(5), 0, dpToPx(5), 0);
-            monthColumn.setLayoutParams(columnParams);
-
-            // 월별 막대 전체 영역
-            LinearLayout bar = new LinearLayout(requireContext());
-            bar.setOrientation(LinearLayout.VERTICAL);
-            bar.setGravity(Gravity.BOTTOM);
-
-            LinearLayout.LayoutParams barParams =
-                    new LinearLayout.LayoutParams(
-                            dpToPx(22),
-                            0,
-                            1
-                    );
-
-            bar.setLayoutParams(barParams);
-
-            int total = item.getTotalExpense();
-
-            if (total > 0) {
-
-                int barHeight = Math.max(
-                        dpToPx(10),
-                        (int) (dpToPx(110) * total / (float) maxExpense)
-                );
-
-                // 전체 막대 높이
-                LinearLayout stack = new LinearLayout(requireContext());
-                stack.setOrientation(LinearLayout.VERTICAL);
-                stack.setGravity(Gravity.BOTTOM);
-
-                LinearLayout.LayoutParams stackParams =
-                        new LinearLayout.LayoutParams(
-                                dpToPx(22),
-                                barHeight
-                        );
-
-                stack.setLayoutParams(stackParams);
-
-                // 카테고리별 막대 높이
-                addChartSegment(stack, item.getOttExpense(), total, colorOtt);
-                addChartSegment(stack, item.getAiExpense(), total, colorAi);
-                addChartSegment(stack, item.getFoodExpense(), total, colorFood);
-
-                bar.addView(stack);
-            }
-
-            monthColumn.addView(bar);
-
-            // 월 표시
-            TextView monthLabel = new TextView(requireContext());
-            monthLabel.setText(item.getMonth() + "월");
-            monthLabel.setTextSize(8);
-            monthLabel.setTextColor(
-                    getResources().getColor(R.color.gray500)
-            );
-            monthLabel.setGravity(Gravity.CENTER);
-
-            LinearLayout.LayoutParams labelParams =
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            dpToPx(20)
-                    );
-
-            monthLabel.setLayoutParams(labelParams);
-
-            monthColumn.addView(monthLabel);
-
-            chartLayout.addView(monthColumn);
-        }
-    }
-
-    // 카테고리별 막대 조각 생성
-    private void addChartSegment(
-            LinearLayout stack,
-            int amount,
-            int total,
-            int color
-    ) {
-
-        if (amount <= 0) return;
-
-        int height = Math.max(
-                1,
-                (int) (amount / (float) total * stack.getLayoutParams().height)
+        AnnualMonthlyChartRenderer.render(
+                requireContext(),
+                layoutAnnualMonthlyChart,
+                annualData.getMonthlyExpenses(),
+                colorOtt,
+                colorAi,
+                colorFood
         );
-
-        View segment = new View(requireContext());
-
-        segment.setBackgroundColor(color);
-
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        height
-                );
-
-        segment.setLayoutParams(params);
-
-        stack.addView(segment);
     }
 
+    // 연간 카테고리 그래프 설정
     private void setupAnnualCategoryChart() {
 
-        // 기존 목록 초기화
-        layoutAnnualCategoryLegend.removeAllViews();
-
-        // 연간 지출 데이터 가져오기
         AnnualExpenseData annualData =
                 ReportDummyData.getAnnualExpenseData();
 
         List<AnnualExpenseData.CategoryExpense> categoryList =
                 annualData.getCategoryExpenses();
 
-        int totalExpense = annualData.getTotalExpense();
-
         // 도넛 그래프에 데이터 전달
         annualDonutChart.setData(categoryList);
 
-        // 카테고리별 색상
-        int[] categoryColors = {
+        // 도넛 그래프 옆 카테고리 목록 생성
+        AnnualCategoryLegendRenderer.render(
+                requireContext(),
+                layoutAnnualCategoryLegend,
+                categoryList,
+                annualData.getTotalExpense(),
                 colorOtt,
                 colorAi,
                 colorFood
-        };
-
-        // 카테고리별 목록 생성
-        for (int i = 0; i < categoryList.size(); i++) {
-
-            AnnualExpenseData.CategoryExpense item =
-                    categoryList.get(i);
-
-            int amount = item.getAmount();
-
-            int percent = totalExpense > 0
-                    ? Math.round(amount * 100f / totalExpense)
-                    : 0;
-
-            // 한 줄을 구성하는 레이아웃
-            LinearLayout row = new LinearLayout(requireContext());
-            row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setGravity(Gravity.CENTER_VERTICAL);
-
-            LinearLayout.LayoutParams rowParams =
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            dpToPx(24)
-                    );
-
-            rowParams.bottomMargin = dpToPx(4);
-            row.setLayoutParams(rowParams);
-
-            // 색상 원형 표시
-            View colorDot = new View(requireContext());
-
-            GradientDrawable dotBackground = new GradientDrawable();
-            dotBackground.setShape(GradientDrawable.OVAL);
-            dotBackground.setColor(
-                    categoryColors[i % categoryColors.length]
-            );
-
-            colorDot.setBackground(dotBackground);
-
-            LinearLayout.LayoutParams dotParams =
-                    new LinearLayout.LayoutParams(
-                            dpToPx(7),
-                            dpToPx(7)
-                    );
-
-            dotParams.rightMargin = dpToPx(8);
-            row.addView(colorDot, dotParams);
-
-            // 카테고리 이름
-            TextView nameText = new TextView(requireContext());
-            nameText.setText(item.getCategoryName());
-            nameText.setTextSize(10);
-            nameText.setTextColor(
-                    getResources().getColor(R.color.appblack)
-            );
-
-            LinearLayout.LayoutParams nameParams =
-                    new LinearLayout.LayoutParams(
-                            0,
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            1
-                    );
-
-            row.addView(nameText, nameParams);
-
-            // 지출 비율
-            TextView percentText = new TextView(requireContext());
-            percentText.setText(percent + "%");
-            percentText.setTextSize(10);
-            percentText.setTextColor(
-                    getResources().getColor(R.color.gray500)
-            );
-
-            LinearLayout.LayoutParams percentParams =
-                    new LinearLayout.LayoutParams(
-                            dpToPx(36),
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-
-            row.addView(percentText, percentParams);
-
-            // 지출 금액
-            TextView amountText = new TextView(requireContext());
-
-            amountText.setText(
-                    String.format(Locale.KOREA, "₩%,d", amount)
-            );
-
-            amountText.setTextSize(10);
-            amountText.setTextColor(
-                    getResources().getColor(R.color.appblack)
-            );
-            amountText.setGravity(Gravity.END);
-
-            LinearLayout.LayoutParams amountParams =
-                    new LinearLayout.LayoutParams(
-                            dpToPx(65),
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-
-            row.addView(amountText, amountParams);
-
-            // 완성된 한 줄을 목록에 추가
-            layoutAnnualCategoryLegend.addView(row);
-        }
+        );
     }
-    private void setupAllYearlyChart() {
 
-        layoutAllYearlyChart.removeAllViews();
+    private void setupAllYearlyChart() {
 
         AllExpenseData allData =
                 ReportDummyData.getAllExpenseData();
 
-        List<AllExpenseData.YearlyExpense> yearlyList =
-                allData.getYearlyExpenses();
-
-        int maxExpense = 0;
-
-        for (AllExpenseData.YearlyExpense item : yearlyList) {
-            maxExpense = Math.max(maxExpense, item.getAmount());
-        }
-
-        if (maxExpense <= 0) {
-            return;
-        }
-
-        int[] barColors = {
-                getResources().getColor(R.color.pri200),
-                getResources().getColor(R.color.pri400),
-                getResources().getColor(R.color.pri700)
-        };
-
-        for (int i = 0; i < yearlyList.size(); i++) {
-
-            AllExpenseData.YearlyExpense item = yearlyList.get(i);
-
-            LinearLayout column = new LinearLayout(requireContext());
-            column.setOrientation(LinearLayout.VERTICAL);
-            column.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
-
-            LinearLayout.LayoutParams columnParams =
-                    new LinearLayout.LayoutParams(
-                            0,
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            1
-                    );
-
-            column.setLayoutParams(columnParams);
-
-            // 막대그래프 영역
-            LinearLayout barArea = new LinearLayout(requireContext());
-            barArea.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
-
-            LinearLayout.LayoutParams barAreaParams =
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            dpToPx(90)
-                    );
-
-            column.addView(barArea, barAreaParams);
-
-            // 지출 금액에 비례한 막대 높이
-            int barHeight = Math.max(
-                    dpToPx(8),
-                    Math.round(item.getAmount() / (float) maxExpense * dpToPx(90))
-            );
-
-            View bar = new View(requireContext());
-
-            GradientDrawable barBackground = new GradientDrawable();
-            barBackground.setColor(barColors[i % barColors.length]);
-            barBackground.setCornerRadius(dpToPx(6));
-
-            bar.setBackground(barBackground);
-
-            LinearLayout.LayoutParams barParams =
-                    new LinearLayout.LayoutParams(
-                            dpToPx(38),
-                            barHeight
-                    );
-
-            barArea.addView(bar, barParams);
-
-            // 연도 표시
-            TextView yearText = new TextView(requireContext());
-            yearText.setText(String.valueOf(item.getYear()));
-            yearText.setTextSize(10);
-
-            yearText.setTextColor(
-                    getResources().getColor(
-                            i == yearlyList.size() - 1
-                                    ? R.color.pri700
-                                    : R.color.gray400
-                    )
-            );
-
-            yearText.setGravity(Gravity.CENTER);
-            yearText.setTypeface(
-                    null,
-                    i == yearlyList.size() - 1
-                            ? android.graphics.Typeface.BOLD
-                            : android.graphics.Typeface.NORMAL
-            );
-
-            LinearLayout.LayoutParams yearParams =
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            dpToPx(22)
-                    );
-
-            column.addView(yearText, yearParams);
-
-            layoutAllYearlyChart.addView(column);
-        }
+        AllYearlyChartRenderer.render(
+                requireContext(),
+                layoutAllYearlyChart,
+                allData.getYearlyExpenses()
+        );
     }
 
     private void setupAllCategoryChart() {
 
-        layoutAllCategoryBar.removeAllViews();
-        layoutAllCategoryList.removeAllViews();
-
         AllExpenseData allData =
                 ReportDummyData.getAllExpenseData();
 
-        List<AllExpenseData.CategoryExpense> categoryList =
-                allData.getCategoryExpenses();
-
-        int totalExpense = allData.getTotalExpense();
-
-        int[] categoryColors = {
+        AllCategoryChartRenderer.render(
+                requireContext(),
+                layoutAllCategoryBar,
+                layoutAllCategoryList,
+                allData.getCategoryExpenses(),
+                allData.getTotalExpense(),
                 colorOtt,
                 colorAi,
                 colorFood
-        };
-
-        if (totalExpense <= 0) {
-            return;
-        }
-
-        for (int i = 0; i < categoryList.size(); i++) {
-
-            AllExpenseData.CategoryExpense item = categoryList.get(i);
-
-            int amount = item.getAmount();
-
-            if (amount <= 0) {
-                continue;
-            }
-
-            int percent = Math.round(amount * 100f / totalExpense);
-
-            // 1. 위쪽 비율 막대
-            View segment = new View(requireContext());
-
-            GradientDrawable segmentBackground = new GradientDrawable();
-            segmentBackground.setColor(
-                    categoryColors[i % categoryColors.length]
-            );
-            segmentBackground.setCornerRadius(dpToPx(5));
-
-            segment.setBackground(segmentBackground);
-
-            LinearLayout.LayoutParams segmentParams =
-                    new LinearLayout.LayoutParams(
-                            0,
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            amount
-                    );
-
-            segmentParams.setMargins(
-                    0,
-                    0,
-                    dpToPx(2),
-                    0
-            );
-
-            layoutAllCategoryBar.addView(segment, segmentParams);
-
-            // 2. 카테고리별 목록 한 줄
-            LinearLayout row = new LinearLayout(requireContext());
-            row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setGravity(Gravity.CENTER_VERTICAL);
-
-            LinearLayout.LayoutParams rowParams =
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            dpToPx(38)
-                    );
-
-            row.setLayoutParams(rowParams);
-
-            // 카테고리 색상 표시
-            TextView categoryBadge = new TextView(requireContext());
-            categoryBadge.setText(item.getCategoryName());
-            categoryBadge.setTextSize(10);
-            categoryBadge.setTextColor(
-                    getResources().getColor(R.color.appblack)
-            );
-            categoryBadge.setGravity(Gravity.CENTER);
-
-            GradientDrawable badgeBackground = new GradientDrawable();
-            badgeBackground.setColor(
-                    categoryColors[i % categoryColors.length]
-            );
-            badgeBackground.setCornerRadius(dpToPx(9));
-
-            categoryBadge.setBackground(badgeBackground);
-
-            LinearLayout.LayoutParams badgeParams =
-                    new LinearLayout.LayoutParams(
-                            dpToPx(34),
-                            dpToPx(30)
-                    );
-
-            row.addView(categoryBadge, badgeParams);
-
-            // 카테고리 이름
-            TextView nameText = new TextView(requireContext());
-            nameText.setText(item.getCategoryName());
-            nameText.setTextSize(11);
-            nameText.setTextColor(
-                    getResources().getColor(R.color.appblack)
-            );
-
-            LinearLayout.LayoutParams nameParams =
-                    new LinearLayout.LayoutParams(
-                            0,
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            1
-                    );
-
-            nameParams.leftMargin = dpToPx(10);
-            row.addView(nameText, nameParams);
-
-            // 지출 비율
-            TextView percentText = new TextView(requireContext());
-            percentText.setText(percent + "%");
-            percentText.setTextSize(10);
-            percentText.setTextColor(
-                    getResources().getColor(R.color.gray500)
-            );
-
-            LinearLayout.LayoutParams percentParams =
-                    new LinearLayout.LayoutParams(
-                            dpToPx(40),
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-
-            row.addView(percentText, percentParams);
-
-            // 지출 금액
-            TextView amountText = new TextView(requireContext());
-            amountText.setText(
-                    String.format(Locale.KOREA, "₩%,d", amount)
-            );
-            amountText.setTextSize(11);
-            amountText.setTypeface(
-                    null,
-                    android.graphics.Typeface.BOLD
-            );
-            amountText.setTextColor(
-                    getResources().getColor(R.color.appblack)
-            );
-            amountText.setGravity(Gravity.END);
-
-            LinearLayout.LayoutParams amountParams =
-                    new LinearLayout.LayoutParams(
-                            dpToPx(75),
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-
-            row.addView(amountText, amountParams);
-
-            layoutAllCategoryList.addView(row);
-        }
+        );
     }
 
     private void setupAllExpenseSummary() {
@@ -941,12 +480,6 @@ public class ReportFragment extends Fragment {
         colorOtt = getResources().getColor(R.color.pastel_red);
         colorAi = getResources().getColor(R.color.pastel_blue);
         colorFood = getResources().getColor(R.color.pastel_yellow);
-    }
-
-
-    // dp를 px로 변환
-    private int dpToPx(float dp) {
-        return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
     }
 
 }
