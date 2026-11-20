@@ -17,7 +17,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * 캘린더 상단 "⌄" 를 눌렀을 때 뜨는 날짜 선택 바텀시트
+ * 캘린더 상단 "v" 를 눌렀을 때 뜨는 날짜 선택 바텀시트
  * 현재는 "월" 탭만 동작한다. (연 / 전체 탭은 추후 구현)
  * month 는 java.util.Calendar 와 같이 0(1월) ~ 11(12월)
  */

@@ -9,26 +9,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.submate.R;
 import com.example.submate.presentation.calendar.model.CalendarCategory;
 import com.example.submate.presentation.calendar.model.CalendarPayment;
 import com.example.submate.presentation.calendar.model.CalendarUiState;
 import com.example.submate.presentation.calendar.CalendarViewModel;
-
+import com.example.submate.presentation.calendar.dialog.CalendarDatePickerSheet;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -77,9 +74,8 @@ public class CalendarFragment extends Fragment {
 
         view.findViewById(R.id.btn_calendar_prev).setOnClickListener(v -> viewModel.showPreviousMonth());
         view.findViewById(R.id.btn_calendar_next).setOnClickListener(v -> viewModel.showNextMonth());
-        view.findViewById(R.id.ll_calendar_month_picker).setOnClickListener(v -> {
-            // TODO: 날짜 선택 바텀시트(월/연/전체) 구현 후 연결
-        });
+        view.findViewById(R.id.ll_calendar_month_picker).setOnClickListener(v ->
+                new CalendarDatePickerSheet(requireContext(), viewModel).show());
         view.findViewById(R.id.btn_calendar_notification).setOnClickListener(v -> {
             // TODO: 알림 화면 연결
         });
