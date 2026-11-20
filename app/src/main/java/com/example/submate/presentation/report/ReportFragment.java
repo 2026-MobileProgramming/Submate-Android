@@ -30,12 +30,21 @@ import com.example.submate.presentation.report.view.AnnualMonthlyChartRenderer;
 import com.example.submate.presentation.report.view.AllYearlyChartRenderer;
 import com.example.submate.presentation.report.view.AllCategoryChartRenderer;
 import com.example.submate.presentation.report.view.AnnualCategoryLegendRenderer;
+import com.example.submate.domain.model.SubscribeItem;
+import com.example.submate.domain.model.SubscribeCategory;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import dagger.hilt.android.AndroidEntryPoint;
 
 import com.example.submate.R;
 
+@AndroidEntryPoint
 public class ReportFragment extends Fragment {
 
     private ReportViewModel viewModel;
@@ -55,6 +64,17 @@ public class ReportFragment extends Fragment {
     private TextView btnPeriodYear;
     private TextView btnPeriodAll;
 
+    // 월/연도 이동 영역
+    private TextView btnPreviousMonth;
+    private TextView btnNextMonth;
+    private TextView tvReportMonth;
+
+    private TextView tvTotalExpense;
+    private TextView tvExpenseEmpty;
+
+    // 현재 선택된 리포트 날짜
+    private Calendar selectedReportDate;
+
     // 기간 선택 영역
     private View layoutPeriod;
 
@@ -66,10 +86,9 @@ public class ReportFragment extends Fragment {
     private View layoutUsageReport;
     private View layoutExpenseReport;
     private View layoutAnnualExpenseReport;
-    // 월간 지출 범례
-    private TextView tvMonthlyLegendAi;
-    private TextView tvMonthlyLegendOtt;
-    private TextView tvMonthlyLegendFood;
+    // 월간 지출 카테고리 그래프
+    private LinearLayout layoutMonthlyCategoryBar;
+    private LinearLayout layoutMonthlyCategoryLegend;
 
     // 연간 리포트 데이터 표시
     private TextView tvAnnualTotalExpense;
@@ -119,11 +138,17 @@ public class ReportFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(ReportViewModel.class);
 
         initViews(view);
+        selectedReportDate = Calendar.getInstance();
         setupChartColors();
-        setupMonthlyExpenseLegend();
 
         setupUsageReportRecyclerView();
         setupExpenseReportRecyclerView();
+
+        // 실제 구독 목록 변경 감지
+        viewModel.getSubscribeList().observe(
+                getViewLifecycleOwner(),
+                subscribeItems -> updateMonthlyExpenseReport(subscribeItems)
+        );
 
         // 연간 지출 리포트
         setupAnnualExpenseSummary();
@@ -156,6 +181,12 @@ public class ReportFragment extends Fragment {
         btnPeriodYear = view.findViewById(R.id.btnPeriodYear);
         btnPeriodAll = view.findViewById(R.id.btnPeriodAll);
 
+        // 월/연도 이동 영역
+        btnPreviousMonth = view.findViewById(R.id.btnPreviousMonth);
+        btnNextMonth = view.findViewById(R.id.btnNextMonth);
+        tvReportMonth = view.findViewById(R.id.tvReportMonth);
+
+
         layoutUsageReport = view.findViewById(R.id.layoutUsageReport);
         layoutExpenseReport = view.findViewById(R.id.layoutExpenseReport);
 
@@ -170,9 +201,19 @@ public class ReportFragment extends Fragment {
 
         tvAnnualAverageExpense =
                 view.findViewById(R.id.tvAnnualAverageExpense);
-        tvMonthlyLegendAi = view.findViewById(R.id.tvMonthlyLegendAi);
-        tvMonthlyLegendOtt = view.findViewById(R.id.tvMonthlyLegendOtt);
-        tvMonthlyLegendFood = view.findViewById(R.id.tvMonthlyLegendFood);
+
+        layoutMonthlyCategoryBar =
+                view.findViewById(R.id.layoutMonthlyCategoryBar);
+
+        layoutMonthlyCategoryBar =
+                view.findViewById(R.id.layoutMonthlyCategoryBar);
+
+        layoutMonthlyCategoryLegend =
+                view.findViewById(R.id.layoutMonthlyCategoryLegend);
+
+
+        tvTotalExpense = view.findViewById(R.id.tvTotalExpense);
+        tvExpenseEmpty = view.findViewById(R.id.tvExpenseEmpty);
 
         rvUsageReport = view.findViewById(R.id.rvUsageReport);
         rvExpenseReport = view.findViewById(R.id.rvExpenseReport);
@@ -309,6 +350,12 @@ public class ReportFragment extends Fragment {
         } else {
             tvReportDescription.setText("전체 구독료");
         }
+        // 월/연도 이동 표시 갱신
+        updatePeriodNavigation();
+        // 월별 지출 화면으로 돌아왔을 때 데이터 갱신
+        if (!isUsageReportSelected && isMonth) {
+            updateMonthlyExpenseReport(viewModel.getSubscribeList().getValue());
+        }
     }
 
 
@@ -325,6 +372,9 @@ public class ReportFragment extends Fragment {
         btnPeriodAll.setOnClickListener(v ->
                 selectPeriod(btnPeriodAll)
         );
+
+        // 월/연도 이동 버튼 설정
+        setupPeriodNavigation();
     }
 
     // 기간 버튼 선택 상태 변경
@@ -365,18 +415,15 @@ public class ReportFragment extends Fragment {
     }
 
     // 누적 지출 RecyclerView 설정
+    // 월별 지출 RecyclerView 설정
     private void setupExpenseReportRecyclerView() {
 
-        // 임시 지출 데이터
-        List<ExpenseReportItem> expenseList =
-                ReportDummyData.getExpenseReportData(requireContext());
-
-        // RecyclerView 설정
         rvExpenseReport.setLayoutManager(
                 new LinearLayoutManager(requireContext())
         );
 
-        expenseReportAdapter = new ExpenseReportAdapter(expenseList);
+        // 처음에는 빈 목록으로 시작
+        expenseReportAdapter = new ExpenseReportAdapter(new ArrayList<>());
 
         rvExpenseReport.setAdapter(expenseReportAdapter);
     }
@@ -487,6 +534,75 @@ public class ReportFragment extends Fragment {
                 "구독 서비스 " + allData.getServiceCount() + "개"
         );
     }
+    // 이전/다음 월 또는 연도 이동 설정
+    private void setupPeriodNavigation() {
+
+        btnPreviousMonth.setOnClickListener(v -> moveReportPeriod(-1));
+
+        btnNextMonth.setOnClickListener(v -> moveReportPeriod(1));
+    }
+
+    // 선택된 기간에 따라 월 또는 연도 이동
+    private void moveReportPeriod(int direction) {
+
+        if (selectedPeriodButton == btnPeriodMonth) {
+            selectedReportDate.add(Calendar.MONTH, direction);
+
+        } else if (selectedPeriodButton == btnPeriodYear) {
+            selectedReportDate.add(Calendar.YEAR, direction);
+        }
+
+        // 날짜 표시 갱신
+        updatePeriodNavigation();
+
+        // 월별 지출 탭을 보고 있을 때 데이터도 즉시 갱신
+        if (!isUsageReportSelected
+                && selectedPeriodButton == btnPeriodMonth) {
+
+            updateMonthlyExpenseReport(
+                    viewModel.getSubscribeList().getValue()
+            );
+        }
+    }
+
+
+    // 현재 선택된 기간 표시
+    private void updatePeriodNavigation() {
+
+        Calendar today = Calendar.getInstance();
+
+        int currentYear = today.get(Calendar.YEAR);
+        int currentMonth = today.get(Calendar.MONTH);
+
+        int selectedYear = selectedReportDate.get(Calendar.YEAR);
+        int selectedMonth = selectedReportDate.get(Calendar.MONTH);
+
+        // 연간 탭: 연도만 표시
+        if (selectedPeriodButton == btnPeriodYear) {
+            tvReportMonth.setText(selectedYear + "년");
+
+            // 현재 연도보다 이전이면 다음 버튼 표시
+            btnNextMonth.setVisibility(
+                    selectedYear < currentYear ? View.VISIBLE : View.GONE
+            );
+
+        } else {
+            // 월간 탭: 연도와 월 표시
+            tvReportMonth.setText(
+                    selectedYear + "년 " + (selectedMonth + 1) + "월"
+            );
+
+            // 현재 연월보다 이전이면 다음 버튼 표시
+            boolean isBeforeCurrentMonth =
+                    selectedYear < currentYear ||
+                            (selectedYear == currentYear && selectedMonth < currentMonth);
+
+            btnNextMonth.setVisibility(
+                    isBeforeCurrentMonth ? View.VISIBLE : View.GONE
+            );
+        }
+    }
+
 
     private void setupChartColors() {
         colorOtt = getResources().getColor(R.color.pastel_red);
@@ -509,11 +625,258 @@ public class ReportFragment extends Fragment {
 
         textView.setText(spannable);
     }
-    // 월간 지출 범례 색상 설정
-    private void setupMonthlyExpenseLegend() {
-        setLegendColor(tvMonthlyLegendAi, colorAi);
-        setLegendColor(tvMonthlyLegendOtt, colorOtt);
-        setLegendColor(tvMonthlyLegendFood, colorFood);
+
+    // 실제 구독 데이터로 월별 지출 리포트 갱신
+    private void updateMonthlyExpenseReport(
+            List<SubscribeItem> subscribeItems
+    ) {
+
+        // 현재 날짜
+        Calendar today = Calendar.getInstance();
+
+        int currentYear = today.get(Calendar.YEAR);
+        int currentMonth = today.get(Calendar.MONTH) + 1;
+        // 선택한 월의 마지막 날짜를 기준으로 결제 여부 판단
+        int lastDayOfMonth = today.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        // 선택한 날짜
+        int selectedYear = selectedReportDate.get(Calendar.YEAR);
+        int selectedMonth = selectedReportDate.get(Calendar.MONTH) + 1;
+
+        // 현재 월이 아니면 빈 목록 표시
+        if (selectedYear != currentYear || selectedMonth != currentMonth) {
+            showMonthlyExpenseEmpty();
+            return;
+        }
+
+        // 결제일이 지난 구독만 가져오기
+        List<SubscribeItem> paidList =
+                viewModel.getPaidSubscriptionsForMonth(
+                        subscribeItems,
+                        selectedYear,
+                        selectedMonth,
+                        lastDayOfMonth
+                );
+
+        // 총 지출 금액 먼저 계산
+        long totalExpense = 0;
+
+        for (SubscribeItem item : paidList) {
+            totalExpense += item.getKrwAmount();
+        }
+        // 카테고리별 지출 그래프 갱신
+        updateMonthlyCategoryChart(paidList, totalExpense);
+
+// 서비스별 지출 데이터 생성
+        List<ExpenseReportItem> expenseList = new ArrayList<>();
+
+        for (SubscribeItem item : paidList) {
+
+            int price = (int) item.getKrwAmount();
+
+            // 전체 지출에서 해당 서비스가 차지하는 비율
+            int expensePercent = totalExpense > 0
+                    ? (int) Math.round(price * 100.0 / totalExpense)
+                    : 0;
+
+            int categoryColor;
+
+            switch (item.getCategory()) {
+                case OTT:
+                    categoryColor = colorOtt;
+                    break;
+
+                case AI:
+                    categoryColor = colorAi;
+                    break;
+
+                case FOOD:
+                    categoryColor = colorFood;
+                    break;
+
+                default:
+                    categoryColor = getResources().getColor(R.color.gray500);
+                    break;
+            }
+
+            expenseList.add(
+                    new ExpenseReportItem(
+                            item.getServiceName(),
+                            item.getServiceName().isEmpty()
+                                    ? "?"
+                                    : item.getServiceName().substring(0, 1),
+                            price,
+                            expensePercent,
+                            categoryColor,
+                            categoryColor
+                    )
+            );
+        }
+
+        // 총 구독료 표시
+        tvTotalExpense.setText(
+                String.format(Locale.KOREA, "₩%,d", totalExpense)
+        );
+
+        // RecyclerView 목록 갱신
+        expenseReportAdapter.setExpenseList(expenseList);
+
+        // 데이터 유무에 따른 화면 전환
+        if (expenseList.isEmpty()) {
+            showMonthlyExpenseEmpty();
+        } else {
+            rvExpenseReport.setVisibility(View.VISIBLE);
+            tvExpenseEmpty.setVisibility(View.GONE);
+        }
+    }
+
+    private void showMonthlyExpenseEmpty() {
+        tvTotalExpense.setText("₩0");
+        expenseReportAdapter.setExpenseList(new ArrayList<>());
+
+        // 카테고리 그래프와 범례 초기화
+        layoutMonthlyCategoryBar.removeAllViews();
+        layoutMonthlyCategoryLegend.removeAllViews();
+
+        rvExpenseReport.setVisibility(View.GONE);
+        tvExpenseEmpty.setVisibility(View.VISIBLE);
+    }
+    // 카테고리별 그래프 색상 반환
+    private int getCategoryColor(SubscribeCategory category) {
+        switch (category) {
+            case OTT:
+                return getResources().getColor(R.color.pastel_red);
+
+            case MUSIC:
+                return getResources().getColor(R.color.pastel_purple);
+
+            case FOOD:
+                return getResources().getColor(R.color.pastel_yellow);
+
+            case SHOPPING:
+                return getResources().getColor(R.color.pastel_green);
+
+            case AI:
+                return getResources().getColor(R.color.pastel_blue);
+
+            case DIGITAL_CONTENT:
+                return getResources().getColor(R.color.pastel_orange);
+
+            case ETC:
+            default:
+                return getResources().getColor(R.color.gray500);
+        }
+    }
+    // 월간 카테고리별 지출 그래프 및 범례 생성
+    private void updateMonthlyCategoryChart(
+            List<SubscribeItem> paidList,
+            long totalExpense
+    ) {
+        // 기존 그래프와 범례 초기화
+        layoutMonthlyCategoryBar.removeAllViews();
+        layoutMonthlyCategoryLegend.removeAllViews();
+
+        if (totalExpense <= 0 || paidList.isEmpty()) {
+            return;
+        }
+
+        // 카테고리별 금액 초기화
+        Map<SubscribeCategory, Long> categoryAmounts =
+                new LinkedHashMap<>();
+
+        for (SubscribeCategory category : SubscribeCategory.values()) {
+            categoryAmounts.put(category, 0L);
+        }
+
+        // 실제 결제 금액을 카테고리별로 합산
+        for (SubscribeItem item : paidList) {
+            SubscribeCategory category = item.getCategory();
+
+            if (category == null) {
+                category = SubscribeCategory.ETC;
+            }
+
+            long amount = item.getKrwAmount();
+
+            categoryAmounts.put(
+                    category,
+                    categoryAmounts.get(category) + amount
+            );
+        }
+
+        // 5% 미만 카테고리는 기타로 합산
+        long etcAmount = categoryAmounts.get(SubscribeCategory.ETC);
+
+        for (SubscribeCategory category : SubscribeCategory.values()) {
+            if (category == SubscribeCategory.ETC) {
+                continue;
+            }
+
+            long amount = categoryAmounts.get(category);
+
+            double percent = amount * 100.0 / totalExpense;
+
+            if (amount > 0 && percent < 5.0) {
+                etcAmount += amount;
+                categoryAmounts.put(category, 0L);
+            }
+        }
+
+        categoryAmounts.put(SubscribeCategory.ETC, etcAmount);
+
+        // 그래프에 표시할 카테고리 순서대로 생성
+        for (SubscribeCategory category : SubscribeCategory.values()) {
+            long amount = categoryAmounts.get(category);
+
+            if (amount <= 0) {
+                continue;
+            }
+
+            int color = getCategoryColor(category);
+
+            // 막대 그래프 생성
+            View bar = new View(requireContext());
+
+            LinearLayout.LayoutParams barParams =
+                    new LinearLayout.LayoutParams(
+                            0,
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            (float) amount
+                    );
+
+            bar.setLayoutParams(barParams);
+            bar.setBackgroundColor(color);
+
+            layoutMonthlyCategoryBar.addView(bar);
+
+            // 범례 생성
+            int percent = (int) Math.round(
+                    amount * 100.0 / totalExpense
+            );
+
+            TextView legend = new TextView(requireContext());
+
+            legend.setLayoutParams(
+                    new LinearLayout.LayoutParams(
+                            0,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            1
+                    )
+            );
+
+            legend.setText(
+                    "● " + category.getLabel() + " " + percent + "%"
+            );
+
+            legend.setTextSize(9);
+            legend.setTextColor(
+                    getResources().getColor(R.color.gray500)
+            );
+
+            setLegendColor(legend, color);
+
+            layoutMonthlyCategoryLegend.addView(legend);
+        }
     }
 
 }

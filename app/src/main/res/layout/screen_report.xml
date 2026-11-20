@@ -122,7 +122,7 @@
                         android:id="@+id/tvReportMonth"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10월"
+                        android:text=""
                         android:textColor="@color/appblack"
                         android:textSize="14sp"
                         android:textStyle="bold" />
