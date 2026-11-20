@@ -8,6 +8,8 @@ import com.example.submate.presentation.calendar.model.CalendarUiState;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -100,6 +102,14 @@ public class CalendarViewModel extends ViewModel {
         int total = 0;
         for (CalendarPayment payment : paymentsOf(year, month)) total += payment.getPrice();
         return total;
+    }
+
+    public int getYearSubscriptionCount(int year) {
+        Set<String> names = new HashSet<>();
+        for (int month = 0; month < 12; month++) {
+            for (CalendarPayment payment : paymentsOf(year, month)) names.add(payment.getName());
+        }
+        return names.size();
     }
 
     public int getYearTotal(int year) {

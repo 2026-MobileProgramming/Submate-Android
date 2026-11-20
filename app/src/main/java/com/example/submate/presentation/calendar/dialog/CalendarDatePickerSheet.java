@@ -1,9 +1,11 @@
 package com.example.submate.presentation.calendar.dialog;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -18,7 +20,6 @@ import java.util.Locale;
 
 /**
  * 캘린더 상단 "v" 를 눌렀을 때 뜨는 날짜 선택 바텀시트
- * 현재는 "월" 탭만 동작한다. (연 / 전체 탭은 추후 구현)
  * month 는 java.util.Calendar 와 같이 0(1월) ~ 11(12월)
  */
 public class CalendarDatePickerSheet {
@@ -41,6 +42,12 @@ public class CalendarDatePickerSheet {
     private final View nextYearButton;
     private final LinearLayout monthContainer;
     private final TextView moveButton;
+    private final View content;
+    private final View overviewScroll;
+    private final TextView overviewTitle;
+    private final TextView overviewTotal;
+    private final TextView overviewSub;
+    private final LinearLayout overviewMonths;
 
     private Tab tab = Tab.MONTH;
 
@@ -68,7 +75,7 @@ public class CalendarDatePickerSheet {
         yearTabSelected = selectedYear;
 
         dialog = new BottomSheetDialog(context);
-        View content = LayoutInflater.from(context).inflate(R.layout.calendar_date_picker_sheet, null);
+        content = LayoutInflater.from(context).inflate(R.layout.calendar_date_picker_sheet, null);
         dialog.setContentView(content);
 
         monthTab = content.findViewById(R.id.tv_picker_tab_month);
@@ -79,6 +86,11 @@ public class CalendarDatePickerSheet {
         nextYearButton = content.findViewById(R.id.btn_picker_next_year);
         monthContainer = content.findViewById(R.id.ll_picker_months);
         moveButton = content.findViewById(R.id.btn_picker_move);
+        overviewScroll = content.findViewById(R.id.sv_picker_overview);
+        overviewTitle = content.findViewById(R.id.tv_overview_title);
+        overviewTotal = content.findViewById(R.id.tv_overview_total);
+        overviewSub = content.findViewById(R.id.tv_overview_sub);
+        overviewMonths = content.findViewById(R.id.ll_overview_months);
 
         prevYearButton.setOnClickListener(v -> movePage(-1));
         nextYearButton.setOnClickListener(v -> movePage(1));
@@ -136,6 +148,12 @@ public class CalendarDatePickerSheet {
         styleTab(yearTab, tab == Tab.YEAR);
         styleTab(allTab, tab == Tab.ALL);
 
+        boolean all = tab == Tab.ALL;
+        setFullScreen(all);
+        monthContainer.setVisibility(all ? View.GONE : View.VISIBLE);
+        moveButton.setVisibility(all ? View.GONE : View.VISIBLE);
+        overviewScroll.setVisibility(all ? View.VISIBLE : View.GONE);
+
         switch (tab) {
             case MONTH:
                 renderMonthTab();
@@ -144,8 +162,26 @@ public class CalendarDatePickerSheet {
                 renderYearTab();
                 break;
             case ALL:
-                monthContainer.removeAllViews();
+                renderAllTab();
                 break;
+        }
+    }
+
+    private void setFullScreen(boolean full) {
+        int height = full ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
+        ViewGroup.LayoutParams contentParams = content.getLayoutParams();
+        if (contentParams != null) {
+            contentParams.height = height;
+            content.setLayoutParams(contentParams);
+        }
+        View sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (sheet != null) {
+            ViewGroup.LayoutParams sheetParams = sheet.getLayoutParams();
+            sheetParams.height = height;
+            sheet.setLayoutParams(sheetParams);
+            BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(sheet);
+            behavior.setSkipCollapsed(true);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     }
 
@@ -252,6 +288,72 @@ public class CalendarDatePickerSheet {
             yearTabSelected = year;
             render();
         });
+    }
+
+    private void renderAllTab() {
+        yearText.setText(pickerYear + "년");
+
+        int[] monthTotals = new int[12];
+        int maxMonthTotal = 0;
+        int paidMonths = 0;
+        for (int month = 0; month < 12; month++) {
+            monthTotals[month] = viewModel.getMonthTotal(pickerYear, month);
+            maxMonthTotal = Math.max(maxMonthTotal, monthTotals[month]);
+            if (monthTotals[month] > 0) paidMonths++;
+        }
+        int yearTotal = viewModel.getYearTotal(pickerYear);
+        int average = paidMonths == 0 ? 0 : yearTotal / paidMonths;
+
+        overviewTitle.setText(pickerYear + "년 결제 합계 (예정 포함)");
+        overviewTotal.setText(formatPrice(yearTotal));
+        overviewSub.setText("월 평균 " + formatPrice(average) + " · 구독 "
+                + viewModel.getYearSubscriptionCount(pickerYear) + "개");
+
+        overviewMonths.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        for (int month = 0; month < 12; month++) {
+            View row = inflater.inflate(R.layout.calendar_overview_month, overviewMonths, false);
+            bindOverviewMonth(row, month, monthTotals[month], maxMonthTotal);
+            overviewMonths.addView(row);
+        }
+    }
+
+    private void bindOverviewMonth(View row, int month, int total, int maxTotal) {
+        ((TextView) row.findViewById(R.id.tv_overview_month)).setText((month + 1) + "월");
+        TextView amountText = row.findViewById(R.id.tv_overview_amount);
+        LinearLayout bar = row.findViewById(R.id.ll_overview_bar);
+        boolean future = viewModel.isFutureMonth(pickerYear, month);
+
+        bar.removeAllViews();
+        if (viewModel.isBeforeFirstRegistration(pickerYear, month)) {
+            amountText.setText("없음");
+            amountText.setTextColor(color(R.color.gray400));
+            bar.setBackground(null);
+            return;
+        }
+
+        if (future) {
+            amountText.setText("예정");
+            amountText.setTextColor(color(R.color.gray400));
+        } else {
+            amountText.setText(formatPrice(total));
+            amountText.setTextColor(color(R.color.appblack));
+        }
+
+        bar.setBackgroundResource(R.drawable.bg_calendar_bar_segment);
+        bar.setBackgroundTintList(ColorStateList.valueOf(color(R.color.gray100)));
+        if (total > 0) {
+            View fill = new View(context);
+            fill.setBackgroundResource(R.drawable.bg_calendar_bar_segment);
+            fill.setBackgroundTintList(ColorStateList.valueOf(color(future ? R.color.pri200 : R.color.pri700)));
+            bar.addView(fill, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, total));
+        }
+        View rest = new View(context);
+        bar.addView(rest, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, maxTotal - total));
+    }
+
+    private String formatPrice(int price) {
+        return "₩" + priceFormat.format(price);
     }
 
     private int color(int colorRes) {
