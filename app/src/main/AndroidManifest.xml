@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
 
     <!-- 구독 목록: 서비스명과 같은 이름의 설치된 앱을 찾기 위해 실행 가능한 앱 목록을 조회합니다. (Android 11+ 필수) -->
     <queries>

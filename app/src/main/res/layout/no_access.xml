@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appwhite">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="[ 설정 &gt; 앱 내 권한 ]에서 권한을 허용해주세요!\n섭메이트가 제공하는 서비스별 사용량 리포트를 통해\n합리적으로 구독을 관리할 수 있어요 :)"
+        android:textColor="@color/gray500"
+        style="@style/typo_body_m1" />
+</FrameLayout>

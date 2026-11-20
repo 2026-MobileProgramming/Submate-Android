@@ -14,7 +14,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
-/** 설치된 앱 목록을 한 번 읽어 두고(캐시), 이름으로 찾거나 검색합니다. */
+/**
+ * 설치된 앱 목록을 한 번 읽어 두고(캐시), 서비스명으로 찾거나 검색합니다.
+ * 서비스 목록에 있는 서비스는 패키지명 표(ServicePackages)로 먼저 찾고, 없으면 앱 이름으로 비교합니다.
+ */
 public class InstalledAppRepositoryImpl implements InstalledAppRepository {
     private final InstalledAppService service;
     private final Executor executor;
@@ -66,6 +69,14 @@ public class InstalledAppRepositoryImpl implements InstalledAppRepository {
         if (wanted.isEmpty()) {
             return null;
         }
+        // 1) 서비스 목록에 있는 서비스: 패키지명으로 찾습니다. (앱 이름이 서비스명과 달라도 연결됨)
+        for (String packageName : ServicePackages.get(serviceName)) {
+            InstalledApp app = findByPackageName(packageName);
+            if (app != null) {
+                return app;
+            }
+        }
+        // 2) 그 밖의 서비스(직접 입력 등): 앱 이름이 같은지 비교합니다.
         for (InstalledApp app : cache) {
             if (normalize(app.getLabel()).equals(wanted)) {
                 return app;
@@ -102,15 +113,21 @@ public class InstalledAppRepositoryImpl implements InstalledAppRepository {
             refresh();
             return item.getPackageName();
         }
-        if (item.isLinkedToApp()) {
-            for (InstalledApp app : cache) {
-                if (app.getPackageName().equals(item.getPackageName())) {
-                    return app.getPackageName();
-                }
-            }
+        if (item.isLinkedToApp() && findByPackageName(item.getPackageName()) != null) {
+            return item.getPackageName();
         }
         InstalledApp app = findInstalledApp(item.getServiceName());
         return app == null ? "" : app.getPackageName();
+    }
+
+    /** 캐시에서 패키지명이 같은 앱을 찾습니다. 설치되어 있지 않으면 null */
+    private InstalledApp findByPackageName(String packageName) {
+        for (InstalledApp app : cache) {
+            if (app.getPackageName().equals(packageName)) {
+                return app;
+            }
+        }
+        return null;
     }
 
     /** 비교용 문자열: 소문자로 바꾸고 공백을 모두 뺍니다. */
