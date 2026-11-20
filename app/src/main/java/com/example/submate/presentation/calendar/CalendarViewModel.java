@@ -92,9 +92,19 @@ public class CalendarViewModel extends ViewModel {
         return CalendarPayment.dateKey(year, month, 31) < firstRegisteredOn;
     }
 
+    public boolean isFutureYear(int year) {
+        return year > todayYear;
+    }
+
     public int getMonthTotal(int year, int month) {
         int total = 0;
         for (CalendarPayment payment : paymentsOf(year, month)) total += payment.getPrice();
+        return total;
+    }
+
+    public int getYearTotal(int year) {
+        int total = 0;
+        for (int month = 0; month < 12; month++) total += getMonthTotal(year, month);
         return total;
     }
 
