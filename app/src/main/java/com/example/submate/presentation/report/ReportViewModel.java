@@ -1,4 +1,3 @@
-
 package com.example.submate.presentation.report;
 
 import androidx.lifecycle.LiveData;
@@ -7,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.submate.domain.model.SubscribeItem;
 import com.example.submate.domain.repository.ResultCallback;
 import com.example.submate.domain.repository.SubscribeRepository;
+import com.example.submate.domain.repository.InstalledAppRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +19,24 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class ReportViewModel extends ViewModel {
 
     private final SubscribeRepository repository;
+    private final InstalledAppRepository installedAppRepository;
 
     // 실제 구독 목록
     private final LiveData<List<SubscribeItem>> subscribeList;
 
     @Inject
-    public ReportViewModel(SubscribeRepository repository) {
+    public ReportViewModel(
+            SubscribeRepository repository,
+            InstalledAppRepository installedAppRepository
+    ) {
         this.repository = repository;
+        this.installedAppRepository = installedAppRepository;
 
-        // Repository의 구독 목록을 관찰
+        // 구독 목록 관찰
         subscribeList = repository.observeSubscribeList();
+
+        // 설치된 앱 목록 갱신
+        installedAppRepository.refresh();
 
         // 실제 구독 데이터 불러오기
         refresh();
