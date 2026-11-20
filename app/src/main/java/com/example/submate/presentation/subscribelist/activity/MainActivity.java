@@ -24,6 +24,7 @@ import com.example.submate.R;
 import com.example.submate.core.util.ClipboardUtil;
 import com.example.submate.core.util.CommonToast;
 import com.example.submate.core.util.UsageStatsUtil;
+import com.example.submate.presentation.calendar.fragment.CalendarFragment;
 import com.example.submate.presentation.common.dialog.NotificationDialogManager;
 import com.example.submate.presentation.subscribelist.fragment.SubscribeListFragment;
 import com.example.submate.presentation.report.ReportFragment;
@@ -36,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
     private static final String TAG_SUBSCRIBE_LIST = "subscribe_list";
+    private static final String TAG_CALENDAR = "calendar";
     private static final String KEY_SELECTED_TAB = "selected_tab";
     private static final String TAG_REPORT = "report";
     private static final int[] TAB_IDS = {
@@ -87,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (tabId == R.id.navigation_setting) {
             showScreen(R.layout.screen_setting);
         } else {
-            showScreen(R.layout.screen_calendar);
+            showCalendar();
         }
         if (tabId == R.id.navigation_report && !UsageStatsUtil.hasUsageAccess(this)) {
             showNoAccessScreen();
@@ -114,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     private void showScreen(int layoutId) {
         removeSubscribeListFragment();
         removeReportFragment();
+        removeCalendarFragment();
         FrameLayout container = findViewById(R.id.tab_container);
         container.removeAllViews();
         LayoutInflater.from(this).inflate(layoutId, container, true);
@@ -261,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openNotifications() {
         removeSubscribeListFragment();
+        removeCalendarFragment();
         FrameLayout container = findViewById(R.id.tab_container);
         container.removeAllViews();
         LayoutInflater.from(this).inflate(R.layout.notification, container, true);
@@ -358,6 +362,24 @@ public class MainActivity extends AppCompatActivity {
                     .beginTransaction()
                     .remove(fragment)
                     .commitNow();
+        }
+    }
+
+    private void showCalendar() {
+        if (getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR) != null) {
+            return;
+        }
+        FrameLayout container = findViewById(R.id.tab_container);
+        container.removeAllViews();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.tab_container, new CalendarFragment(), TAG_CALENDAR)
+                .commit();
+    }
+
+    private void removeCalendarFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_CALENDAR);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commitNow();
         }
     }
 }

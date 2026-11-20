@@ -1,21 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/appwhite">
-    <LinearLayout
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-        <com.example.submate.presentation.common.view.SubmateButton
-            android:layout_width="364dp"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_submate_button"
-            android:backgroundTint="@color/gray800"
-            android:fontFamily="@font/pretendard_medium"
-            android:text="캘린더 탭"
-            android:textAllCaps="false"
-            android:textColor="@color/appwhite"
-            android:textSize="18sp" />
-    </LinearLayout>
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp">
+
+            <!-- 상단 헤더: 연도, 월 선택, 월 이동, 알림 -->
+            <TextView
+                android:id="@+id/tv_calendar_year"
+                style="@style/typo_cap_r1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray500" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_calendar_month_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_calendar_month"
+                        style="@style/typo_title_b1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/appblack" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="4dp"
+                        android:contentDescription="날짜 선택"
+                        android:src="@drawable/ic_calendar_arrow_down"
+                        android:tint="@color/gray600" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/btn_calendar_prev"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_calendar_circle_button"
+                    android:contentDescription="이전 달"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_calendar_arrow_left"
+                    android:tint="@color/gray700" />
+
+                <ImageButton
+                    android:id="@+id/btn_calendar_next"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_calendar_circle_button"
+                    android:contentDescription="다음 달"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_calendar_arrow_right"
+                    android:tint="@color/gray700" />
+
+                <ImageButton
+                    android:id="@+id/btn_calendar_notification"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="12dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="알림"
+                    android:padding="4dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_notification"
+                    android:tint="@color/gray800" />
+            </LinearLayout>
+
+            <!-- 요일 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView style="@style/calendar_weekday" android:text="일" android:textColor="@color/error500" />
+                <TextView style="@style/calendar_weekday" android:text="월" />
+                <TextView style="@style/calendar_weekday" android:text="화" />
+                <TextView style="@style/calendar_weekday" android:text="수" />
+                <TextView style="@style/calendar_weekday" android:text="목" />
+                <TextView style="@style/calendar_weekday" android:text="금" />
+                <TextView style="@style/calendar_weekday" android:text="토" android:textColor="@color/pri600" />
+            </LinearLayout>
+
+            <!-- 날짜 그리드 -->
+            <LinearLayout
+                android:id="@+id/ll_calendar_weeks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical" />
+
+            <!-- 이번 달 총 구독료 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_calendar_summary"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/typo_cap_r1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="이번 달 총 구독료"
+                            android:textColor="@color/gray600" />
+
+                        <TextView
+                            android:id="@+id/tv_calendar_month_total"
+                            style="@style/typo_title_b2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="@color/appblack" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_calendar_legend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_calendar_ratio_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal" />
+            </LinearLayout>
+
+            <!-- 선택한 날짜의 결제 목록 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_calendar_selected_date"
+                    style="@style/typo_body_b3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/gray800" />
+
+                <TextView
+                    android:id="@+id/tv_calendar_selected_total"
+                    style="@style/typo_body_b3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/pri700" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_calendar_payments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/tv_calendar_payment_empty"
+                style="@style/typo_cap_r1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="24dp"
+                android:paddingBottom="24dp"
+                android:text="결제 예정인 구독이 없어요"
+                android:textColor="@color/gray500"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>
