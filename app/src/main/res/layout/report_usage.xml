@@ -8,6 +8,7 @@
 
     <!-- 총 사용 시간 카드 -->
     <LinearLayout
+        android:id="@+id/layoutUsageSummaryCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -40,11 +41,23 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
             android:overScrollMode="never" />
+        <!-- 사용량 데이터가 없을 때 표시 -->
+        <TextView
+            android:id="@+id/tvUsageEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="32dp"
+            android:text="해당 월의 사용량 데이터가 없어요."
+            android:textColor="@color/gray500"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 
     <!-- 사용량 경고 카드 -->
     <LinearLayout
+        android:id="@+id/layoutUsageWarningCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

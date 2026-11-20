@@ -13,40 +13,87 @@ import java.util.List;
 
 public class ReportDummyData {
 
-    // 월별 사용량 임시 데이터
-    public static List<UsageReportItem> getUsageReportData(Context context) {
 
+    // 월별 사용량 임시 데이터
+    public static List<UsageReportItem> getUsageReportData(
+            Context context,
+            int year,
+            int month
+    ) {
         List<UsageReportItem> usageList = new ArrayList<>();
 
-        usageList.add(new UsageReportItem(
-                "넷플릭스",
-                "넷",
-                "18시간",
-                100,
-                context.getResources().getColor(R.color.pastel_red),
-                context.getResources().getColor(R.color.pastel_red)
-        ));
+        // 현재는 2026년 데이터만 준비
+        if (year != 2026) {
+            return usageList;
+        }
 
-        usageList.add(new UsageReportItem(
-                "Gemini",
-                "G",
-                "7시간",
-                39,
-                context.getResources().getColor(R.color.pastel_blue),
-                context.getResources().getColor(R.color.pastel_blue)
-        ));
+        // 11월 사용량 데이터
+        if (month == 11) {
 
-        usageList.add(new UsageReportItem(
-                "라프텔",
-                "라",
-                "1시간",
-                6,
-                context.getResources().getColor(R.color.pastel_red),
-                context.getResources().getColor(R.color.pastel_red)
-        ));
+            usageList.add(new UsageReportItem(
+                    "넷플릭스",
+                    "넷",
+                    "18시간",
+                    100,
+                    context.getResources().getColor(R.color.pastel_red),
+                    context.getResources().getColor(R.color.pastel_red)
+            ));
 
+            usageList.add(new UsageReportItem(
+                    "Gemini",
+                    "G",
+                    "7시간",
+                    39,
+                    context.getResources().getColor(R.color.pastel_blue),
+                    context.getResources().getColor(R.color.pastel_blue)
+            ));
+
+            usageList.add(new UsageReportItem(
+                    "라프텔",
+                    "라",
+                    "1시간",
+                    6,
+                    context.getResources().getColor(R.color.pastel_red),
+                    context.getResources().getColor(R.color.pastel_red)
+            ));
+
+        }
+
+        // 10월 사용량 데이터
+        else if (month == 10) {
+
+            usageList.add(new UsageReportItem(
+                    "넷플릭스",
+                    "넷",
+                    "12시간",
+                    100,
+                    context.getResources().getColor(R.color.pastel_red),
+                    context.getResources().getColor(R.color.pastel_red)
+            ));
+
+            usageList.add(new UsageReportItem(
+                    "Gemini",
+                    "G",
+                    "5시간",
+                    42,
+                    context.getResources().getColor(R.color.pastel_blue),
+                    context.getResources().getColor(R.color.pastel_blue)
+            ));
+
+            usageList.add(new UsageReportItem(
+                    "라프텔",
+                    "라",
+                    "3시간",
+                    25,
+                    context.getResources().getColor(R.color.pastel_red),
+                    context.getResources().getColor(R.color.pastel_red)
+            ));
+        }
+
+        // 그 외 월은 빈 목록 반환
         return usageList;
     }
+
 
 
     // 월별 지출 임시 데이터

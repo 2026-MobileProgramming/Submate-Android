@@ -69,6 +69,7 @@ public class ReportFragment extends Fragment {
     private TextView tvReportMonth;
 
     private TextView tvTotalExpense;
+    private TextView tvExpenseComparison;
     private TextView tvExpenseEmpty;
 
     // 현재 선택된 리포트 날짜
@@ -107,6 +108,11 @@ public class ReportFragment extends Fragment {
 
     private TextView tvAnnualMonthlyEmpty;
     private TextView tvAnnualCategoryEmpty;
+
+    private TextView tvTotalUsageTime;
+    private TextView tvUsageEmpty;
+    private View layoutUsageSummaryCard;
+    private View layoutUsageWarningCard;
 
     private View scrollAnnualMonthlyChart;
     private View layoutAnnualCategoryChart;
@@ -213,6 +219,11 @@ public class ReportFragment extends Fragment {
         tvAnnualMonthlyEmpty = view.findViewById(R.id.tvAnnualMonthlyEmpty);
         tvAnnualCategoryEmpty = view.findViewById(R.id.tvAnnualCategoryEmpty);
 
+        tvTotalUsageTime = view.findViewById(R.id.tvTotalUsageTime);
+        tvUsageEmpty = view.findViewById(R.id.tvUsageEmpty);
+        layoutUsageSummaryCard = view.findViewById(R.id.layoutUsageSummaryCard);
+        layoutUsageWarningCard = view.findViewById(R.id.layoutUsageWarningCard);
+
         scrollAnnualMonthlyChart = view.findViewById(R.id.scrollAnnualMonthlyChart);
         layoutAnnualCategoryChart = view.findViewById(R.id.layoutAnnualCategoryChart);
 
@@ -227,6 +238,7 @@ public class ReportFragment extends Fragment {
 
 
         tvTotalExpense = view.findViewById(R.id.tvTotalExpense);
+        tvExpenseComparison = view.findViewById(R.id.tvExpenseComparison);
         tvExpenseEmpty = view.findViewById(R.id.tvExpenseEmpty);
 
         rvUsageReport = view.findViewById(R.id.rvUsageReport);
@@ -314,6 +326,16 @@ public class ReportFragment extends Fragment {
                 isUsageReport ? View.GONE : View.VISIBLE
         );
 
+        // 사용량 탭으로 이동하면 기간을 항상 월간으로 초기화
+        if (isUsageReport) {
+            selectedPeriodButton = btnPeriodMonth;
+
+            // 기간 선택 버튼의 선택 상태도 초기화
+            btnPeriodMonth.setSelected(true);
+            btnPeriodYear.setSelected(false);
+            btnPeriodAll.setSelected(false);
+        }
+
         // 화면 갱신
         updateReportContentVisibility();
     }
@@ -367,9 +389,15 @@ public class ReportFragment extends Fragment {
         // 월/연도 이동 표시 갱신
         updatePeriodNavigation();
 
-        if (!isUsageReportSelected) {
+        if (isUsageReportSelected) {
+            // 사용량 탭이면 선택한 월의 사용량 갱신
+            updateUsageReport();
+
+        } else {
             if (selectedPeriodButton == btnPeriodMonth) {
-                updateMonthlyExpenseReport(viewModel.getSubscribeList().getValue());
+                updateMonthlyExpenseReport(
+                        viewModel.getSubscribeList().getValue()
+                );
 
             } else if (selectedPeriodButton == btnPeriodYear) {
                 updateAnnualExpenseReport(
@@ -423,7 +451,11 @@ public class ReportFragment extends Fragment {
     private void setupUsageReportRecyclerView() {
 
         List<UsageReportItem> usageList =
-                ReportDummyData.getUsageReportData(requireContext());
+                ReportDummyData.getUsageReportData(
+                        requireContext(),
+                        selectedReportDate.get(Calendar.YEAR),
+                        selectedReportDate.get(Calendar.MONTH) + 1
+                );
 
         // RecyclerView 설정
         rvUsageReport.setLayoutManager(
@@ -589,25 +621,8 @@ public class ReportFragment extends Fragment {
             selectedReportDate.add(Calendar.YEAR, direction);
         }
 
-        // 날짜 표시 갱신
-        updatePeriodNavigation();
-
-        // 선택된 기간에 맞는 리포트 갱신
-        if (!isUsageReportSelected) {
-
-            if (selectedPeriodButton == btnPeriodMonth) {
-
-                updateMonthlyExpenseReport(
-                        viewModel.getSubscribeList().getValue()
-                );
-
-            } else if (selectedPeriodButton == btnPeriodYear) {
-
-                updateAnnualExpenseReport(
-                        viewModel.getSubscribeList().getValue()
-                );
-            }
-        }
+        // 날짜 변경 후 현재 탭과 기간에 맞게 화면 갱신
+        updateReportContentVisibility();
     }
 
 
@@ -845,6 +860,65 @@ public class ReportFragment extends Fragment {
         for (SubscribeItem item : paidList) {
             totalExpense += item.getKrwAmount();
         }
+        // 지난달 날짜 계산
+        Calendar previousMonth = (Calendar) selectedReportDate.clone();
+        previousMonth.add(Calendar.MONTH, -1);
+
+        int previousYear = previousMonth.get(Calendar.YEAR);
+        int previousMonthNumber = previousMonth.get(Calendar.MONTH) + 1;
+        int previousMonthLastDay =
+                previousMonth.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+// 지난달 결제 대상 구독 목록 가져오기
+        List<SubscribeItem> previousPaidList =
+                viewModel.getPaidSubscriptionsForMonth(
+                        subscribeItems,
+                        previousYear,
+                        previousMonthNumber,
+                        previousMonthLastDay
+                );
+
+// 지난달 총 구독료 계산
+        long previousTotalExpense = 0;
+
+        for (SubscribeItem item : previousPaidList) {
+            previousTotalExpense += item.getKrwAmount();
+        }
+
+// 이번 달과 지난달의 차이
+        long difference = totalExpense - previousTotalExpense;
+
+// 증감 문구 표시
+        if (difference > 0) {
+            tvExpenseComparison.setText(
+                    String.format(
+                            Locale.KOREA,
+                            "지난달보다 ▲ ₩%,d 증가했어요",
+                            difference
+                    )
+            );
+            tvExpenseComparison.setTextColor(
+                    getResources().getColor(R.color.error800)
+            );
+
+        } else if (difference < 0) {
+            tvExpenseComparison.setText(
+                    String.format(
+                            Locale.KOREA,
+                            "지난달보다 ▼ ₩%,d 감소했어요",
+                            Math.abs(difference)
+                    )
+            );
+            tvExpenseComparison.setTextColor(
+                    getResources().getColor(R.color.pastel_blue)
+            );
+
+        } else {
+            tvExpenseComparison.setText("지난달과 동일해요");
+            tvExpenseComparison.setTextColor(
+                    getResources().getColor(R.color.gray500)
+            );
+        }
         // 카테고리별 지출 그래프 갱신
         updateMonthlyCategoryChart(paidList, totalExpense);
 
@@ -909,6 +983,59 @@ public class ReportFragment extends Fragment {
             rvExpenseReport.setVisibility(View.VISIBLE);
             tvExpenseEmpty.setVisibility(View.GONE);
         }
+    }
+    // 선택한 월의 사용량 리포트 갱신
+    private void updateUsageReport() {
+
+        int year = selectedReportDate.get(Calendar.YEAR);
+        int month = selectedReportDate.get(Calendar.MONTH) + 1;
+
+        // 선택한 연월에 맞는 사용량 데이터 가져오기
+        List<UsageReportItem> usageList =
+                ReportDummyData.getUsageReportData(
+                        requireContext(),
+                        year,
+                        month
+                );
+
+        // RecyclerView 목록 갱신
+        usageReportAdapter.setUsageList(usageList);
+
+        // 데이터가 없는 경우
+        if (usageList.isEmpty()) {
+
+            // 요약 카드의 기본 틀은 유지
+            layoutUsageSummaryCard.setVisibility(View.VISIBLE);
+
+            // 총 사용 시간은 - 시간으로 표시
+            tvTotalUsageTime.setText("- 시간");
+
+            // 사용량 목록 대신 데이터 없음 안내 표시
+            rvUsageReport.setVisibility(View.GONE);
+            tvUsageEmpty.setVisibility(View.VISIBLE);
+
+            // 경고 카드는 숨김
+            layoutUsageWarningCard.setVisibility(View.GONE);
+
+            return;
+        }
+
+        // 전체 사용 시간 계산
+        int totalHours = 0;
+
+        for (UsageReportItem item : usageList) {
+            String usageTime = item.getUsageTime().replace("시간", "").trim();
+            totalHours += Integer.parseInt(usageTime);
+        }
+
+        // 총 사용 시간 표시
+        tvTotalUsageTime.setText(totalHours + "시간");
+
+        // 데이터가 있는 경우
+        layoutUsageSummaryCard.setVisibility(View.VISIBLE);
+        layoutUsageWarningCard.setVisibility(View.VISIBLE);
+        rvUsageReport.setVisibility(View.VISIBLE);
+        tvUsageEmpty.setVisibility(View.GONE);
     }
 
     private void showMonthlyExpenseEmpty() {

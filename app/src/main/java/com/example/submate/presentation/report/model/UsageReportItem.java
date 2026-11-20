@@ -1,6 +1,4 @@
-
 package com.example.submate.presentation.report.model;
-
 public class UsageReportItem {
 
     private String serviceName;
