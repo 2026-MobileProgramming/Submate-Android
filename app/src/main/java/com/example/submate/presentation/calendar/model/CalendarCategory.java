@@ -1,7 +1,6 @@
 package com.example.submate.presentation.calendar.model;
 
 import androidx.annotation.ColorRes;
-
 import com.example.submate.R;
 
 /** 구독 카테고리. 달력 원, 비율 바, 로고 색이 이 색을 따른다. **/

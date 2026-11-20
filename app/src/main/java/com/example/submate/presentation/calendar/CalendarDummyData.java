@@ -2,7 +2,6 @@ package com.example.submate.presentation.calendar;
 
 import com.example.submate.presentation.calendar.model.CalendarCategory;
 import com.example.submate.presentation.calendar.model.CalendarPayment;
-
 import java.util.ArrayList;
 import java.util.List;
 
