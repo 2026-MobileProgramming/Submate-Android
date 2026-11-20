@@ -6,6 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.widget.PopupWindow;
 
 import com.example.submate.R;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
@@ -93,6 +99,13 @@ public class AnnualMonthlyChartRenderer {
                         );
 
                 stack.setLayoutParams(stackParams);
+                // 막대 전체 모서리 둥글게
+                GradientDrawable stackBackground = new GradientDrawable();
+                stackBackground.setColor(Color.TRANSPARENT);
+                stackBackground.setCornerRadius(dpToPx(context, 10));
+
+                stack.setBackground(stackBackground);
+                stack.setClipToOutline(true);
 
                 // 카테고리별 막대 높이
                 addChartSegment(
@@ -111,6 +124,14 @@ public class AnnualMonthlyChartRenderer {
                 );
 
                 bar.addView(stack);
+                // 막대를 누르면 해당 월의 지출 금액 표시
+                stack.setOnClickListener(v -> {
+                    showExpensePopup(
+                            context,
+                            stack,
+                            item.getTotalExpense()
+                    );
+                });
             }
 
             monthColumn.addView(bar);
@@ -159,7 +180,13 @@ public class AnnualMonthlyChartRenderer {
 
         View segment = new View(context);
 
-        segment.setBackgroundColor(color);
+        GradientDrawable segmentBackground = new GradientDrawable();
+        segmentBackground.setColor(color);
+
+        // 색상 영역 자체는 사각형으로 유지
+        segmentBackground.setCornerRadius(0);
+
+        segment.setBackground(segmentBackground);
 
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(
@@ -170,6 +197,74 @@ public class AnnualMonthlyChartRenderer {
         segment.setLayoutParams(params);
 
         stack.addView(segment);
+    }
+
+    // 선택한 월의 지출 금액 팝업 표시
+    private static void showExpensePopup(
+            Context context,
+            View anchor,
+            int expense
+    ) {
+
+        TextView popupText = new TextView(context);
+
+        popupText.setText(
+                String.format(java.util.Locale.KOREA, "₩%,d", expense)
+        );
+
+        popupText.setTextColor(Color.WHITE);
+        popupText.setTextSize(12);
+        popupText.setTypeface(null, Typeface.BOLD);
+        popupText.setGravity(Gravity.CENTER);
+        popupText.setPadding(
+                dpToPx(context, 12),
+                dpToPx(context, 7),
+                dpToPx(context, 12),
+                dpToPx(context, 7)
+        );
+
+        // 팝업 배경 둥글게
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(Color.rgb(45, 45, 50));
+        background.setCornerRadius(dpToPx(context, 10));
+
+        popupText.setBackground(background);
+
+        PopupWindow popupWindow = new PopupWindow(
+                popupText,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                false
+        );
+
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(
+                new GradientDrawable()
+        );
+
+        // 팝업 크기 측정
+        popupText.measure(
+                View.MeasureSpec.makeMeasureSpec(
+                        0, View.MeasureSpec.UNSPECIFIED
+                ),
+                View.MeasureSpec.makeMeasureSpec(
+                        0, View.MeasureSpec.UNSPECIFIED
+                )
+        );
+
+        // 팝업을 막대의 정중앙에 맞춰 표시
+        popupWindow.showAsDropDown(
+                anchor,
+                (anchor.getWidth() - popupText.getMeasuredWidth()) / 2,
+                -anchor.getHeight() - dpToPx(context, 45)
+        );
+
+        // 약 1.5초 후 자동으로 닫기
+        popupText.postDelayed(() -> {
+            if (popupWindow.isShowing()) {
+                popupWindow.dismiss();
+            }
+        }, 1500);
     }
 
     // dp를 px로 변환

@@ -78,39 +78,6 @@
 
         </HorizontalScrollView>
 
-        <!-- 카테고리 범례 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="● OTT"
-                android:textColor="@color/gray500"
-                android:textSize="9sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="● AI"
-                android:textColor="@color/gray500"
-                android:textSize="9sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="● 음식"
-                android:textColor="@color/gray500"
-                android:textSize="9sp" />
-
-        </LinearLayout>
-
     </LinearLayout>
 
     <!-- 카테고리별 지출 카드 -->

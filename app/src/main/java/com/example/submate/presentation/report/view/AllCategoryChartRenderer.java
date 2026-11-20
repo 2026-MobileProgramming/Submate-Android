@@ -1,6 +1,7 @@
 package com.example.submate.presentation.report.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
@@ -96,9 +97,12 @@ public class AllCategoryChartRenderer {
             // 카테고리 색상 표시
             TextView categoryBadge = new TextView(context);
             categoryBadge.setText(item.getCategoryName());
+            categoryBadge.setTypeface(null, Typeface.BOLD);
             categoryBadge.setTextSize(10);
             categoryBadge.setTextColor(
-                    context.getResources().getColor(R.color.appblack)
+                    item.getCategoryName().equals("OTT")
+                            ? Color.WHITE
+                            : Color.BLACK
             );
             categoryBadge.setGravity(Gravity.CENTER);
 
@@ -121,6 +125,7 @@ public class AllCategoryChartRenderer {
             // 카테고리 이름
             TextView nameText = new TextView(context);
             nameText.setText(item.getCategoryName());
+            nameText.setTypeface(null, Typeface.BOLD);
             nameText.setTextSize(11);
             nameText.setTextColor(
                     context.getResources().getColor(R.color.appblack)

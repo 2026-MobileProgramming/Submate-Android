@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.graphics.Color;
+import android.widget.PopupWindow;
 
 import com.example.submate.R;
 import com.example.submate.presentation.report.model.AllExpenseData;
@@ -93,6 +95,14 @@ public class AllYearlyChartRenderer {
                     );
 
             barArea.addView(bar, barParams);
+            // 막대 클릭 시 지출 금액 팝업 표시
+            bar.setOnClickListener(v -> {
+                showExpensePopup(
+                        context,
+                        bar,
+                        item.getAmount()
+                );
+            });
 
             // 연도 표시
             TextView yearText = new TextView(context);
@@ -126,6 +136,69 @@ public class AllYearlyChartRenderer {
 
             chartLayout.addView(column);
         }
+    }
+
+    // 지출 금액 팝업
+    private static void showExpensePopup(
+            Context context,
+            View anchor,
+            int expense
+    ) {
+        TextView popupText = new TextView(context);
+
+        popupText.setText(
+                String.format(java.util.Locale.KOREA, "₩%,d", expense)
+        );
+        popupText.setTextColor(Color.WHITE);
+        popupText.setTextSize(12);
+        popupText.setTypeface(null, Typeface.BOLD);
+        popupText.setGravity(Gravity.CENTER);
+
+        popupText.setPadding(
+                dpToPx(context, 12),
+                dpToPx(context, 7),
+                dpToPx(context, 12),
+                dpToPx(context, 7)
+        );
+
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(Color.rgb(45, 45, 50));
+        background.setCornerRadius(dpToPx(context, 10));
+        popupText.setBackground(background);
+
+        PopupWindow popupWindow = new PopupWindow(
+                popupText,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                false
+        );
+
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new GradientDrawable());
+
+        // 팝업 크기 측정
+        popupText.measure(
+                View.MeasureSpec.makeMeasureSpec(
+                        0, View.MeasureSpec.UNSPECIFIED
+                ),
+                View.MeasureSpec.makeMeasureSpec(
+                        0, View.MeasureSpec.UNSPECIFIED
+                )
+        );
+
+        // 막대 중앙에 팝업 표시
+        popupWindow.showAsDropDown(
+                anchor,
+                (anchor.getWidth() - popupText.getMeasuredWidth()) / 2,
+                -anchor.getHeight() - dpToPx(context, 45)
+        );
+
+        // 1.5초 후 자동으로 닫기
+        popupText.postDelayed(() -> {
+            if (popupWindow.isShowing()) {
+                popupWindow.dismiss();
+            }
+        }, 1500);
     }
 
     private static int dpToPx(Context context, float dp) {

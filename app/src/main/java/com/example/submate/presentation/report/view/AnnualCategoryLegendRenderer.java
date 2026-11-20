@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.graphics.Typeface;
 
 import com.example.submate.R;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
@@ -84,6 +85,7 @@ public class AnnualCategoryLegendRenderer {
             // 카테고리 이름
             TextView nameText = new TextView(context);
             nameText.setText(item.getCategoryName());
+            nameText.setTypeface(null, Typeface.BOLD);
             nameText.setTextSize(10);
             nameText.setTextColor(
                     context.getResources().getColor(R.color.appblack)
@@ -122,6 +124,7 @@ public class AnnualCategoryLegendRenderer {
             );
 
             amountText.setTextSize(10);
+            amountText.setTypeface(null, Typeface.BOLD);
             amountText.setTextColor(
                     context.getResources().getColor(R.color.appblack)
             );

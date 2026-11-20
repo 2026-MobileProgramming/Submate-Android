@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,6 +66,10 @@ public class ReportFragment extends Fragment {
     private View layoutUsageReport;
     private View layoutExpenseReport;
     private View layoutAnnualExpenseReport;
+    // 월간 지출 범례
+    private TextView tvMonthlyLegendAi;
+    private TextView tvMonthlyLegendOtt;
+    private TextView tvMonthlyLegendFood;
 
     // 연간 리포트 데이터 표시
     private TextView tvAnnualTotalExpense;
@@ -113,6 +120,7 @@ public class ReportFragment extends Fragment {
 
         initViews(view);
         setupChartColors();
+        setupMonthlyExpenseLegend();
 
         setupUsageReportRecyclerView();
         setupExpenseReportRecyclerView();
@@ -162,6 +170,9 @@ public class ReportFragment extends Fragment {
 
         tvAnnualAverageExpense =
                 view.findViewById(R.id.tvAnnualAverageExpense);
+        tvMonthlyLegendAi = view.findViewById(R.id.tvMonthlyLegendAi);
+        tvMonthlyLegendOtt = view.findViewById(R.id.tvMonthlyLegendOtt);
+        tvMonthlyLegendFood = view.findViewById(R.id.tvMonthlyLegendFood);
 
         rvUsageReport = view.findViewById(R.id.rvUsageReport);
         rvExpenseReport = view.findViewById(R.id.rvExpenseReport);
@@ -172,6 +183,7 @@ public class ReportFragment extends Fragment {
 
         layoutAnnualCategoryLegend =
                 view.findViewById(R.id.layoutAnnualCategoryLegend);
+
         // 전체 누적 지출 화면
         layoutAllExpenseReport =
                 view.findViewById(R.id.layoutAllExpenseReport);
@@ -480,6 +492,28 @@ public class ReportFragment extends Fragment {
         colorOtt = getResources().getColor(R.color.pastel_red);
         colorAi = getResources().getColor(R.color.pastel_blue);
         colorFood = getResources().getColor(R.color.pastel_yellow);
+    }
+
+    // 월간 지출 범례의 동그라미에만 카테고리 색상 적용
+    private void setLegendColor(TextView textView, int color) {
+        String text = textView.getText().toString();
+
+        SpannableString spannable = new SpannableString(text);
+
+        spannable.setSpan(
+                new ForegroundColorSpan(color),
+                0,
+                1,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        textView.setText(spannable);
+    }
+    // 월간 지출 범례 색상 설정
+    private void setupMonthlyExpenseLegend() {
+        setLegendColor(tvMonthlyLegendAi, colorAi);
+        setLegendColor(tvMonthlyLegendOtt, colorOtt);
+        setLegendColor(tvMonthlyLegendFood, colorFood);
     }
 
 }

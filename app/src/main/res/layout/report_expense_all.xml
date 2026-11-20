@@ -105,7 +105,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="12dp"
-        android:background="@color/sec50">
+        android:background="@drawable/bg_report_notice">
 
         <TextView
             android:layout_width="28dp"
@@ -115,7 +115,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/appwhite"
-            android:background="@color/sec500"/>
+            android:background="@drawable/bg_usage_warning_icon"/>
 
         <LinearLayout
             android:layout_width="0dp"
