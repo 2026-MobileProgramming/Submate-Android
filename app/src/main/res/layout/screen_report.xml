@@ -3,177 +3,177 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/appwhite">
-
-    <ScrollView
+    <!-- 전체 세로 레이아웃 -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <!-- 공용 헤더 -->
+        <include
+            android:id="@+id/reportHeader"
+            layout="@layout/common_header" />
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-            <!-- 상단 제목 -->
-            <TextView
-                android:id="@+id/tvReportTitle"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="리포트"
-                android:textColor="@color/appblack"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="24dp" />
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <!-- 리포트 종류 선택 -->
-            <LinearLayout
-                android:id="@+id/layoutReportType"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:orientation="horizontal"
-                android:background="@drawable/bg_report_type_container"
-                android:padding="4dp">
-
-                <!-- 사용량 탭 -->
-                <TextView
-                    android:id="@+id/btnUsageReport"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="사용량"
-                    android:textColor="@color/appblack"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:background="@drawable/bg_report_type_selected" />
-
-                <!-- 누적 지출 탭 -->
-                <TextView
-                    android:id="@+id/btnExpenseReport"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="누적 지출"
-                    android:textColor="@color/gray500"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:background="@android:color/transparent" />
-
-            </LinearLayout>
-
-            <!-- 기간 선택 -->
-            <LinearLayout
-                android:id="@+id/layoutPeriod"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal">
-
-                <!-- 월 -->
-                <TextView
-                    android:id="@+id/btnPeriodMonth"
-                    style="@style/subscribe_filter_chip"
-                    android:text="월" />
-
-                <!-- 연 -->
-                <TextView
-                    android:id="@+id/btnPeriodYear"
-                    style="@style/subscribe_filter_chip"
-                    android:text="연" />
-
-                <!-- 전체 -->
-                <TextView
-                    android:id="@+id/btnPeriodAll"
-                    style="@style/subscribe_filter_chip"
-                    android:text="전체" />
-
-            </LinearLayout>
-
-
-            <!-- 리포트 콘텐츠 영역 -->
-            <LinearLayout
-                android:id="@+id/reportContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical">
-
-                <!-- 공통 월 이동 영역 -->
+                <!-- 리포트 종류 선택 -->
                 <LinearLayout
-                    android:id="@+id/layoutReportPeriodNavigation"
+                    android:id="@+id/layoutReportType"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
+                    android:background="@drawable/bg_report_type_container"
+                    android:padding="4dp">
 
+                    <!-- 사용량 탭 -->
                     <TextView
-                        android:id="@+id/btnPreviousMonth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="‹"
-                        android:textSize="16sp"
-                        android:textColor="@color/gray500"
-                        android:paddingEnd="8dp" />
-
-                    <TextView
-                        android:id="@+id/tvReportMonth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
+                        android:id="@+id/btnUsageReport"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="사용량"
                         android:textColor="@color/appblack"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_report_type_selected" />
 
+                    <!-- 누적 지출 탭 -->
                     <TextView
-                        android:id="@+id/btnNextMonth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textSize="16sp"
-                        android:textColor="@color/gray500"
-                        android:paddingStart="8dp" />
-
-                    <View
+                        android:id="@+id/btnExpenseReport"
                         android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/tvReportDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="앱 사용 시간 (월)"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="누적 지출"
                         android:textColor="@color/gray500"
-                        android:textSize="10sp" />
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:background="@android:color/transparent" />
 
                 </LinearLayout>
 
-                <!-- 사용량 화면 -->
-                <include
-                    layout="@layout/report_usage" />
+                <!-- 기간 선택 -->
+                <LinearLayout
+                    android:id="@+id/layoutPeriod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- 월 -->
+                    <TextView
+                        android:id="@+id/btnPeriodMonth"
+                        style="@style/subscribe_filter_chip"
+                        android:text="월" />
+
+                    <!-- 연 -->
+                    <TextView
+                        android:id="@+id/btnPeriodYear"
+                        style="@style/subscribe_filter_chip"
+                        android:text="연" />
+
+                    <!-- 전체 -->
+                    <TextView
+                        android:id="@+id/btnPeriodAll"
+                        style="@style/subscribe_filter_chip"
+                        android:text="전체" />
+
+                </LinearLayout>
 
 
-                <!-- 월별 지출 화면 -->
-                <include
-                    layout="@layout/report_expense_month" />
+                <!-- 리포트 콘텐츠 영역 -->
+                <LinearLayout
+                    android:id="@+id/reportContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical">
+
+                    <!-- 공통 월 이동 영역 -->
+                    <LinearLayout
+                        android:id="@+id/layoutReportPeriodNavigation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:id="@+id/btnPreviousMonth"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="‹"
+                            android:textSize="16sp"
+                            android:textColor="@color/gray500"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvReportMonth"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textColor="@color/appblack"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/btnNextMonth"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="›"
+                            android:textSize="16sp"
+                            android:textColor="@color/gray500"
+                            android:paddingStart="8dp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/tvReportDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="앱 사용 시간 (월)"
+                            android:textColor="@color/gray500"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+                    <!-- 사용량 화면 -->
+                    <include
+                        layout="@layout/report_usage" />
 
 
-                <!-- 연간 지출 화면 -->
-                <include
-                    layout="@layout/report_expense_year" />
+                    <!-- 월별 지출 화면 -->
+                    <include
+                        layout="@layout/report_expense_month" />
 
-                <!-- 전체 누적 지출 리포트 -->
-                <include
-                    layout="@layout/report_expense_all" />
+
+                    <!-- 연간 지출 화면 -->
+                    <include
+                        layout="@layout/report_expense_year" />
+
+                    <!-- 전체 누적 지출 리포트 -->
+                    <include
+                        layout="@layout/report_expense_all" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
-
-        </LinearLayout>
-
-    </ScrollView>
+        </ScrollView>
+    </LinearLayout>
 
 </FrameLayout>

@@ -186,6 +186,11 @@ public class ReportFragment extends Fragment {
 
     // XML에 있는 View 연결
     private void initViews(View view) {
+
+        // 공용 헤더 제목 설정
+        TextView tvHeaderTitle = view.findViewById(R.id.reportHeader);
+        tvHeaderTitle.setText("리포트");
+
         btnUsageReport = view.findViewById(R.id.btnUsageReport);
         btnExpenseReport = view.findViewById(R.id.btnExpenseReport);
 
