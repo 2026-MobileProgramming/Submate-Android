@@ -96,6 +96,7 @@ public class SubscribeDetailActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.subscribe_detail);
         applyWindowInsets();
+        ((TextView) findViewById(R.id.common_sub_header_title)).setText("구독 목록");
 
         viewModel = new ViewModelProvider(this).get(SubscribeDetailViewModel.class);
         dropdown = new SubscribeDropdown(this);

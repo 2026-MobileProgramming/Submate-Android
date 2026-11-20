@@ -1,9 +1,18 @@
 package com.example.submate.presentation.subscribelist.activity;
 
 import android.os.Bundle;
+import android.app.Dialog;
+import android.content.Intent;
+import android.provider.Settings;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.content.res.ColorStateList;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.example.submate.R;
 import com.example.submate.core.util.ClipboardUtil;
 import com.example.submate.core.util.CommonToast;
+import com.example.submate.core.util.UsageStatsUtil;
 import com.example.submate.presentation.common.dialog.NotificationDialogManager;
 import com.example.submate.presentation.subscribelist.fragment.SubscribeListFragment;
 import android.text.SpannableString;
@@ -77,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             showScreen(R.layout.screen_calendar);
         }
+        if (tabId == R.id.navigation_report && !UsageStatsUtil.hasUsageAccess(this)) {
+            showNoAccessScreen();
+            showAccessDialog();
+        }
     }
 
     /** 아직 Fragment가 없는 탭은 레이아웃만 보여줍니다. */
@@ -116,6 +130,70 @@ public class MainActivity extends AppCompatActivity {
         if (layoutId == R.layout.setting_account) {
             ((android.widget.TextView) findViewById(R.id.account_nickname)).setText(currentNickname + " 님");
             findViewById(R.id.account_edit_nickname).setOnClickListener(v -> showNicknameEdit());
+        }
+        if (layoutId == R.layout.setting_access) {
+            bindUsageAccess();
+        }
+    }
+
+    private void bindUsageAccess() {
+        TextView button = findViewById(R.id.access_permission_button);
+        button.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)));
+        updateUsageAccessButton(button);
+    }
+
+    private void showAccessDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.access_modal);
+        dialog.setCanceledOnTouchOutside(true);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.dimAmount = 0.35f;
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            window.setAttributes(params);
+        }
+        dialog.findViewById(R.id.access_modal_close).setOnClickListener(v -> {
+            dialog.dismiss();
+            if (!UsageStatsUtil.hasUsageAccess(this)) {
+                showNoAccessScreen();
+            }
+        });
+        dialog.findViewById(R.id.access_modal_open_settings).setOnClickListener(v -> {
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+            dialog.dismiss();
+        });
+        dialog.show();
+        if (window != null) window.setLayout(dp(350), dp(340));
+    }
+
+    private int dp(int value) {
+        return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    private void showNoAccessScreen() {
+        FrameLayout container = findViewById(R.id.tab_container);
+        container.removeAllViews();
+        LayoutInflater.from(this).inflate(R.layout.no_access, container, true);
+    }
+
+    private void updateUsageAccessButton(TextView button) {
+        boolean hasAccess = UsageStatsUtil.hasUsageAccess(this);
+        button.setText(hasAccess ? "접근 권한 허용됨" : "접근 허용하러 가기");
+        button.setBackgroundResource(hasAccess
+                ? R.drawable.bg_access_permission_granted
+                : R.drawable.bg_access_permission_button);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TextView button = findViewById(R.id.access_permission_button);
+        if (button != null) updateUsageAccessButton(button);
+        if (selectedTabId == R.id.navigation_report && UsageStatsUtil.hasUsageAccess(this)) {
+            showScreen(R.layout.screen_report);
         }
     }
 
@@ -161,6 +239,39 @@ public class MainActivity extends AppCompatActivity {
         container.removeAllViews();
         LayoutInflater.from(this).inflate(R.layout.screen_setting, container, true);
         bindSettingMenu();
+    }
+
+    public void openNotifications() {
+        removeSubscribeListFragment();
+        FrameLayout container = findViewById(R.id.tab_container);
+        container.removeAllViews();
+        LayoutInflater.from(this).inflate(R.layout.notification, container, true);
+        findViewById(R.id.notification_header_back).setOnClickListener(v -> showSubscribeList());
+        findViewById(R.id.notification_read_all).setOnClickListener(v -> {
+            markNotificationRead(findViewById(R.id.notification_unread));
+            markNotificationRead(findViewById(R.id.notification_trial));
+        });
+    }
+
+    private void markNotificationRead(View card) {
+        card.setBackgroundResource(R.drawable.bg_notification_read);
+        markNotificationReadChildren(card, 0);
+    }
+
+    private int markNotificationReadChildren(View view, int textIndex) {
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageTintList(ColorStateList.valueOf(getColor(R.color.gray600)));
+        } else if (view instanceof TextView) {
+            ((TextView) view).setTextColor(getColor(textIndex == 0 ? R.color.gray500 : R.color.gray400));
+            textIndex++;
+        }
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                textIndex = markNotificationReadChildren(group.getChildAt(i), textIndex);
+            }
+        }
+        return textIndex;
     }
 
     private void bindSubscribeListLink() {

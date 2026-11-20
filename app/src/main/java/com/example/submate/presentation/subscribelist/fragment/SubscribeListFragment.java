@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.submate.R;
 import com.example.submate.presentation.common.view.SubmateToast;
 import com.example.submate.presentation.subscribelist.activity.SubscribeDetailActivity;
+import com.example.submate.presentation.subscribelist.activity.MainActivity;
 import com.example.submate.presentation.subscribelist.adapter.SubscribeListAdapter;
 import com.example.submate.presentation.subscribelist.viewmodel.SubscribeFilter;
 import com.example.submate.presentation.subscribelist.viewmodel.SubscribeListViewModel;
@@ -82,7 +83,7 @@ public class SubscribeListFragment extends Fragment {
                 detailLauncher.launch(SubscribeDetailActivity.newIntent(requireContext(),
                         SubscribeDetailActivity.NO_ID)));
         view.findViewById(R.id.iv_subscribe_notification).setOnClickListener(v -> {
-            // TODO: 알림 창 화면이 완성되면 연결 (설정 탭 담당)
+            ((MainActivity) requireActivity()).openNotifications();
         });
     }
 

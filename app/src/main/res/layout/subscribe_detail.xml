@@ -11,32 +11,7 @@
 
     <!-- 화면이 열릴 때 입력칸 대신 여기에 포커스를 두어 키보드가 먼저 올라오지 않게 합니다. -->
 
-    <!-- 상단 바 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="16dp">
-
-        <ImageView
-            android:id="@+id/iv_subscribe_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="뒤로가기"
-            android:padding="8dp"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            style="@style/typo_body_b2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="구독 목록"
-            android:textColor="@color/appblack"
-            android:textSize="18sp" />
-    </LinearLayout>
+    <include layout="@layout/common_sub_header" />
 
     <ScrollView
         android:layout_width="match_parent"
