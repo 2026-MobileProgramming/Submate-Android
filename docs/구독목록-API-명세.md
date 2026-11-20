@@ -37,11 +37,16 @@ SubscribeRequest는 id를 뺀 같은 필드.
 - 구독은 사용자가 고른 통화·금액 그대로 저장되고, 원화 환산은 볼 때마다 최신 환율로 계산됨
 
 ## 4. 설치된 앱 연결 (리포트 사용량 조회용)
-- 저장할 때 서비스명과 **같은 이름(대소문자·띄어쓰기 무시)** 의 설치된 앱이 있으면 그 앱의 `packageName`을 구독에 저장. 없으면 `""`
+- 저장할 때 서비스명에 맞는 설치된 앱이 있으면 그 앱의 `packageName`을 구독에 저장. 없으면 `""`
+  - ① 서비스 목록에 있는 서비스: **패키지명 표**(`ServicePackages`)로 찾음. 앱 표시 이름이 서비스명과 달라도 연결됨 (예: YouTube Music Premium → `com.google.android.apps.youtube.music`, 쿠팡 와우 → 쿠팡 앱 `com.coupang.mobile`). 서비스명은 앱 이름이 아니라 **결제하는 구독 이름**으로 통일하고(쿠팡 와우, 네이버플러스 멤버십, 컬리멤버스, SSG 유니버스), 앱은 사용 시간 조회용으로만 연결
+  - ② 그 밖의 서비스(직접 입력 등): 서비스명과 **같은 이름(대소문자·띄어쓰기 무시)** 의 설치된 앱
+  - 기타 카테고리의 클라우드 저장공간: Google One, 네이버 MYBOX는 표에 있어 자동 연결됨. iCloud+는 안드로이드 앱이 없어 연결되지 않음(항상 앱 없음). Apple TV는 안드로이드 앱이 있으나 패키지명을 아직 확인하지 못해 연결하지 않음. 구글 클라우드(개발자용 GCP)는 요금이 사용량으로 바뀌어 목록에 넣지 않음(직접 입력)
+  - 한 서비스에 앱이 여러 개면(예: 네이버 웹툰·시리즈) 표에 적은 순서대로 **먼저 설치된 앱 하나**만 연결됨. 구독 하나에는 `packageName`이 하나만 저장되므로 여러 앱의 사용 시간을 합치지는 않음
+  - 서비스 목록에 서비스를 추가하면 `ServicePackages`의 static 블록에도 `put("서비스명", "패키지명")` 한 줄 추가
 - 앱 목록: `PackageManager.queryIntentActivities(MAIN/LAUNCHER)` + `ResolveInfo.loadLabel` (`InstalledAppServiceImpl`). Android 11+ 때문에 `AndroidManifest.xml`에 `<queries>` 선언이 들어가 있음 (지우면 안 됨)
 - 구독 상세 화면: 서비스명 아래에 연결 여부 안내가 뜨고, 직접 입력 중에는 서비스 목록·설치된 앱 이름 추천 목록이 뜸
 - 코드: `domain/model/InstalledApp`, `domain/repository/InstalledAppRepository`, `data/service/installedapp`, `data/repository/installedapp`
-- **리포트 담당:** 저장된 값 대신 `installedAppRepository.resolvePackageName(item)`을 쓰면 됨. 앱을 나중에 설치했거나 지운 경우까지 반영한 패키지명을 돌려줌(없으면 ""). 이 값으로 `UsageStatsManager.queryUsageStats(...)` 조회. `PACKAGE_USAGE_STATS` 권한 요청 화면(설정 → 앱 사용량 권한)은 설정 담당 범위
+- **리포트 담당:** 저장된 값 대신 `installedAppRepository.resolvePackageName(item)`을 쓰면 됨. 앱을 나중에 설치했거나 지운 경우까지 반영한 패키지명을 돌려줌(없으면 ""). 설치된 앱 목록은 처음 한 번만 읽으므로, 리포트 화면 ViewModel이 만들어질 때 `installedAppRepository.refresh()`를 한 번 호출해야 최신 상태가 반영됨. 이 값으로 `UsageStatsManager.queryUsageStats(...)` 조회. `PACKAGE_USAGE_STATS` 권한 요청 화면(설정 → 앱 사용량 권한)은 설정 담당 범위
 
 ## 4-1. 직접 입력한 서비스명 정리 규칙 (`ServiceNameMatcher`)
 - 대소문자·띄어쓰기 무시하고 이미 있는 이름으로 맞춤. "앞 글자만 대문자" 방식은 쓰지 않음 (ChatGPT, FLO 같은 이름이 깨지기 때문)
