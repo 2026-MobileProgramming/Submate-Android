@@ -43,6 +43,7 @@ import java.util.Map;
 import dagger.hilt.android.AndroidEntryPoint;
 
 import com.example.submate.R;
+import com.example.submate.presentation.subscribelist.activity.MainActivity;
 
 @AndroidEntryPoint
 public class ReportFragment extends Fragment {
@@ -188,8 +189,13 @@ public class ReportFragment extends Fragment {
     private void initViews(View view) {
 
         // 공용 헤더 제목 설정
-        TextView tvHeaderTitle = view.findViewById(R.id.reportHeader);
+        TextView tvHeaderTitle = view.findViewById(R.id.tv_subscribe_title);
         tvHeaderTitle.setText("리포트");
+
+        // 알림 버튼 클릭 시 알림 화면으로 이동
+        view.findViewById(R.id.iv_subscribe_notification).setOnClickListener(v -> {
+            ((MainActivity) requireActivity()).openNotifications();
+        });
 
         btnUsageReport = view.findViewById(R.id.btnUsageReport);
         btnExpenseReport = view.findViewById(R.id.btnExpenseReport);
