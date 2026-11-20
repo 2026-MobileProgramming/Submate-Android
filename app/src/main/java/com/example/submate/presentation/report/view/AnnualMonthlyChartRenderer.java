@@ -1,26 +1,26 @@
+
 package com.example.submate.presentation.report.view;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.example.submate.R;
+import com.example.submate.domain.model.SubscribeCategory;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
 
 import java.util.List;
 
 public class AnnualMonthlyChartRenderer {
 
-    // 연간 월별 지출 그래프 생성
+    // 기존 3개 카테고리 호출과의 호환성을 위한 메서드
     public static void render(
             Context context,
             LinearLayout chartLayout,
@@ -29,8 +29,34 @@ public class AnnualMonthlyChartRenderer {
             int colorAi,
             int colorFood
     ) {
+        int gray = context.getResources().getColor(R.color.gray500);
+
+        int[] categoryColors = {
+                colorOtt,
+                gray,
+                colorFood,
+                gray,
+                colorAi,
+                gray,
+                gray
+        };
+
+        render(context, chartLayout, monthlyList, categoryColors);
+    }
+
+    // 7개 카테고리를 사용하는 연간 월별 지출 그래프
+    public static void render(
+            Context context,
+            LinearLayout chartLayout,
+            List<AnnualExpenseData.MonthlyExpense> monthlyList,
+            int[] categoryColors
+    ) {
 
         chartLayout.removeAllViews();
+
+        if (monthlyList == null || monthlyList.isEmpty()) {
+            return;
+        }
 
         // 그래프에서 가장 큰 월 지출 금액 찾기
         int maxExpense = 1;
@@ -99,6 +125,7 @@ public class AnnualMonthlyChartRenderer {
                         );
 
                 stack.setLayoutParams(stackParams);
+
                 // 막대 전체 모서리 둥글게
                 GradientDrawable stackBackground = new GradientDrawable();
                 stackBackground.setColor(Color.TRANSPARENT);
@@ -107,23 +134,35 @@ public class AnnualMonthlyChartRenderer {
                 stack.setBackground(stackBackground);
                 stack.setClipToOutline(true);
 
-                // 카테고리별 막대 높이
-                addChartSegment(
-                        context, stack,
-                        item.getOttExpense(), total, colorOtt
-                );
+                // 카테고리별 금액과 색상
+                int[] categoryAmounts = {
+                        item.getOttExpense(),
+                        item.getMusicExpense(),
+                        item.getFoodExpense(),
+                        item.getShoppingExpense(),
+                        item.getAiExpense(),
+                        item.getDigitalContentExpense(),
+                        item.getEtcExpense()
+                };
 
-                addChartSegment(
-                        context, stack,
-                        item.getAiExpense(), total, colorAi
-                );
+                // 7개 카테고리 막대 조각 생성
+                for (int i = 0; i < categoryAmounts.length; i++) {
 
-                addChartSegment(
-                        context, stack,
-                        item.getFoodExpense(), total, colorFood
-                );
+                    if (i >= categoryColors.length) {
+                        break;
+                    }
+
+                    addChartSegment(
+                            context,
+                            stack,
+                            categoryAmounts[i],
+                            total,
+                            categoryColors[i]
+                    );
+                }
 
                 bar.addView(stack);
+
                 // 막대를 누르면 해당 월의 지출 금액 표시
                 stack.setOnClickListener(v -> {
                     showExpensePopup(
@@ -182,8 +221,6 @@ public class AnnualMonthlyChartRenderer {
 
         GradientDrawable segmentBackground = new GradientDrawable();
         segmentBackground.setColor(color);
-
-        // 색상 영역 자체는 사각형으로 유지
         segmentBackground.setCornerRadius(0);
 
         segment.setBackground(segmentBackground);

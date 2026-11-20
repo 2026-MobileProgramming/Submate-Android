@@ -31,9 +31,13 @@ public class AnnualCategoryLegendRenderer {
 
         // 카테고리별 색상
         int[] categoryColors = {
-                colorOtt,
-                colorAi,
-                colorFood
+                context.getResources().getColor(R.color.pastel_red),    // OTT
+                context.getResources().getColor(R.color.pastel_purple), // 음악
+                context.getResources().getColor(R.color.pastel_yellow), // 외식
+                context.getResources().getColor(R.color.pastel_green),  // 쇼핑
+                context.getResources().getColor(R.color.pastel_blue),   // AI
+                context.getResources().getColor(R.color.pastel_orange), // 디지털 콘텐츠
+                context.getResources().getColor(R.color.gray500)        // 기타
         };
 
         // 카테고리별 목록 생성

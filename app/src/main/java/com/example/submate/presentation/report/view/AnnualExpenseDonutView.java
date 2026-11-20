@@ -22,9 +22,13 @@ public class AnnualExpenseDonutView extends View {
 
     private void setupColors() {
         categoryColors = new int[]{
-                getResources().getColor(R.color.pastel_red),
-                getResources().getColor(R.color.pastel_blue),
-                getResources().getColor(R.color.pastel_yellow)
+                getResources().getColor(R.color.pastel_red),    // OTT
+                getResources().getColor(R.color.pastel_purple), // 음악
+                getResources().getColor(R.color.pastel_yellow), // 외식
+                getResources().getColor(R.color.pastel_green),  // 쇼핑
+                getResources().getColor(R.color.pastel_blue),   // AI
+                getResources().getColor(R.color.pastel_orange), // 디지털 콘텐츠
+                getResources().getColor(R.color.gray500)        // 기타
         };
     }
     private final Paint chartPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

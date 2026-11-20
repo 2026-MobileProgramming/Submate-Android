@@ -59,8 +59,20 @@
             android:textSize="11sp"
             android:textStyle="bold" />
 
+        <!-- 데이터가 없을 때 표시 -->
+        <TextView
+            android:id="@+id/tvAnnualMonthlyEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="center"
+            android:text="아직 해당 연도의 결제 내역이 없어요."
+            android:textColor="@color/gray500"
+            android:textSize="11sp"
+            android:visibility="gone" />
+
         <!-- 그래프 영역 -->
         <HorizontalScrollView
+            android:id="@+id/scrollAnnualMonthlyChart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -97,6 +109,18 @@
             android:textSize="11sp"
             android:textStyle="bold" />
 
+        <!-- 데이터가 없을 때 표시 -->
+        <TextView
+            android:id="@+id/tvAnnualCategoryEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="152dp"
+            android:gravity="center"
+            android:text="아직 해당 연도의 결제 내역이 없어요."
+            android:textColor="@color/gray500"
+            android:textSize="11sp"
+            android:visibility="gone" />
+
+        <!-- 카테고리 그래프 영역 -->
         <LinearLayout
             android:id="@+id/layoutAnnualCategoryChart"
             android:layout_width="match_parent"

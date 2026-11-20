@@ -49,7 +49,6 @@ public class ReportFragment extends Fragment {
 
     private ReportViewModel viewModel;
 
-
     // 리포트 종류 버튼
     private TextView btnUsageReport;
     private TextView btnExpenseReport;
@@ -106,6 +105,12 @@ public class ReportFragment extends Fragment {
     // 연간 월별 지출 그래프
     private LinearLayout layoutAnnualMonthlyChart;
 
+    private TextView tvAnnualMonthlyEmpty;
+    private TextView tvAnnualCategoryEmpty;
+
+    private View scrollAnnualMonthlyChart;
+    private View layoutAnnualCategoryChart;
+
     // 전체 누적 지출 리포트
     private View layoutAllExpenseReport;
 
@@ -147,13 +152,16 @@ public class ReportFragment extends Fragment {
         // 실제 구독 목록 변경 감지
         viewModel.getSubscribeList().observe(
                 getViewLifecycleOwner(),
-                subscribeItems -> updateMonthlyExpenseReport(subscribeItems)
+                subscribeItems -> {
+                    updateMonthlyExpenseReport(subscribeItems);
+                    updateAnnualExpenseReport(subscribeItems);
+                }
         );
 
         // 연간 지출 리포트
-        setupAnnualExpenseSummary();
-        setupAnnualMonthlyChart();
-        setupAnnualCategoryChart();
+        updateAnnualExpenseReport(
+                viewModel.getSubscribeList().getValue()
+        );
 
         // 전체 지출 리포트
         setupAllExpenseSummary();
@@ -201,6 +209,12 @@ public class ReportFragment extends Fragment {
 
         tvAnnualAverageExpense =
                 view.findViewById(R.id.tvAnnualAverageExpense);
+
+        tvAnnualMonthlyEmpty = view.findViewById(R.id.tvAnnualMonthlyEmpty);
+        tvAnnualCategoryEmpty = view.findViewById(R.id.tvAnnualCategoryEmpty);
+
+        scrollAnnualMonthlyChart = view.findViewById(R.id.scrollAnnualMonthlyChart);
+        layoutAnnualCategoryChart = view.findViewById(R.id.layoutAnnualCategoryChart);
 
         layoutMonthlyCategoryBar =
                 view.findViewById(R.id.layoutMonthlyCategoryBar);
@@ -352,9 +366,16 @@ public class ReportFragment extends Fragment {
         }
         // 월/연도 이동 표시 갱신
         updatePeriodNavigation();
-        // 월별 지출 화면으로 돌아왔을 때 데이터 갱신
-        if (!isUsageReportSelected && isMonth) {
-            updateMonthlyExpenseReport(viewModel.getSubscribeList().getValue());
+
+        if (!isUsageReportSelected) {
+            if (selectedPeriodButton == btnPeriodMonth) {
+                updateMonthlyExpenseReport(viewModel.getSubscribeList().getValue());
+
+            } else if (selectedPeriodButton == btnPeriodYear) {
+                updateAnnualExpenseReport(
+                        viewModel.getSubscribeList().getValue()
+                );
+            }
         }
     }
 
@@ -428,60 +449,76 @@ public class ReportFragment extends Fragment {
         rvExpenseReport.setAdapter(expenseReportAdapter);
     }
 
-    // 연간 지출 요약 정보 설정
-    private void setupAnnualExpenseSummary() {
 
+    // 연간 리포트 전체 갱신
+    private void updateAnnualExpenseReport(
+            List<SubscribeItem> subscribeItems
+    ) {
         AnnualExpenseData annualData =
-                ReportDummyData.getAnnualExpenseData();
+                calculateAnnualExpenseData(subscribeItems);
 
         int totalExpense = annualData.getTotalExpense();
 
-        // 12개월 기준 월평균
-        int averageExpense = totalExpense / 12;
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
 
+        // 연간 총지출
         tvAnnualTotalExpense.setText(
                 String.format(Locale.KOREA, "₩%,d", totalExpense)
         );
 
+        // 1월부터 현재 월까지의 월평균
+        int averageExpense = currentMonth > 0
+                ? totalExpense / currentMonth
+                : 0;
+
         tvAnnualAverageExpense.setText(
-                String.format(Locale.KOREA, "월평균 ₩%,d", averageExpense)
+                String.format(
+                        Locale.KOREA,
+                        "월평균 ₩%,d",
+                        averageExpense
+                )
         );
-    }
 
-    // 연간 월별 지출 그래프 설정
-    private void setupAnnualMonthlyChart() {
+        boolean hasData = totalExpense > 0;
 
-        AnnualExpenseData annualData =
-                ReportDummyData.getAnnualExpenseData();
+        // 월별 지출
+        tvAnnualMonthlyEmpty.setVisibility(hasData ? View.GONE : View.VISIBLE);
+        scrollAnnualMonthlyChart.setVisibility(hasData ? View.VISIBLE : View.GONE);
 
+        // 카테고리별 지출
+        tvAnnualCategoryEmpty.setVisibility(hasData ? View.GONE : View.VISIBLE);
+        layoutAnnualCategoryChart.setVisibility(hasData ? View.VISIBLE : View.GONE);
+
+        // 카테고리 색상 배열
+        int[] categoryColors = {
+                getCategoryColor(SubscribeCategory.OTT),
+                getCategoryColor(SubscribeCategory.MUSIC),
+                getCategoryColor(SubscribeCategory.FOOD),
+                getCategoryColor(SubscribeCategory.SHOPPING),
+                getCategoryColor(SubscribeCategory.AI),
+                getCategoryColor(SubscribeCategory.DIGITAL_CONTENT),
+                getCategoryColor(SubscribeCategory.ETC)
+        };
+
+        // 월별 지출 그래프
         AnnualMonthlyChartRenderer.render(
                 requireContext(),
                 layoutAnnualMonthlyChart,
                 annualData.getMonthlyExpenses(),
-                colorOtt,
-                colorAi,
-                colorFood
+                categoryColors
         );
-    }
 
-    // 연간 카테고리 그래프 설정
-    private void setupAnnualCategoryChart() {
+        // 카테고리 도넛 그래프
+        annualDonutChart.setData(
+                annualData.getCategoryExpenses()
+        );
 
-        AnnualExpenseData annualData =
-                ReportDummyData.getAnnualExpenseData();
-
-        List<AnnualExpenseData.CategoryExpense> categoryList =
-                annualData.getCategoryExpenses();
-
-        // 도넛 그래프에 데이터 전달
-        annualDonutChart.setData(categoryList);
-
-        // 도넛 그래프 옆 카테고리 목록 생성
+        // 카테고리 범례
         AnnualCategoryLegendRenderer.render(
                 requireContext(),
                 layoutAnnualCategoryLegend,
-                categoryList,
-                annualData.getTotalExpense(),
+                annualData.getCategoryExpenses(),
+                totalExpense,
                 colorOtt,
                 colorAi,
                 colorFood
@@ -555,13 +592,21 @@ public class ReportFragment extends Fragment {
         // 날짜 표시 갱신
         updatePeriodNavigation();
 
-        // 월별 지출 탭을 보고 있을 때 데이터도 즉시 갱신
-        if (!isUsageReportSelected
-                && selectedPeriodButton == btnPeriodMonth) {
+        // 선택된 기간에 맞는 리포트 갱신
+        if (!isUsageReportSelected) {
 
-            updateMonthlyExpenseReport(
-                    viewModel.getSubscribeList().getValue()
-            );
+            if (selectedPeriodButton == btnPeriodMonth) {
+
+                updateMonthlyExpenseReport(
+                        viewModel.getSubscribeList().getValue()
+                );
+
+            } else if (selectedPeriodButton == btnPeriodYear) {
+
+                updateAnnualExpenseReport(
+                        viewModel.getSubscribeList().getValue()
+                );
+            }
         }
     }
 
@@ -608,6 +653,142 @@ public class ReportFragment extends Fragment {
         colorOtt = getResources().getColor(R.color.pastel_red);
         colorAi = getResources().getColor(R.color.pastel_blue);
         colorFood = getResources().getColor(R.color.pastel_yellow);
+    }
+
+    // 실제 구독 데이터로 연간 지출 데이터 생성
+    private AnnualExpenseData calculateAnnualExpenseData(
+            List<SubscribeItem> subscribeItems
+    ) {
+        Calendar today = Calendar.getInstance();
+
+        int currentYear = today.get(Calendar.YEAR);
+        int currentMonth = today.get(Calendar.MONTH) + 1;
+        int currentDay = today.get(Calendar.DAY_OF_MONTH);
+
+        int selectedYear = selectedReportDate.get(Calendar.YEAR);
+
+        // 과거 연도는 실제 결제 기록이 없으므로 빈 데이터 반환
+        if (selectedYear != currentYear) {
+            return new AnnualExpenseData(
+                    0,
+                    new ArrayList<>(),
+                    new ArrayList<>()
+            );
+        }
+
+        List<AnnualExpenseData.MonthlyExpense> monthlyExpenses =
+                new ArrayList<>();
+
+        // 카테고리별 연간 누적 금액 초기화
+        Map<SubscribeCategory, Long> categoryTotals =
+                new LinkedHashMap<>();
+
+        for (SubscribeCategory category : SubscribeCategory.values()) {
+            categoryTotals.put(category, 0L);
+        }
+
+        long annualTotal = 0;
+
+        // 1월부터 현재 월까지 계산
+        for (int month = 1; month <= currentMonth; month++) {
+
+            Calendar monthCalendar = Calendar.getInstance();
+            monthCalendar.set(selectedYear, month - 1, 1);
+
+            // 과거 월은 마지막 날, 현재 월은 오늘 날짜까지 계산
+            int todayDay = (month == currentMonth)
+                    ? currentDay
+                    : monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+            List<SubscribeItem> paidList =
+                    viewModel.getPaidSubscriptionsForMonth(
+                            subscribeItems,
+                            selectedYear,
+                            month,
+                            todayDay
+                    );
+
+            // 해당 월의 카테고리별 지출 초기화
+            Map<SubscribeCategory, Long> monthlyCategoryTotals =
+                    new LinkedHashMap<>();
+
+            for (SubscribeCategory category : SubscribeCategory.values()) {
+                monthlyCategoryTotals.put(category, 0L);
+            }
+
+            // 결제 대상 구독을 카테고리별로 합산
+            for (SubscribeItem item : paidList) {
+
+                SubscribeCategory category = item.getCategory();
+
+                if (category == null) {
+                    category = SubscribeCategory.ETC;
+                }
+
+                long amount = item.getKrwAmount();
+
+                monthlyCategoryTotals.put(
+                        category,
+                        monthlyCategoryTotals.get(category) + amount
+                );
+
+                categoryTotals.put(
+                        category,
+                        categoryTotals.get(category) + amount
+                );
+            }
+
+            // 월별 카테고리 금액
+            int ott = monthlyCategoryTotals.get(SubscribeCategory.OTT).intValue();
+            int music = monthlyCategoryTotals.get(SubscribeCategory.MUSIC).intValue();
+            int food = monthlyCategoryTotals.get(SubscribeCategory.FOOD).intValue();
+            int shopping = monthlyCategoryTotals.get(SubscribeCategory.SHOPPING).intValue();
+            int ai = monthlyCategoryTotals.get(SubscribeCategory.AI).intValue();
+            int digitalContent = monthlyCategoryTotals.get(SubscribeCategory.DIGITAL_CONTENT).intValue();
+            int etc = monthlyCategoryTotals.get(SubscribeCategory.ETC).intValue();
+
+            AnnualExpenseData.MonthlyExpense monthlyExpense =
+                    new AnnualExpenseData.MonthlyExpense(
+                            month,
+                            ott,
+                            music,
+                            food,
+                            shopping,
+                            ai,
+                            digitalContent,
+                            etc
+                    );
+
+            monthlyExpenses.add(monthlyExpense);
+
+            annualTotal += monthlyExpense.getTotalExpense();
+        }
+
+        // 금액이 있는 카테고리만 도넛 차트와 범례에 전달
+        List<AnnualExpenseData.CategoryExpense> categoryExpenses =
+                new ArrayList<>();
+
+        for (SubscribeCategory category : SubscribeCategory.values()) {
+
+            long amount = categoryTotals.get(category);
+
+            if (amount <= 0) {
+                continue;
+            }
+
+            categoryExpenses.add(
+                    new AnnualExpenseData.CategoryExpense(
+                            category.getLabel(),
+                            (int) amount
+                    )
+            );
+        }
+
+        return new AnnualExpenseData(
+                (int) annualTotal,
+                monthlyExpenses,
+                categoryExpenses
+        );
     }
 
     // 월간 지출 범례의 동그라미에만 카테고리 색상 적용

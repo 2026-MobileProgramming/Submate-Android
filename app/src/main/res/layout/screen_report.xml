@@ -169,9 +169,6 @@
                 <include
                     layout="@layout/report_expense_all" />
 
-
-
-
             </LinearLayout>
 
 

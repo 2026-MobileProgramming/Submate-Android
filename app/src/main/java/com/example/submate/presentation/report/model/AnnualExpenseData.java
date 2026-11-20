@@ -1,17 +1,13 @@
-
 package com.example.submate.presentation.report.model;
+
+import com.example.submate.domain.model.SubscribeCategory;
 
 import java.util.List;
 
 public class AnnualExpenseData {
 
-    // 연간 총 지출
     private final int totalExpense;
-
-    // 월별 지출 금액 (1월~12월)
     private final List<MonthlyExpense> monthlyExpenses;
-
-    // 카테고리별 연간 지출
     private final List<CategoryExpense> categoryExpenses;
 
     public AnnualExpenseData(
@@ -40,20 +36,44 @@ public class AnnualExpenseData {
     public static class MonthlyExpense {
 
         private final int month;
-        private final int ottExpense;
-        private final int aiExpense;
-        private final int foodExpense;
 
+        private final int ottExpense;
+        private final int musicExpense;
+        private final int foodExpense;
+        private final int shoppingExpense;
+        private final int aiExpense;
+        private final int digitalContentExpense;
+        private final int etcExpense;
+
+        // 기존 더미 데이터와의 호환성을 위한 생성자
         public MonthlyExpense(
                 int month,
                 int ottExpense,
                 int aiExpense,
                 int foodExpense
         ) {
+            this(month, ottExpense, 0, foodExpense, 0, aiExpense, 0, 0);
+        }
+
+        // 7개 카테고리를 사용하는 생성자
+        public MonthlyExpense(
+                int month,
+                int ottExpense,
+                int musicExpense,
+                int foodExpense,
+                int shoppingExpense,
+                int aiExpense,
+                int digitalContentExpense,
+                int etcExpense
+        ) {
             this.month = month;
             this.ottExpense = ottExpense;
-            this.aiExpense = aiExpense;
+            this.musicExpense = musicExpense;
             this.foodExpense = foodExpense;
+            this.shoppingExpense = shoppingExpense;
+            this.aiExpense = aiExpense;
+            this.digitalContentExpense = digitalContentExpense;
+            this.etcExpense = etcExpense;
         }
 
         public int getMonth() {
@@ -64,16 +84,38 @@ public class AnnualExpenseData {
             return ottExpense;
         }
 
-        public int getAiExpense() {
-            return aiExpense;
+        public int getMusicExpense() {
+            return musicExpense;
         }
 
         public int getFoodExpense() {
             return foodExpense;
         }
 
+        public int getShoppingExpense() {
+            return shoppingExpense;
+        }
+
+        public int getAiExpense() {
+            return aiExpense;
+        }
+
+        public int getDigitalContentExpense() {
+            return digitalContentExpense;
+        }
+
+        public int getEtcExpense() {
+            return etcExpense;
+        }
+
         public int getTotalExpense() {
-            return ottExpense + aiExpense + foodExpense;
+            return ottExpense
+                    + musicExpense
+                    + foodExpense
+                    + shoppingExpense
+                    + aiExpense
+                    + digitalContentExpense
+                    + etcExpense;
         }
     }
 
