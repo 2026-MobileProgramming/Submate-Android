@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutAllExpenseReport"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/tvAllExpensePeriod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="2024.03 ~ 현재"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/appblack"/>
+
+    <!-- 전체 누적 금액 + 연도별 그래프 카드 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@drawable/bg_usage_report_card">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="지금까지 총 구독료"
+            android:textSize="11sp"
+            android:textColor="@color/gray500"/>
+
+        <TextView
+            android:id="@+id/tvAllTotalExpense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="₩412,300"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/appblack"/>
+
+        <TextView
+            android:id="@+id/tvAllServiceCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="구독 서비스 6개"
+            android:textSize="10sp"
+            android:textColor="@color/gray500"/>
+
+        <!-- 연도별 막대그래프 -->
+        <LinearLayout
+            android:id="@+id/layoutAllYearlyChart"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:gravity="bottom|center_horizontal"/>
+
+    </LinearLayout>
+
+    <!-- 카테고리별 누적 카드 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        android:padding="14dp"
+        android:background="@color/appwhite">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="카테고리별 누적"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/appblack"/>
+
+        <!-- 카테고리 비율 막대 -->
+        <LinearLayout
+            android:id="@+id/layoutAllCategoryBar"
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"/>
+
+        <!-- 카테고리별 금액 목록 -->
+        <LinearLayout
+            android:id="@+id/layoutAllCategoryList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+    <!-- 해지 서비스 안내 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:background="@color/sec50">
+
+        <TextView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:gravity="center"
+            android:text="!"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/appwhite"
+            android:background="@color/sec500"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="해지한 서비스도 포함돼요"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/appblack"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="종료된 구독의 지출도 전체 누적에 합산됩니다."
+                android:textSize="9sp"
+                android:textColor="@color/gray600"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
