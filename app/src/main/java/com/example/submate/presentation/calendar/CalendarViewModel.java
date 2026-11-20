@@ -131,7 +131,7 @@ public class CalendarViewModel extends ViewModel {
 
     private int findFirstRegisteredOn() {
         int first = Integer.MAX_VALUE;
-        for (CalendarPayment item : CalendarDummyData.getSubscriptions(todayYear, todayMonth, todayDay)) {
+        for (CalendarPayment item : CalendarDummyData.getSubscriptions()) {
             first = Math.min(first, item.getRegisteredOn());
         }
         return first;
@@ -141,7 +141,7 @@ public class CalendarViewModel extends ViewModel {
         // TODO: API 연동 시 Repository 에서 해당 월 결제 내역을 받아오도록 변경
         int lastDay = daysInMonth(year, month);
         List<CalendarPayment> result = new ArrayList<>();
-        for (CalendarPayment item : CalendarDummyData.getSubscriptions(todayYear, todayMonth, todayDay)) {
+        for (CalendarPayment item : CalendarDummyData.getSubscriptions()) {
             if (!item.occursIn(year, month)) continue;
             int day = Math.min(item.getBillingDay(), lastDay);
             if (!item.isRegisteredBy(year, month, day)) continue;
