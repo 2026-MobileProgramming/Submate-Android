@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.submate.R;
 import com.example.submate.presentation.report.model.UsageReportItem;
 import com.example.submate.presentation.report.model.ExpenseReportItem;
+import com.example.submate.presentation.report.model.AnnualExpenseData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,4 +100,60 @@ public class ReportDummyData {
 
         return expenseList;
     }
+
+    // 연간 지출 임시 데이터
+    public static AnnualExpenseData getAnnualExpenseData() {
+
+        List<AnnualExpenseData.MonthlyExpense> monthlyList =
+                new ArrayList<>();
+
+        // 월별 임시 지출 데이터
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(1, 10000, 8000, 2000));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(2, 12000, 8000, 1000));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(3, 11000, 9000, 2000));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(4, 13000, 9000, 1500));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(5, 14000, 10000, 2000));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(6, 15000, 10000, 2500));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(7, 16000, 11000, 2000));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(8, 15000, 10000, 2000));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(9, 14000, 10000, 1500));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(10, 12000, 9000, 1500));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(11, 0, 0, 0));
+        monthlyList.add(new AnnualExpenseData.MonthlyExpense(12, 0, 0, 0));
+
+        // 카테고리별 지출 계산
+        int ottTotal = 0;
+        int aiTotal = 0;
+        int foodTotal = 0;
+
+        for (AnnualExpenseData.MonthlyExpense item : monthlyList) {
+            ottTotal += item.getOttExpense();
+            aiTotal += item.getAiExpense();
+            foodTotal += item.getFoodExpense();
+        }
+
+        List<AnnualExpenseData.CategoryExpense> categoryList =
+                new ArrayList<>();
+
+        categoryList.add(
+                new AnnualExpenseData.CategoryExpense("OTT", ottTotal)
+        );
+
+        categoryList.add(
+                new AnnualExpenseData.CategoryExpense("AI", aiTotal)
+        );
+
+        categoryList.add(
+                new AnnualExpenseData.CategoryExpense("음식", foodTotal)
+        );
+
+        int totalExpense = ottTotal + aiTotal + foodTotal;
+
+        return new AnnualExpenseData(
+                totalExpense,
+                monthlyList,
+                categoryList
+        );
+    }
+
 }
