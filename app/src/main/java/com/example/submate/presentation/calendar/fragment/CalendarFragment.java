@@ -265,7 +265,7 @@ public class CalendarFragment extends Fragment {
             TextView price = item.findViewById(R.id.tv_calendar_payment_price);
             if (payment.isFreeTrial()) {
                 price.setText("무료체험");
-                price.setTextColor(color(R.color.pri700));
+                price.setTextColor(color(R.color.appblack));
             } else {
                 price.setText(formatPrice(payment.getPrice()));
                 price.setTextColor(color(R.color.appblack));
