@@ -131,7 +131,9 @@ public class CalendarDatePickerSheet {
         TextView totalText = cell.findViewById(R.id.tv_picker_month_total);
         monthText.setText((month + 1) + "월");
 
-        if (viewModel.isFutureMonth(pickerYear, month)) {
+        if (viewModel.isBeforeFirstRegistration(pickerYear, month)) {
+            totalText.setText("없음");
+        } else if (viewModel.isFutureMonth(pickerYear, month)) {
             totalText.setText("예정");
         } else {
             totalText.setText("₩" + priceFormat.format(viewModel.getMonthTotal(pickerYear, month)));

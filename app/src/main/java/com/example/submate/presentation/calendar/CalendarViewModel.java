@@ -19,6 +19,7 @@ public class CalendarViewModel extends ViewModel {
     private final int todayYear;
     private final int todayMonth;
     private final int todayDay;
+    private final int firstRegisteredOn;
 
     private int year;
     private int month;
@@ -30,6 +31,7 @@ public class CalendarViewModel extends ViewModel {
         todayYear = today.get(Calendar.YEAR);
         todayMonth = today.get(Calendar.MONTH);
         todayDay = today.get(Calendar.DAY_OF_MONTH);
+        firstRegisteredOn = findFirstRegisteredOn();
 
         year = todayYear;
         month = todayMonth;
@@ -86,6 +88,10 @@ public class CalendarViewModel extends ViewModel {
         return year > todayYear || (year == todayYear && month > todayMonth);
     }
 
+    public boolean isBeforeFirstRegistration(int year, int month) {
+        return CalendarPayment.dateKey(year, month, 31) < firstRegisteredOn;
+    }
+
     public int getMonthTotal(int year, int month) {
         int total = 0;
         for (CalendarPayment payment : paymentsOf(year, month)) total += payment.getPrice();
@@ -103,13 +109,23 @@ public class CalendarViewModel extends ViewModel {
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
+    private int findFirstRegisteredOn() {
+        int first = Integer.MAX_VALUE;
+        for (CalendarPayment item : CalendarDummyData.getSubscriptions(todayYear, todayMonth, todayDay)) {
+            first = Math.min(first, item.getRegisteredOn());
+        }
+        return first;
+    }
+
     private List<CalendarPayment> paymentsOf(int year, int month) {
         // TODO: API 연동 시 Repository 에서 해당 월 결제 내역을 받아오도록 변경
         int lastDay = daysInMonth(year, month);
         List<CalendarPayment> result = new ArrayList<>();
-        for (CalendarPayment item : CalendarDummyData.getSubscriptions(todayYear, todayMonth)) {
+        for (CalendarPayment item : CalendarDummyData.getSubscriptions(todayYear, todayMonth, todayDay)) {
             if (!item.occursIn(year, month)) continue;
-            result.add(item.withBillingDay(Math.min(item.getBillingDay(), lastDay)));
+            int day = Math.min(item.getBillingDay(), lastDay);
+            if (!item.isRegisteredBy(year, month, day)) continue;
+            result.add(item.withBillingDay(day));
         }
         return result;
     }

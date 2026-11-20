@@ -12,7 +12,7 @@ import java.util.List;
 final class CalendarDummyData {
     private CalendarDummyData() {}
 
-    static List<CalendarPayment> getSubscriptions(int year, int month) {
+    static List<CalendarPayment> getSubscriptions(int year, int month, int day) {
         List<CalendarPayment> list = new ArrayList<>();
         list.add(CalendarPayment.monthly("넷플릭스", CalendarCategory.OTT, 13500, 3));
         list.add(CalendarPayment.monthly("유튜브 프리미엄", CalendarCategory.MUSIC, 14900, 8));
@@ -22,6 +22,10 @@ final class CalendarDummyData {
         list.add(CalendarPayment.freeTrial("왓챠", CalendarCategory.OTT, year, month, 22));
         list.add(CalendarPayment.monthly("쿠팡 와우", CalendarCategory.SHOPPING, 7890, 27));
         list.add(CalendarPayment.monthly("ChatGPT", CalendarCategory.AI, 29000, 27));
-        return list;
+
+        int today = CalendarPayment.dateKey(year, month, day);
+        List<CalendarPayment> registered = new ArrayList<>();
+        for (CalendarPayment item : list) registered.add(item.withRegisteredOn(today));
+        return registered;
     }
 }
