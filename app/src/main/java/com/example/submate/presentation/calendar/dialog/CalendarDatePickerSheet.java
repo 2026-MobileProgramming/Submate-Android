@@ -23,6 +23,8 @@ import java.util.Locale;
  */
 public class CalendarDatePickerSheet {
     private static final int MONTH_COLUMNS = 3;
+    private static final int YEAR_COLUMNS = 2;
+    private static final int YEAR_PAGE_SIZE = 4;
 
     private enum Tab { MONTH, YEAR, ALL }
 
@@ -46,6 +48,9 @@ public class CalendarDatePickerSheet {
     private int selectedYear;
     private int selectedMonth;
 
+    private int yearPageStart;
+    private int yearTabSelected;
+
     public CalendarDatePickerSheet(@NonNull Context context, @NonNull CalendarViewModel viewModel) {
         this.context = context;
         this.viewModel = viewModel;
@@ -59,6 +64,8 @@ public class CalendarDatePickerSheet {
             selectedMonth = viewModel.getTodayMonth();
         }
         pickerYear = selectedYear;
+        yearPageStart = selectedYear - 2;
+        yearTabSelected = selectedYear;
 
         dialog = new BottomSheetDialog(context);
         View content = LayoutInflater.from(context).inflate(R.layout.calendar_date_picker_sheet, null);
@@ -105,13 +112,22 @@ public class CalendarDatePickerSheet {
     }
 
     private void movePage(int direction) {
-        pickerYear += direction;
+        if (tab == Tab.YEAR) {
+            yearPageStart += direction * YEAR_PAGE_SIZE;
+        } else {
+            pickerYear += direction;
+        }
         render();
     }
 
     private void move() {
-        if (tab == Tab.MONTH) {
-            viewModel.showMonth(selectedYear, selectedMonth);
+        switch (tab) {
+            case MONTH:
+                viewModel.showMonth(selectedYear, selectedMonth);
+                break;
+            case YEAR:
+                viewModel.showMonth(yearTabSelected, 0);
+                break;
         }
     }
 
@@ -125,6 +141,8 @@ public class CalendarDatePickerSheet {
                 renderMonthTab();
                 break;
             case YEAR:
+                renderYearTab();
+                break;
             case ALL:
                 monthContainer.removeAllViews();
                 break;
@@ -186,6 +204,52 @@ public class CalendarDatePickerSheet {
         cell.setOnClickListener(v -> {
             selectedYear = pickerYear;
             selectedMonth = month;
+            render();
+        });
+    }
+
+    private void renderYearTab() {
+        yearText.setText(yearPageStart + " - " + (yearPageStart + YEAR_PAGE_SIZE - 1));
+
+        monthContainer.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        LinearLayout row = null;
+        for (int i = 0; i < YEAR_PAGE_SIZE; i++) {
+            if (i % YEAR_COLUMNS == 0) {
+                row = new LinearLayout(context);
+                row.setOrientation(LinearLayout.HORIZONTAL);
+                monthContainer.addView(row, new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            }
+            View cell = inflater.inflate(R.layout.calendar_picker_month, row, false);
+            bindYearCell(cell, yearPageStart + i);
+            row.addView(cell);
+        }
+
+        moveButton.setText(yearTabSelected + "년으로 이동");
+    }
+
+    private void bindYearCell(View cell, int year) {
+        TextView yearLabel = cell.findViewById(R.id.tv_picker_month);
+        TextView totalText = cell.findViewById(R.id.tv_picker_month_total);
+        yearLabel.setText(year + "년");
+
+        if (viewModel.isBeforeFirstRegistration(year, 11)) {
+            totalText.setText("없음");
+        } else if (viewModel.isFutureYear(year)) {
+            totalText.setText("예정");
+        } else {
+            totalText.setText("₩" + priceFormat.format(viewModel.getYearTotal(year)));
+        }
+
+        boolean selected = year == yearTabSelected;
+        cell.setBackgroundResource(selected ? R.drawable.bg_calendar_picker_selected : 0);
+        yearLabel.setTextColor(color(selected ? R.color.pri800 : R.color.gray800));
+        totalText.setTextColor(color(selected ? R.color.pri700 : R.color.gray500));
+
+        cell.setOnClickListener(v -> {
+            yearTabSelected = year;
             render();
         });
     }
