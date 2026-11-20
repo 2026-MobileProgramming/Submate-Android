@@ -101,10 +101,6 @@ public class CalendarDatePickerSheet {
     private void render() {
         yearText.setText(pickerYear + "년");
 
-        boolean canGoNext = pickerYear < viewModel.getTodayYear();
-        nextYearButton.setEnabled(canGoNext);
-        nextYearButton.setAlpha(canGoNext ? 1f : 0.3f);
-
         renderMonths();
 
         String label = (selectedMonth + 1) + "월로 이동";
@@ -137,14 +133,9 @@ public class CalendarDatePickerSheet {
 
         if (viewModel.isFutureMonth(pickerYear, month)) {
             totalText.setText("예정");
-            monthText.setTextColor(color(R.color.gray300));
-            totalText.setTextColor(color(R.color.gray300));
-            cell.setBackground(null);
-            cell.setClickable(false);
-            return;
+        } else {
+            totalText.setText("₩" + priceFormat.format(viewModel.getMonthTotal(pickerYear, month)));
         }
-
-        totalText.setText("₩" + priceFormat.format(viewModel.getMonthTotal(pickerYear, month)));
 
         boolean selected = pickerYear == selectedYear && month == selectedMonth;
         cell.setBackgroundResource(selected ? R.drawable.bg_calendar_picker_selected : 0);
