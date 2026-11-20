@@ -24,16 +24,23 @@ import java.util.Locale;
 public class CalendarDatePickerSheet {
     private static final int MONTH_COLUMNS = 3;
 
+    private enum Tab { MONTH, YEAR, ALL }
+
     private final Context context;
     private final CalendarViewModel viewModel;
     private final BottomSheetDialog dialog;
     private final NumberFormat priceFormat = NumberFormat.getInstance(Locale.KOREA);
 
+    private final TextView monthTab;
+    private final TextView yearTab;
+    private final TextView allTab;
     private final TextView yearText;
     private final View prevYearButton;
     private final View nextYearButton;
     private final LinearLayout monthContainer;
     private final TextView moveButton;
+
+    private Tab tab = Tab.MONTH;
 
     private int pickerYear;
     private int selectedYear;
@@ -57,31 +64,25 @@ public class CalendarDatePickerSheet {
         View content = LayoutInflater.from(context).inflate(R.layout.calendar_date_picker_sheet, null);
         dialog.setContentView(content);
 
+        monthTab = content.findViewById(R.id.tv_picker_tab_month);
+        yearTab = content.findViewById(R.id.tv_picker_tab_year);
+        allTab = content.findViewById(R.id.tv_picker_tab_all);
         yearText = content.findViewById(R.id.tv_picker_year);
         prevYearButton = content.findViewById(R.id.btn_picker_prev_year);
         nextYearButton = content.findViewById(R.id.btn_picker_next_year);
         monthContainer = content.findViewById(R.id.ll_picker_months);
         moveButton = content.findViewById(R.id.btn_picker_move);
 
-        prevYearButton.setOnClickListener(v -> {
-            pickerYear--;
-            render();
-        });
-        nextYearButton.setOnClickListener(v -> {
-            pickerYear++;
-            render();
-        });
+        prevYearButton.setOnClickListener(v -> movePage(-1));
+        nextYearButton.setOnClickListener(v -> movePage(1));
         moveButton.setOnClickListener(v -> {
-            viewModel.showMonth(selectedYear, selectedMonth);
+            move();
             dialog.dismiss();
         });
 
-        content.findViewById(R.id.tv_picker_tab_year).setOnClickListener(v -> {
-            // TODO: 연 탭 구현
-        });
-        content.findViewById(R.id.tv_picker_tab_all).setOnClickListener(v -> {
-            // TODO: 전체 탭 구현
-        });
+        monthTab.setOnClickListener(v -> selectTab(Tab.MONTH));
+        yearTab.setOnClickListener(v -> selectTab(Tab.YEAR));
+        allTab.setOnClickListener(v -> selectTab(Tab.ALL));
 
         dialog.setOnShowListener(d -> {
             View sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
@@ -98,7 +99,45 @@ public class CalendarDatePickerSheet {
         dialog.show();
     }
 
+    private void selectTab(Tab tab) {
+        this.tab = tab;
+        render();
+    }
+
+    private void movePage(int direction) {
+        pickerYear += direction;
+        render();
+    }
+
+    private void move() {
+        if (tab == Tab.MONTH) {
+            viewModel.showMonth(selectedYear, selectedMonth);
+        }
+    }
+
     private void render() {
+        styleTab(monthTab, tab == Tab.MONTH);
+        styleTab(yearTab, tab == Tab.YEAR);
+        styleTab(allTab, tab == Tab.ALL);
+
+        switch (tab) {
+            case MONTH:
+                renderMonthTab();
+                break;
+            case YEAR:
+            case ALL:
+                monthContainer.removeAllViews();
+                break;
+        }
+    }
+
+    private void styleTab(TextView tabView, boolean selected) {
+        tabView.setBackgroundResource(selected ? R.drawable.bg_calendar_tab_selected : 0);
+        tabView.setTextAppearance(selected ? R.style.typo_body_b3 : R.style.typo_body_r1);
+        tabView.setTextColor(color(selected ? R.color.gray800 : R.color.gray500));
+    }
+
+    private void renderMonthTab() {
         yearText.setText(pickerYear + "년");
 
         renderMonths();
