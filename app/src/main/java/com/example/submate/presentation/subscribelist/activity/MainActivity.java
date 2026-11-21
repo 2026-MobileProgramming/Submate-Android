@@ -27,6 +27,7 @@ import com.example.submate.core.util.UsageStatsUtil;
 import com.example.submate.presentation.calendar.fragment.CalendarFragment;
 import com.example.submate.presentation.common.dialog.NotificationDialogManager;
 import com.example.submate.presentation.subscribelist.fragment.SubscribeListFragment;
+import com.example.submate.presentation.report.ReportFragment;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_SUBSCRIBE_LIST = "subscribe_list";
     private static final String TAG_CALENDAR = "calendar";
     private static final String KEY_SELECTED_TAB = "selected_tab";
+    private static final String TAG_REPORT = "report";
     private static final int[] TAB_IDS = {
             R.id.navigation_calendar,
             R.id.navigation_subscribe_list,
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         if (tabId == R.id.navigation_subscribe_list) {
             showSubscribeList();
         } else if (tabId == R.id.navigation_report) {
-            showScreen(R.layout.screen_report);
+            showReport();
         } else if (tabId == R.id.navigation_setting) {
             showScreen(R.layout.screen_setting);
         } else {
@@ -95,9 +97,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void showReport() {
+        if (getSupportFragmentManager().findFragmentByTag(TAG_REPORT) != null) {
+            return;
+        }
+
+        removeSubscribeListFragment();
+
+        FrameLayout container = findViewById(R.id.tab_container);
+        container.removeAllViews();
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.tab_container, new ReportFragment(), TAG_REPORT)
+                .commit();
+    }
+
     /** 아직 Fragment가 없는 탭은 레이아웃만 보여줍니다. */
     private void showScreen(int layoutId) {
         removeSubscribeListFragment();
+        removeReportFragment();
         removeCalendarFragment();
         FrameLayout container = findViewById(R.id.tab_container);
         container.removeAllViews();
@@ -317,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
 
     /** 구독 목록 탭은 Fragment로 보여줍니다. */
     private void showSubscribeList() {
+        removeReportFragment();
         if (getSupportFragmentManager().findFragmentByTag(TAG_SUBSCRIBE_LIST) != null) {
             return;
         }
@@ -331,6 +350,18 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_SUBSCRIBE_LIST);
         if (fragment != null) {
             getSupportFragmentManager().beginTransaction().remove(fragment).commitNow();
+        }
+    }
+
+    private void removeReportFragment() {
+        Fragment fragment = getSupportFragmentManager()
+                .findFragmentByTag(TAG_REPORT);
+
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(fragment)
+                    .commitNow();
         }
     }
 

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutAnnualExpenseReport"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <!-- 연간 구독료 요약 카드 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@drawable/bg_usage_report_card">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="올해 총 구독료"
+            android:textColor="@color/gray500"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tvAnnualTotalExpense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="₩243,000"
+            android:textColor="@color/appblack"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvAnnualAverageExpense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="월평균 ₩24,300"
+            android:textColor="@color/gray500"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+    <!-- 월별 지출 그래프 카드 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@drawable/bg_expense_list_card">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="월별 지출"
+            android:textColor="@color/appblack"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <!-- 데이터가 없을 때 표시 -->
+        <TextView
+            android:id="@+id/tvAnnualMonthlyEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="center"
+            android:text="아직 해당 연도의 결제 내역이 없어요."
+            android:textColor="@color/gray500"
+            android:textSize="11sp"
+            android:visibility="gone" />
+
+        <!-- 그래프 영역 -->
+        <HorizontalScrollView
+            android:id="@+id/scrollAnnualMonthlyChart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fillViewport="false"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/layoutAnnualMonthlyChart"
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp" />
+
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+    <!-- 카테고리별 지출 카드 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@drawable/bg_expense_list_card">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="카테고리별 지출"
+            android:textColor="@color/appblack"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <!-- 데이터가 없을 때 표시 -->
+        <TextView
+            android:id="@+id/tvAnnualCategoryEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="152dp"
+            android:gravity="center"
+            android:text="아직 해당 연도의 결제 내역이 없어요."
+            android:textColor="@color/gray500"
+            android:textSize="11sp"
+            android:visibility="gone" />
+
+        <!-- 카테고리 그래프 영역 -->
+        <LinearLayout
+            android:id="@+id/layoutAnnualCategoryChart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp">
+
+            <!-- 왼쪽: 도넛 그래프 -->
+            <com.example.submate.presentation.report.view.AnnualExpenseDonutView
+                android:id="@+id/annualDonutChart"
+                android:layout_width="120dp"
+                android:layout_height="120dp" />
+
+            <!-- 오른쪽: 카테고리별 지출 목록 -->
+            <LinearLayout
+                android:id="@+id/layoutAnnualCategoryLegend"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

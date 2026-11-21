@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutExpenseReport"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <!-- 월별 구독료 요약 카드 -->
+    <LinearLayout
+        android:id="@+id/layoutMonthlyExpenseSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@drawable/bg_usage_report_card">
+
+        <!-- 카드 제목 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="이번 달 총 구독료"
+            android:textColor="@color/gray500"
+            android:textSize="10sp" />
+
+        <!-- 총 구독료 -->
+        <TextView
+            android:id="@+id/tvTotalExpense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="₩19,375"
+            android:textColor="@color/appblack"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- 지난달 대비 증감 -->
+        <TextView
+            android:id="@+id/tvExpenseComparison"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="지난달보다 ▲ ₩1,500"
+            android:textColor="@color/error800"
+            android:textSize="9sp" />
+
+        <!-- 카테고리별 지출 비율 막대 -->
+        <LinearLayout
+            android:id="@+id/layoutMonthlyCategoryBar"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <View
+                android:id="@+id/viewMonthlyCategoryAi"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:background="@color/pastel_blue" />
+
+            <View
+                android:id="@+id/viewMonthlyCategoryOtt"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:background="@color/pastel_red" />
+
+            <View
+                android:id="@+id/viewMonthlyCategoryFood"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:background="@color/pastel_yellow" />
+
+            <View
+                android:id="@+id/viewMonthlyCategoryEtc"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:background="@color/gray500" />
+
+        </LinearLayout>
+
+        <!-- 카테고리 범례 -->
+        <LinearLayout
+            android:id="@+id/layoutMonthlyCategoryLegend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvMonthlyLegendAi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="● AI 0%"
+                android:textColor="@color/gray500"
+                android:textSize="9sp" />
+
+            <TextView
+                android:id="@+id/tvMonthlyLegendOtt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="● OTT 0%"
+                android:textColor="@color/gray500"
+                android:textSize="9sp" />
+
+            <TextView
+                android:id="@+id/tvMonthlyLegendFood"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="● 음식 0%"
+                android:textColor="@color/gray500"
+                android:textSize="9sp" />
+
+            <TextView
+                android:id="@+id/tvMonthlyLegendEtc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="● 기타 0%"
+                android:textColor="@color/gray500"
+                android:textSize="9sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- 서비스별 지출 카드 -->
+    <LinearLayout
+        android:id="@+id/layoutExpenseListCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@drawable/bg_expense_list_card">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="서비스별 지출"
+            android:textColor="@color/appblack"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvExpenseReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never" />
+
+        <TextView
+            android:id="@+id/tvExpenseEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="24dp"
+            android:text="이번 달 결제 내역이 없어요."
+            android:textColor="@color/gray500"
+            android:textSize="11sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</LinearLayout>

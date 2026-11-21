@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="12dp"
+    android:paddingBottom="4dp">
+
+    <!-- 서비스 이름 + 사용 시간 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- 서비스 아이콘 -->
+        <TextView
+            android:id="@+id/tvServiceIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:gravity="center"
+            android:text="N"
+            android:textColor="@color/appwhite"
+            android:textSize="10sp"
+            android:background="@drawable/bg_usage_icon_circle" />
+
+        <!-- 서비스명 -->
+        <TextView
+            android:id="@+id/tvServiceName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="넷플릭스"
+            android:textColor="@color/appblack"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <!-- 사용 시간 -->
+        <TextView
+            android:id="@+id/tvServiceUsageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="18시간"
+            android:textColor="@color/appblack"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- 사용량 프로그레스 바 -->
+    <ProgressBar
+        android:id="@+id/progressServiceUsage"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_marginTop="6dp"
+        android:progress="50"
+        android:max="100"
+        android:progressTint="@color/pastel_red"
+        android:progressBackgroundTint="@color/appwhite"
+        style="@android:style/Widget.ProgressBar.Horizontal" />
+
+</LinearLayout>
