@@ -12,8 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 @InstallIn(SingletonComponent.class)
 public abstract class NetworkModule {
-    // TODO: 서버 배포 후 실제 주소로 변경 (반드시 '/'로 끝나야 합니다)
-    public static final String BASE_URL = "http://10.0.2.2:8080/api/";
+    public static final String BASE_URL = "http://3.104.172.66:8080/api/";
     public static final String EXCHANGE_RATE_URL = "https://api.frankfurter.dev/";
 
     // true: 구독 데이터를 기기 안에 저장합니다. (서버 준비 전)
