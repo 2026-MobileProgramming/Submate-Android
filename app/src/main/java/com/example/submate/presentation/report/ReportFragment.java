@@ -1148,26 +1148,6 @@ public class ReportFragment extends Fragment {
             );
         }
 
-        // 5% 미만 카테고리는 기타로 합산
-        long etcAmount = categoryAmounts.get(SubscribeCategory.ETC);
-
-        for (SubscribeCategory category : SubscribeCategory.values()) {
-            if (category == SubscribeCategory.ETC) {
-                continue;
-            }
-
-            long amount = categoryAmounts.get(category);
-
-            double percent = amount * 100.0 / totalExpense;
-
-            if (amount > 0 && percent < 5.0) {
-                etcAmount += amount;
-                categoryAmounts.put(category, 0L);
-            }
-        }
-
-        categoryAmounts.put(SubscribeCategory.ETC, etcAmount);
-
         // 그래프에 표시할 카테고리 순서대로 생성
         for (SubscribeCategory category : SubscribeCategory.values()) {
             long amount = categoryAmounts.get(category);
@@ -1197,6 +1177,7 @@ public class ReportFragment extends Fragment {
             int percent = (int) Math.round(
                     amount * 100.0 / totalExpense
             );
+            String percentLabel = percent == 0 ? "1% 미만" : percent + "%";
 
             TextView legend = new TextView(requireContext());
 
@@ -1209,7 +1190,7 @@ public class ReportFragment extends Fragment {
             );
 
             legend.setText(
-                    "● " + category.getLabel() + " " + percent + "%"
+                    "● " + category.getLabel() + " " + percentLabel
             );
 
             legend.setTextSize(9);
