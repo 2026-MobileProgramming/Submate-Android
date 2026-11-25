@@ -64,7 +64,8 @@
         android:orientation="vertical"
         android:padding="12dp"
         android:background="@drawable/bg_usage_warning"
-        android:minHeight="110dp">
+        android:minHeight="110dp"
+        android:visibility="gone">
 
         <!-- 경고 제목 -->
         <LinearLayout
@@ -95,10 +96,10 @@
 
         <!-- 경고 내용 -->
         <TextView
+            android:id="@+id/tvUsageWarningMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="라프텔을 한 달 동안 거의 사용하지 않았어요.\n구독 유지 여부를 다시 한번 확인해 보세요."
             android:textColor="@color/gray700"
             android:textSize="9sp" />
 

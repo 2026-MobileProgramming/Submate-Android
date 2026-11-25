@@ -39,6 +39,7 @@ import java.util.Locale;
 import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -47,6 +48,7 @@ import com.example.submate.presentation.subscribelist.activity.MainActivity;
 
 @AndroidEntryPoint
 public class ReportFragment extends Fragment {
+    private static final long LOW_USAGE_THRESHOLD_MILLIS = TimeUnit.HOURS.toMillis(3);
 
     private ReportViewModel viewModel;
 
@@ -114,6 +116,7 @@ public class ReportFragment extends Fragment {
     private TextView tvUsageEmpty;
     private View layoutUsageSummaryCard;
     private View layoutUsageWarningCard;
+    private TextView tvUsageWarningMessage;
 
     private View scrollAnnualMonthlyChart;
     private View layoutAnnualCategoryChart;
@@ -234,6 +237,7 @@ public class ReportFragment extends Fragment {
         tvUsageEmpty = view.findViewById(R.id.tvUsageEmpty);
         layoutUsageSummaryCard = view.findViewById(R.id.layoutUsageSummaryCard);
         layoutUsageWarningCard = view.findViewById(R.id.layoutUsageWarningCard);
+        tvUsageWarningMessage = view.findViewById(R.id.tvUsageWarningMessage);
 
         scrollAnnualMonthlyChart = view.findViewById(R.id.scrollAnnualMonthlyChart);
         layoutAnnualCategoryChart = view.findViewById(R.id.layoutAnnualCategoryChart);
@@ -1031,22 +1035,43 @@ public class ReportFragment extends Fragment {
             return;
         }
 
-        // 전체 사용 시간 계산
-        int totalHours = 0;
+        long totalUsageMillis = 0;
+        List<String> lowUsageServiceNames = new ArrayList<>();
 
         for (UsageReportItem item : usageList) {
-            String usageTime = item.getUsageTime().replace("시간", "").trim();
-            totalHours += Integer.parseInt(usageTime);
+            totalUsageMillis += item.getUsageMillis();
+            if (item.getUsageMillis() <= LOW_USAGE_THRESHOLD_MILLIS) {
+                lowUsageServiceNames.add(item.getServiceName());
+            }
         }
 
-        // 총 사용 시간 표시
-        tvTotalUsageTime.setText(totalHours + "시간");
+        tvTotalUsageTime.setText(TimeUnit.MILLISECONDS.toHours(totalUsageMillis) + "시간");
 
-        // 데이터가 있는 경우
         layoutUsageSummaryCard.setVisibility(View.VISIBLE);
-        layoutUsageWarningCard.setVisibility(View.VISIBLE);
+        boolean hasLowUsage = !lowUsageServiceNames.isEmpty();
+        layoutUsageWarningCard.setVisibility(hasLowUsage ? View.VISIBLE : View.GONE);
+        if (hasLowUsage) {
+            String lastServiceName = lowUsageServiceNames.get(lowUsageServiceNames.size() - 1);
+            tvUsageWarningMessage.setText(getString(
+                    R.string.report_low_usage_message,
+                    android.text.TextUtils.join(", ", lowUsageServiceNames)
+                            + getObjectParticle(lastServiceName)
+            ));
+        }
         rvUsageReport.setVisibility(View.VISIBLE);
         tvUsageEmpty.setVisibility(View.GONE);
+    }
+
+    private static String getObjectParticle(String serviceName) {
+        String name = serviceName.trim();
+        if (name.isEmpty()) {
+            return "을(를)";
+        }
+        char lastCharacter = name.charAt(name.length() - 1);
+        if (lastCharacter < '가' || lastCharacter > '힣') {
+            return "을(를)";
+        }
+        return (lastCharacter - '가') % 28 == 0 ? "를" : "을";
     }
 
     private void showMonthlyExpenseEmpty() {

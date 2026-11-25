@@ -1,9 +1,12 @@
 package com.example.submate.presentation.report.model;
+
+import java.util.concurrent.TimeUnit;
+
 public class UsageReportItem {
 
     private String serviceName;
     private String iconText;
-    private String usageTime;
+    private final long usageMillis;
     private int usagePercent;
     private int iconColor;
     private int progressColor;
@@ -11,14 +14,14 @@ public class UsageReportItem {
     public UsageReportItem(
             String serviceName,
             String iconText,
-            String usageTime,
+            long usageMillis,
             int usagePercent,
             int iconColor,
             int progressColor
     ) {
         this.serviceName = serviceName;
         this.iconText = iconText;
-        this.usageTime = usageTime;
+        this.usageMillis = usageMillis;
         this.usagePercent = usagePercent;
         this.iconColor = iconColor;
         this.progressColor = progressColor;
@@ -33,7 +36,11 @@ public class UsageReportItem {
     }
 
     public String getUsageTime() {
-        return usageTime;
+        return TimeUnit.MILLISECONDS.toHours(usageMillis) + "시간";
+    }
+
+    public long getUsageMillis() {
+        return usageMillis;
     }
 
     public int getUsagePercent() {

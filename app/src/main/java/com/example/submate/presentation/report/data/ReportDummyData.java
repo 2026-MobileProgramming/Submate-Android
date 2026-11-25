@@ -10,6 +10,7 @@ import com.example.submate.presentation.report.model.AllExpenseData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ReportDummyData {
 
@@ -33,7 +34,7 @@ public class ReportDummyData {
             usageList.add(new UsageReportItem(
                     "넷플릭스",
                     "넷",
-                    "18시간",
+                    TimeUnit.HOURS.toMillis(18),
                     100,
                     context.getResources().getColor(R.color.pastel_red),
                     context.getResources().getColor(R.color.pastel_red)
@@ -42,7 +43,7 @@ public class ReportDummyData {
             usageList.add(new UsageReportItem(
                     "Gemini",
                     "G",
-                    "7시간",
+                    TimeUnit.HOURS.toMillis(7),
                     39,
                     context.getResources().getColor(R.color.pastel_blue),
                     context.getResources().getColor(R.color.pastel_blue)
@@ -51,7 +52,7 @@ public class ReportDummyData {
             usageList.add(new UsageReportItem(
                     "라프텔",
                     "라",
-                    "1시간",
+                    TimeUnit.HOURS.toMillis(1),
                     6,
                     context.getResources().getColor(R.color.pastel_red),
                     context.getResources().getColor(R.color.pastel_red)
@@ -65,7 +66,7 @@ public class ReportDummyData {
             usageList.add(new UsageReportItem(
                     "넷플릭스",
                     "넷",
-                    "12시간",
+                    TimeUnit.HOURS.toMillis(12),
                     100,
                     context.getResources().getColor(R.color.pastel_red),
                     context.getResources().getColor(R.color.pastel_red)
@@ -74,7 +75,7 @@ public class ReportDummyData {
             usageList.add(new UsageReportItem(
                     "Gemini",
                     "G",
-                    "5시간",
+                    TimeUnit.HOURS.toMillis(5),
                     42,
                     context.getResources().getColor(R.color.pastel_blue),
                     context.getResources().getColor(R.color.pastel_blue)
@@ -83,8 +84,8 @@ public class ReportDummyData {
             usageList.add(new UsageReportItem(
                     "라프텔",
                     "라",
-                    "3시간",
-                    25,
+                    TimeUnit.HOURS.toMillis(4),
+                    33,
                     context.getResources().getColor(R.color.pastel_red),
                     context.getResources().getColor(R.color.pastel_red)
             ));

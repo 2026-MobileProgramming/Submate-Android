@@ -251,6 +251,9 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+# local agent instructions
+/AGENTS.md
+
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
