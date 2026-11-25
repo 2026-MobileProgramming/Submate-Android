@@ -3,6 +3,13 @@
     <dimen name="report_content_horizontal_inset">24dp</dimen>
     <dimen name="report_header_notification_margin">16dp</dimen>
     <dimen name="report_heading1_line_height">33.6sp</dimen>
+    <dimen name="report_category_bar_segment_gap">2dp</dimen>
+
+    <style name="ReportCategoryBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">8dp</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
 
     <style name="ReportText_Heading1" parent="typo_title_b1">
         <item name="lineHeight">@dimen/report_heading1_line_height</item>

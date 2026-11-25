@@ -46,10 +46,8 @@
         <!-- 카테고리별 지출 비율 막대 -->
         <LinearLayout
             android:id="@+id/layoutMonthlyCategoryBar"
-            android:layout_width="match_parent"
-            android:layout_height="6dp"
+            style="@style/ReportCategoryBar"
             android:layout_marginTop="16dp"
-            android:orientation="horizontal"
             android:gravity="center_vertical">
 
             <View

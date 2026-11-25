@@ -1,6 +1,7 @@
 package com.example.submate.presentation.report.view;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
@@ -49,13 +50,9 @@ public class AllCategoryChartRenderer {
             // 1. 위쪽 비율 막대
             View segment = new View(context);
 
-            GradientDrawable segmentBackground = new GradientDrawable();
-            segmentBackground.setColor(
-                    ReportCategoryColors.getColor(context, item.getCategory())
-            );
-            segmentBackground.setCornerRadius(dpToPx(context, 5));
-
-            segment.setBackground(segmentBackground);
+            segment.setBackgroundResource(R.drawable.bg_report_category_bar_segment);
+            segment.setBackgroundTintList(ColorStateList.valueOf(
+                    ReportCategoryColors.getColor(context, item.getCategory())));
 
             LinearLayout.LayoutParams segmentParams =
                     new LinearLayout.LayoutParams(
@@ -65,7 +62,8 @@ public class AllCategoryChartRenderer {
                     );
 
             if (categoryBar.getChildCount() > 0) {
-                segmentParams.setMarginStart(dpToPx(context, 8));
+                segmentParams.setMarginStart(context.getResources().getDimensionPixelSize(
+                        R.dimen.report_category_bar_segment_gap));
             }
 
             categoryBar.addView(segment, segmentParams);

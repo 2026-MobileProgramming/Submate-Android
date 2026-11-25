@@ -1,5 +1,6 @@
 package com.example.submate.presentation.report;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -1125,10 +1126,13 @@ public class ReportFragment extends Fragment {
                             (float) amount
                     );
 
-            bar.setLayoutParams(barParams);
-            bar.setBackgroundColor(color);
-
-            layoutMonthlyCategoryBar.addView(bar);
+            if (layoutMonthlyCategoryBar.getChildCount() > 0) {
+                barParams.setMarginStart(getResources().getDimensionPixelSize(
+                        R.dimen.report_category_bar_segment_gap));
+            }
+            bar.setBackgroundResource(R.drawable.bg_report_category_bar_segment);
+            bar.setBackgroundTintList(ColorStateList.valueOf(color));
+            layoutMonthlyCategoryBar.addView(bar, barParams);
 
             // 범례 생성
             int percent = (int) Math.round(

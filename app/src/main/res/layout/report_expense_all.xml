@@ -79,10 +79,8 @@
         <!-- 카테고리 비율 막대 -->
         <LinearLayout
             android:id="@+id/layoutAllCategoryBar"
-            android:layout_width="match_parent"
-            android:layout_height="7dp"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal"/>
+            style="@style/ReportCategoryBar"
+            android:layout_marginTop="8dp" />
 
         <!-- 카테고리별 금액 목록 -->
         <LinearLayout
