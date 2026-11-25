@@ -43,7 +43,9 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
+import androidx.core.widget.TextViewCompat;
 import com.example.submate.R;
+import com.google.android.material.textview.MaterialTextView;
 import com.example.submate.presentation.subscribelist.activity.MainActivity;
 
 @AndroidEntryPoint
@@ -187,6 +189,9 @@ public class ReportFragment extends Fragment {
 
         // 공용 헤더 제목 설정
         TextView tvHeaderTitle = view.findViewById(R.id.tv_subscribe_title);
+        tvHeaderTitle.setTextAppearance(R.style.ReportText_Heading1);
+        TextViewCompat.setLineHeight(tvHeaderTitle,
+                getResources().getDimensionPixelSize(R.dimen.report_heading1_line_height));
         tvHeaderTitle.setText("리포트");
 
         // 알림 버튼 클릭 시 알림 화면으로 이동
@@ -1120,7 +1125,7 @@ public class ReportFragment extends Fragment {
             );
             String percentLabel = percent == 0 ? "1% 미만" : percent + "%";
 
-            TextView legend = new TextView(requireContext());
+            TextView legend = new MaterialTextView(requireContext());
 
             legend.setLayoutParams(
                     new LinearLayout.LayoutParams(
@@ -1134,7 +1139,7 @@ public class ReportFragment extends Fragment {
                     "● " + category.getLabel() + " " + percentLabel
             );
 
-            legend.setTextSize(9);
+            legend.setTextAppearance(R.style.ReportText_Caption);
             legend.setTextColor(
                     getResources().getColor(R.color.gray500)
             );

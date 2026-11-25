@@ -1,7 +1,6 @@
 package com.example.submate.presentation.report.view;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.graphics.Color;
 import android.widget.PopupWindow;
 
 import com.example.submate.R;
+import com.google.android.material.textview.MaterialTextView;
 import com.example.submate.presentation.report.model.AllExpenseData;
 
 import java.util.List;
@@ -122,18 +122,14 @@ public class AllYearlyChartRenderer {
         bar.setOnClickListener(v -> showExpensePopup(context, bar, amount));
 
         // 연도 표시
-        TextView yearText = new TextView(context);
+        TextView yearText = new MaterialTextView(context);
         yearText.setText(label);
-        yearText.setTextSize(10);
+        yearText.setTextAppearance(boldLabel ? R.style.ReportText_Body4 : R.style.ReportText_Caption);
 
         yearText.setTextColor(labelColor);
 
         yearText.setGravity(Gravity.CENTER);
 
-        yearText.setTypeface(
-                null,
-                boldLabel ? Typeface.BOLD : Typeface.NORMAL
-        );
 
         LinearLayout.LayoutParams yearParams =
                 new LinearLayout.LayoutParams(
@@ -152,14 +148,13 @@ public class AllYearlyChartRenderer {
             View anchor,
             long expense
     ) {
-        TextView popupText = new TextView(context);
+        TextView popupText = new MaterialTextView(context);
 
         popupText.setText(
                 String.format(java.util.Locale.KOREA, "₩%,d", expense)
         );
         popupText.setTextColor(Color.WHITE);
-        popupText.setTextSize(12);
-        popupText.setTypeface(null, Typeface.BOLD);
+        popupText.setTextAppearance(R.style.ReportText_Body4);
         popupText.setGravity(Gravity.CENTER);
 
         popupText.setPadding(

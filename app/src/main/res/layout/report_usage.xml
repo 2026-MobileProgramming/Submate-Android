@@ -19,23 +19,22 @@
         android:background="@drawable/bg_usage_report_card">
 
         <!-- 카드 제목 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="이번 달 총 사용 시간"
             android:textColor="@color/gray500"
-            android:textSize="10sp" />
+            android:textAppearance="@style/ReportText_Caption" />
 
         <!-- 총 사용 시간 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvTotalUsageTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="26시간"
             android:textColor="@color/appblack"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/ReportText_Body1" />
 
         <!-- 서비스별 사용량 목록 -->
         <androidx.recyclerview.widget.RecyclerView
@@ -46,7 +45,7 @@
             android:nestedScrollingEnabled="false"
             android:overScrollMode="never" />
         <!-- 사용량 데이터가 없을 때 표시 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvUsageEmpty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +53,7 @@
             android:padding="32dp"
             android:text="해당 월의 사용량 데이터가 없어요."
             android:textColor="@color/gray500"
-            android:textSize="12sp"
+            android:textAppearance="@style/ReportText_Caption"
             android:visibility="gone" />
 
     </LinearLayout>
@@ -81,34 +80,33 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:gravity="center"
                 android:text="!"
                 android:textColor="@color/appwhite"
-                android:textSize="12sp"
+                android:textAppearance="@style/ReportText_Caption"
                 android:background="@drawable/bg_usage_warning_icon" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="사용량이 적어요"
                 android:textColor="@color/appblack"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textAppearance="@style/ReportText_Body4" />
 
         </LinearLayout>
 
         <!-- 경고 내용 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvUsageWarningMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:textColor="@color/gray700"
-            android:textSize="9sp" />
+            android:textAppearance="@style/ReportText_Caption" />
 
     </LinearLayout>
 

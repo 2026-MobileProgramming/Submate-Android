@@ -35,7 +35,7 @@
                     android:padding="4dp">
 
                     <!-- 사용량 탭 -->
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/btnUsageReport"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -43,12 +43,11 @@
                         android:gravity="center"
                         android:text="사용량"
                         android:textColor="@color/appblack"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
+                        android:textAppearance="@style/ReportText_Body4"
                         android:background="@drawable/bg_report_type_selected" />
 
                     <!-- 누적 지출 탭 -->
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/btnExpenseReport"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -56,8 +55,7 @@
                         android:gravity="center"
                         android:text="누적 지출"
                         android:textColor="@color/gray500"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
+                        android:textAppearance="@style/ReportText_Body4"
                         android:background="@android:color/transparent" />
 
                 </LinearLayout>
@@ -71,21 +69,21 @@
                     android:orientation="horizontal">
 
                     <!-- 월 -->
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/btnPeriodMonth"
-                        style="@style/subscribe_filter_chip"
+                        style="@style/report_period_chip"
                         android:text="월" />
 
                     <!-- 연 -->
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/btnPeriodYear"
-                        style="@style/subscribe_filter_chip"
+                        style="@style/report_period_chip"
                         android:text="연" />
 
                     <!-- 전체 -->
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/btnPeriodAll"
-                        style="@style/subscribe_filter_chip"
+                        style="@style/report_period_chip"
                         android:text="전체" />
 
                 </LinearLayout>
@@ -117,14 +115,13 @@
                             android:textColor="@color/gray500"
                             android:paddingEnd="8dp" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tvReportMonth"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=""
                             android:textColor="@color/appblack"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:textAppearance="@style/ReportText_Body4" />
 
                         <TextView
                             android:id="@+id/btnNextMonth"
@@ -140,13 +137,13 @@
                             android:layout_height="1dp"
                             android:layout_weight="1" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tvReportDescription"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="앱 사용 시간 (월)"
                             android:textColor="@color/gray500"
-                            android:textSize="10sp" />
+                            android:textAppearance="@style/ReportText_Caption" />
 
                     </LinearLayout>
 

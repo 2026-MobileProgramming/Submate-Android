@@ -2,7 +2,6 @@ package com.example.submate.presentation.report.view;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.submate.R;
+import com.google.android.material.textview.MaterialTextView;
 import com.example.submate.presentation.report.ReportCategoryColors;
 import com.example.submate.presentation.report.model.AllExpenseData;
 
@@ -87,10 +87,9 @@ public class AllCategoryChartRenderer {
             row.setLayoutParams(rowParams);
 
             // 카테고리 색상 표시
-            TextView categoryBadge = new TextView(context);
+            TextView categoryBadge = new MaterialTextView(context);
             categoryBadge.setText(item.getCategoryName());
-            categoryBadge.setTypeface(null, Typeface.BOLD);
-            categoryBadge.setTextSize(10);
+            categoryBadge.setTextAppearance(R.style.ReportText_Caption);
             categoryBadge.setTextColor(
                     item.getCategoryName().equals("OTT")
                             ? Color.WHITE
@@ -115,10 +114,9 @@ public class AllCategoryChartRenderer {
             row.addView(categoryBadge, badgeParams);
 
             // 카테고리 이름
-            TextView nameText = new TextView(context);
+            TextView nameText = new MaterialTextView(context);
             nameText.setText(item.getCategoryName());
-            nameText.setTypeface(null, Typeface.BOLD);
-            nameText.setTextSize(11);
+            nameText.setTextAppearance(R.style.ReportText_Body4);
             nameText.setTextColor(
                     context.getResources().getColor(R.color.appblack)
             );
@@ -134,9 +132,9 @@ public class AllCategoryChartRenderer {
             row.addView(nameText, nameParams);
 
             // 지출 비율
-            TextView percentText = new TextView(context);
+            TextView percentText = new MaterialTextView(context);
             percentText.setText(percent + "%");
-            percentText.setTextSize(10);
+            percentText.setTextAppearance(R.style.ReportText_Caption);
             percentText.setTextColor(
                     context.getResources().getColor(R.color.gray500)
             );
@@ -150,12 +148,11 @@ public class AllCategoryChartRenderer {
             row.addView(percentText, percentParams);
 
             // 지출 금액
-            TextView amountText = new TextView(context);
+            TextView amountText = new MaterialTextView(context);
             amountText.setText(
                     String.format(Locale.KOREA, "₩%,d", amount)
             );
-            amountText.setTextSize(11);
-            amountText.setTypeface(null, Typeface.BOLD);
+            amountText.setTextAppearance(R.style.ReportText_Caption);
             amountText.setTextColor(
                     context.getResources().getColor(R.color.appblack)
             );

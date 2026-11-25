@@ -10,6 +10,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.example.submate.R;
 import com.example.submate.presentation.report.ReportCategoryColors;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
@@ -48,13 +50,8 @@ public class AnnualExpenseDonutView extends View {
 
         textPaint.setColor(Color.rgb(160, 160, 170));
         textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setTextSize(
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_SP,
-                        10,
-                        getResources().getDisplayMetrics()
-                )
-        );
+        textPaint.setTypeface(ResourcesCompat.getFont(getContext(), R.font.pretendard_regular));
+        textPaint.setTextSize(getResources().getDimension(R.dimen.text_size_caption));
     }
 
     // 카테고리별 지출 데이터 전달

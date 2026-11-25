@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="report_heading1_line_height">33.6sp</dimen>
+
+    <style name="ReportText_Heading1" parent="typo_title_b1">
+        <item name="lineHeight">@dimen/report_heading1_line_height</item>
+        <item name="android:textSize">@dimen/text_size_title</item>
+    </style>
+
+    <style name="ReportText_Body1" parent="typo_body_m1">
+        <item name="lineHeight">27sp</item>
+    </style>
+
+    <style name="ReportText_Body3" parent="typo_body_m2">
+        <item name="lineHeight">24sp</item>
+    </style>
+
+    <style name="ReportText_Body4" parent="typo_body_b3">
+        <item name="lineHeight">19.6sp</item>
+    </style>
+
+    <style name="ReportText_Caption" parent="typo_cap_r1">
+        <item name="lineHeight">15.6sp</item>
+    </style>
+
+    <style name="report_period_chip" parent="subscribe_filter_chip">
+        <item name="android:textAppearance">@style/ReportText_Body3</item>
+        <item name="android:textSize">@dimen/text_size_body</item>
+    </style>
+</resources>

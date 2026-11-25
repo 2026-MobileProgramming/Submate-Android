@@ -14,31 +14,30 @@
         android:padding="12dp"
         android:background="@drawable/bg_usage_report_card">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="올해 총 구독료"
             android:textColor="@color/gray500"
-            android:textSize="10sp" />
+            android:textAppearance="@style/ReportText_Caption" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvAnnualTotalExpense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="₩243,000"
             android:textColor="@color/appblack"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/ReportText_Body1" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvAnnualAverageExpense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="월평균 ₩24,300"
             android:textColor="@color/gray500"
-            android:textSize="10sp" />
+            android:textAppearance="@style/ReportText_Caption" />
 
     </LinearLayout>
 
@@ -51,23 +50,22 @@
         android:padding="12dp"
         android:background="@drawable/bg_expense_list_card">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="월별 지출"
             android:textColor="@color/appblack"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/ReportText_Body4" />
 
         <!-- 데이터가 없을 때 표시 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvAnnualMonthlyEmpty"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:gravity="center"
             android:text="아직 해당 연도의 결제 내역이 없어요."
             android:textColor="@color/gray500"
-            android:textSize="11sp"
+            android:textAppearance="@style/ReportText_Caption"
             android:visibility="gone" />
 
         <!-- 그래프 영역 -->
@@ -101,23 +99,22 @@
         android:padding="12dp"
         android:background="@drawable/bg_expense_list_card">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="카테고리별 지출"
             android:textColor="@color/appblack"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/ReportText_Body4" />
 
         <!-- 데이터가 없을 때 표시 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvAnnualCategoryEmpty"
             android:layout_width="match_parent"
             android:layout_height="152dp"
             android:gravity="center"
             android:text="아직 해당 연도의 결제 내역이 없어요."
             android:textColor="@color/gray500"
-            android:textSize="11sp"
+            android:textAppearance="@style/ReportText_Caption"
             android:visibility="gone" />
 
         <!-- 카테고리 그래프 영역 -->

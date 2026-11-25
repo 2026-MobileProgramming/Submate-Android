@@ -14,18 +14,18 @@
         android:gravity="center_vertical">
 
         <!-- 서비스 아이콘 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvServiceIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:gravity="center"
             android:text="N"
             android:textColor="@color/appwhite"
-            android:textSize="10sp"
+            android:textAppearance="@style/ReportText_Caption"
             android:background="@drawable/bg_usage_icon_circle" />
 
         <!-- 서비스명 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvServiceName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -33,18 +33,16 @@
             android:layout_marginStart="8dp"
             android:text="넷플릭스"
             android:textColor="@color/appblack"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/ReportText_Body4" />
 
         <!-- 사용 시간 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvServiceUsageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="18시간"
             android:textColor="@color/appblack"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/ReportText_Body4" />
 
     </LinearLayout>
 

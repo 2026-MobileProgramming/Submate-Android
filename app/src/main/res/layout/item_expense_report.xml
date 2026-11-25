@@ -14,26 +14,25 @@
         android:gravity="center_vertical">
 
         <!-- 서비스 아이콘 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvExpenseServiceIcon"
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:gravity="center"
             android:text="N"
             android:textColor="@color/appwhite"
-            android:textSize="10sp"
+            android:textAppearance="@style/ReportText_Caption"
             android:background="@drawable/bg_usage_icon_circle" />
 
         <!-- 서비스명 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvExpenseServiceName"
             android:layout_width="82dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="넷플릭스"
             android:textColor="@color/appblack"
-            android:textSize="11sp"
-            android:textStyle="bold"
+            android:textAppearance="@style/ReportText_Body4"
             android:maxLines="1"
             android:ellipsize="end" />
 
@@ -52,14 +51,13 @@
             android:progressBackgroundTint="@color/pri50" />
 
         <!-- 지출 금액 -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvExpenseServicePrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="₩4,269"
             android:textColor="@color/appblack"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/ReportText_Body4" />
 
     </LinearLayout>
 

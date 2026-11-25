@@ -3,7 +3,6 @@ package com.example.submate.presentation.report.view;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.submate.R;
+import com.google.android.material.textview.MaterialTextView;
 import com.example.submate.domain.model.SubscribeCategory;
 import com.example.submate.presentation.report.ReportCategoryColors;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
@@ -134,9 +134,9 @@ public class AnnualMonthlyChartRenderer {
             monthColumn.addView(bar);
 
             // 월 표시
-            TextView monthLabel = new TextView(context);
+            TextView monthLabel = new MaterialTextView(context);
             monthLabel.setText(item.getMonth() + "월");
-            monthLabel.setTextSize(8);
+            monthLabel.setTextAppearance(R.style.ReportText_Caption);
             monthLabel.setTextColor(
                     context.getResources().getColor(R.color.gray500)
             );
@@ -201,15 +201,14 @@ public class AnnualMonthlyChartRenderer {
             int expense
     ) {
 
-        TextView popupText = new TextView(context);
+        TextView popupText = new MaterialTextView(context);
 
         popupText.setText(
                 String.format(java.util.Locale.KOREA, "₩%,d", expense)
         );
 
         popupText.setTextColor(Color.WHITE);
-        popupText.setTextSize(12);
-        popupText.setTypeface(null, Typeface.BOLD);
+        popupText.setTextAppearance(R.style.ReportText_Body4);
         popupText.setGravity(Gravity.CENTER);
         popupText.setPadding(
                 dpToPx(context, 12),
