@@ -1019,7 +1019,7 @@ public class ReportFragment extends Fragment {
             }
         }
 
-        tvTotalUsageTime.setText(TimeUnit.MILLISECONDS.toHours(totalUsageMillis) + "시간");
+        tvTotalUsageTime.setText(UsageReportItem.formatUsageTime(totalUsageMillis));
 
         layoutUsageSummaryCard.setVisibility(View.VISIBLE);
         boolean hasLowUsage = !lowUsageServiceNames.isEmpty();

@@ -36,7 +36,16 @@ public class UsageReportItem {
     }
 
     public String getUsageTime() {
-        return TimeUnit.MILLISECONDS.toHours(usageMillis) + "시간";
+        return formatUsageTime(usageMillis);
+    }
+
+    public static String formatUsageTime(long usageMillis) {
+        long hours = TimeUnit.MILLISECONDS.toHours(usageMillis);
+        if (hours > 0) {
+            return hours + "시간";
+        }
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(usageMillis);
+        return minutes == 0 ? "1분 미만" : minutes + "분";
     }
 
     public long getUsageMillis() {
