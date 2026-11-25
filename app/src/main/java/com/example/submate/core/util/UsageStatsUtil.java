@@ -1,10 +1,13 @@
 package com.example.submate.core.util;
 
+import android.Manifest;
+import android.app.AppOpsManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Process;
 
 import java.util.List;
 
@@ -13,11 +16,15 @@ public final class UsageStatsUtil {
     }
 
     public static boolean hasUsageAccess(Context context) {
-        UsageStatsManager manager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        AppOpsManager manager = context.getSystemService(AppOpsManager.class);
         if (manager == null) return false;
-        long now = System.currentTimeMillis();
-        List<UsageStats> stats = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, now - 60_000L, now);
-        return stats != null && !stats.isEmpty();
+        int mode = manager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                Process.myUid(), context.getPackageName());
+        if (mode == AppOpsManager.MODE_DEFAULT) {
+            return context.checkSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS)
+                    == PackageManager.PERMISSION_GRANTED;
+        }
+        return mode == AppOpsManager.MODE_ALLOWED;
     }
 
     public static String findPackageNameByLabel(Context context, String serviceName) {

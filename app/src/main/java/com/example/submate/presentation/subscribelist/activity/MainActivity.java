@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private int selectedTabId;
+    private Dialog accessDialog;
     private String currentNickname = "쥐이카와";
     private NotificationDialogManager notificationDialogManager;
 
@@ -85,15 +86,16 @@ public class MainActivity extends AppCompatActivity {
         if (tabId == R.id.navigation_subscribe_list) {
             showSubscribeList();
         } else if (tabId == R.id.navigation_report) {
-            showReport();
+            if (UsageStatsUtil.hasUsageAccess(this)) {
+                showReport();
+            } else {
+                showScreen(R.layout.no_access);
+                showAccessDialog();
+            }
         } else if (tabId == R.id.navigation_setting) {
             showScreen(R.layout.screen_setting);
         } else {
             showCalendar();
-        }
-        if (tabId == R.id.navigation_report && !UsageStatsUtil.hasUsageAccess(this)) {
-            showNoAccessScreen();
-            showAccessDialog();
         }
     }
 
@@ -165,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void showAccessDialog() {
         Dialog dialog = new Dialog(this);
+        accessDialog = dialog;
+        dialog.setOnDismissListener(dismissed -> accessDialog = null);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.access_modal);
         dialog.setCanceledOnTouchOutside(true);
@@ -176,12 +180,7 @@ public class MainActivity extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             window.setAttributes(params);
         }
-        dialog.findViewById(R.id.access_modal_close).setOnClickListener(v -> {
-            dialog.dismiss();
-            if (!UsageStatsUtil.hasUsageAccess(this)) {
-                showNoAccessScreen();
-            }
-        });
+        dialog.findViewById(R.id.access_modal_close).setOnClickListener(v -> dialog.dismiss());
         dialog.findViewById(R.id.access_modal_open_settings).setOnClickListener(v -> {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
             dialog.dismiss();
@@ -192,12 +191,6 @@ public class MainActivity extends AppCompatActivity {
 
     private int dp(int value) {
         return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
-    }
-
-    private void showNoAccessScreen() {
-        FrameLayout container = findViewById(R.id.tab_container);
-        container.removeAllViews();
-        LayoutInflater.from(this).inflate(R.layout.no_access, container, true);
     }
 
     private void updateUsageAccessButton(TextView button) {
@@ -213,8 +206,13 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         TextView button = findViewById(R.id.access_permission_button);
         if (button != null) updateUsageAccessButton(button);
-        if (selectedTabId == R.id.navigation_report && UsageStatsUtil.hasUsageAccess(this)) {
-            showScreen(R.layout.screen_report);
+        if (selectedTabId == R.id.navigation_report) {
+            if (UsageStatsUtil.hasUsageAccess(this)) {
+                if (accessDialog != null) accessDialog.dismiss();
+                showReport();
+            } else {
+                showScreen(R.layout.no_access);
+            }
         }
     }
 
