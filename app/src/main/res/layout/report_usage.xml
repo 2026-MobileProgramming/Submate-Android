@@ -34,7 +34,7 @@
             android:layout_marginTop="8dp"
             android:text="26시간"
             android:textColor="@color/appblack"
-            android:textAppearance="@style/ReportText_Body1" />
+            android:textAppearance="@style/ReportText_SummaryValue" />
 
         <!-- 서비스별 사용량 목록 -->
         <androidx.recyclerview.widget.RecyclerView

@@ -9,7 +9,8 @@
         <item name="android:textSize">@dimen/text_size_title</item>
     </style>
 
-    <style name="ReportText_Body1" parent="typo_body_m1">
+    <style name="ReportText_SummaryValue" parent="typo_body_m1">
+        <item name="android:fontFamily">@font/pretendard_bold</item>
         <item name="lineHeight">27sp</item>
     </style>
 

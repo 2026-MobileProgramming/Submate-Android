@@ -28,7 +28,7 @@
             android:layout_marginTop="8dp"
             android:text="₩243,000"
             android:textColor="@color/appblack"
-            android:textAppearance="@style/ReportText_Body1" />
+            android:textAppearance="@style/ReportText_SummaryValue" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvAnnualAverageExpense"
