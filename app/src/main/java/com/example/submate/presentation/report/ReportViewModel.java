@@ -9,6 +9,7 @@ import com.example.submate.domain.repository.SubscribeRepository;
 import com.example.submate.domain.repository.InstalledAppRepository;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -60,6 +61,21 @@ public class ReportViewModel extends ViewModel {
     // 구독 목록 관찰
     public LiveData<List<SubscribeItem>> getSubscribeList() {
         return subscribeList;
+    }
+
+    public long getExpenseThrough(List<SubscribeItem> items, Calendar endDate) {
+        int year = endDate.get(Calendar.YEAR);
+        int endMonth = endDate.get(Calendar.MONTH) + 1;
+        long total = 0;
+
+        for (int month = 1; month <= endMonth; month++) {
+            int cutoffDay = month == endMonth ? endDate.get(Calendar.DAY_OF_MONTH) : 31;
+            for (SubscribeItem item : getPaidSubscriptionsForMonth(items, year, month, cutoffDay)) {
+                total += item.getKrwAmount();
+            }
+        }
+
+        return total;
     }
 
     // 선택한 월에 결제일이 지난 구독 목록 반환

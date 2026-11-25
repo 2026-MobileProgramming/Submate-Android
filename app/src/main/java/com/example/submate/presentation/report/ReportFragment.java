@@ -165,6 +165,7 @@ public class ReportFragment extends Fragment {
                 subscribeItems -> {
                     updateMonthlyExpenseReport(subscribeItems);
                     updateAnnualExpenseReport(subscribeItems);
+                    setupAllYearlyChart(subscribeItems);
                 }
         );
 
@@ -174,8 +175,7 @@ public class ReportFragment extends Fragment {
         );
 
         // 전체 지출 리포트
-        setupAllExpenseSummary();
-        setupAllYearlyChart();
+        setupAllServiceCount();
         setupAllCategoryChart();
 
         setupReportTypeButtons();
@@ -384,6 +384,9 @@ public class ReportFragment extends Fragment {
                 !isUsageReportSelected && isAll
                         ? View.VISIBLE : View.GONE
         );
+        if (!isUsageReportSelected && isAll) {
+            setupAllYearlyChart(viewModel.getSubscribeList().getValue());
+        }
         // 전체 탭에서는 기존 월간 이동 영역 숨기기
         layoutReportPeriodNavigation.setVisibility(
                 !isUsageReportSelected && isAll
@@ -572,15 +575,35 @@ public class ReportFragment extends Fragment {
         );
     }
 
-    private void setupAllYearlyChart() {
+    private void setupAllYearlyChart(List<SubscribeItem> subscribeItems) {
 
-        AllExpenseData allData =
-                ReportDummyData.getAllExpenseData();
+        Calendar today = Calendar.getInstance();
+        int currentYear = today.get(Calendar.YEAR);
+        List<AllExpenseData.YearlyExpense> yearlyExpenses = new ArrayList<>();
+        for (AllExpenseData.YearlyExpense expense : ReportDummyData.getAllExpenseData().getYearlyExpenses()) {
+            if (expense.getYear() < currentYear) {
+                yearlyExpenses.add(expense);
+            }
+        }
+        yearlyExpenses.add(new AllExpenseData.YearlyExpense(
+                currentYear, viewModel.getExpenseThrough(subscribeItems, today)
+        ));
+
+        long totalExpense = 0;
+        for (AllExpenseData.YearlyExpense expense : yearlyExpenses) {
+            totalExpense += expense.getAmount();
+        }
+        tvAllTotalExpense.setText(String.format(Locale.KOREA, "₩%,d", totalExpense));
+
+        Calendar yearEnd = (Calendar) today.clone();
+        yearEnd.set(currentYear, Calendar.DECEMBER, 31);
 
         AllYearlyChartRenderer.render(
                 requireContext(),
                 layoutAllYearlyChart,
-                allData.getYearlyExpenses()
+                yearlyExpenses,
+                currentYear,
+                viewModel.getExpenseThrough(subscribeItems, yearEnd)
         );
     }
 
@@ -601,18 +624,10 @@ public class ReportFragment extends Fragment {
         );
     }
 
-    private void setupAllExpenseSummary() {
+    private void setupAllServiceCount() {
 
         AllExpenseData allData =
                 ReportDummyData.getAllExpenseData();
-
-        tvAllTotalExpense.setText(
-                String.format(
-                        Locale.KOREA,
-                        "₩%,d",
-                        allData.getTotalExpense()
-                )
-        );
 
         tvAllServiceCount.setText(
                 "구독 서비스 " + allData.getServiceCount() + "개"

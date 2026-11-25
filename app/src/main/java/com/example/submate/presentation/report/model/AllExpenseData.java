@@ -48,9 +48,9 @@ public class AllExpenseData {
     public static class YearlyExpense {
 
         private final int year;
-        private final int amount;
+        private final long amount;
 
-        public YearlyExpense(int year, int amount) {
+        public YearlyExpense(int year, long amount) {
             this.year = year;
             this.amount = amount;
         }
@@ -59,7 +59,7 @@ public class AllExpenseData {
             return year;
         }
 
-        public int getAmount() {
+        public long getAmount() {
             return amount;
         }
     }
