@@ -36,6 +36,7 @@ import com.example.submate.domain.model.SubscribeCategory;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.List;
 import java.util.LinkedHashMap;
@@ -155,6 +156,7 @@ public class ReportFragment extends Fragment {
 
         setupUsageReportRecyclerView();
         setupExpenseReportRecyclerView();
+        viewModel.getMonthlyUsage().observe(getViewLifecycleOwner(), this::renderUsageReport);
 
         // 실제 구독 목록 변경 감지
         viewModel.getSubscribeList().observe(
@@ -420,7 +422,7 @@ public class ReportFragment extends Fragment {
 
         if (isUsageReportSelected) {
             // 사용량 탭이면 선택한 월의 사용량 갱신
-            updateUsageReport();
+            viewModel.loadMonthlyUsage(selectedReportDate);
 
         } else {
             if (selectedPeriodButton == btnPeriodMonth) {
@@ -478,20 +480,12 @@ public class ReportFragment extends Fragment {
 
 
     private void setupUsageReportRecyclerView() {
-
-        List<UsageReportItem> usageList =
-                ReportDummyData.getUsageReportData(
-                        requireContext(),
-                        selectedReportDate.get(Calendar.YEAR),
-                        selectedReportDate.get(Calendar.MONTH) + 1
-                );
-
         // RecyclerView 설정
         rvUsageReport.setLayoutManager(
                 new LinearLayoutManager(requireContext())
         );
 
-        usageReportAdapter = new UsageReportAdapter(usageList);
+        usageReportAdapter = new UsageReportAdapter(Collections.emptyList());
 
         rvUsageReport.setAdapter(usageReportAdapter);
     }
@@ -983,21 +977,8 @@ public class ReportFragment extends Fragment {
             tvExpenseEmpty.setVisibility(View.GONE);
         }
     }
-    // 선택한 월의 사용량 리포트 갱신
-    private void updateUsageReport() {
-
-        int year = selectedReportDate.get(Calendar.YEAR);
-        int month = selectedReportDate.get(Calendar.MONTH) + 1;
-
-        // 선택한 연월에 맞는 사용량 데이터 가져오기
-        List<UsageReportItem> usageList =
-                ReportDummyData.getUsageReportData(
-                        requireContext(),
-                        year,
-                        month
-                );
-
-        // RecyclerView 목록 갱신
+    private void renderUsageReport(@Nullable ReportViewModel.MonthlyUsageReport report) {
+        List<UsageReportItem> usageList = report == null ? Collections.emptyList() : report.items;
         usageReportAdapter.setUsageList(usageList);
 
         // 데이터가 없는 경우
@@ -1012,6 +993,15 @@ public class ReportFragment extends Fragment {
             // 사용량 목록 대신 데이터 없음 안내 표시
             rvUsageReport.setVisibility(View.GONE);
             tvUsageEmpty.setVisibility(View.VISIBLE);
+            int message = R.string.report_usage_no_records;
+            if (report == null) {
+                message = R.string.report_usage_loading;
+            } else if (report.queryFailed) {
+                message = R.string.report_usage_unavailable;
+            } else if (report.unlinkedSubscriptionCount > 0 && report.packagesWithoutRecords == 0) {
+                message = R.string.report_usage_no_linked_apps;
+            }
+            tvUsageEmpty.setText(message);
 
             // 경고 카드는 숨김
             layoutUsageWarningCard.setVisibility(View.GONE);

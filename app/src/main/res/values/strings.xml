@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Submate</string>
     <string name="report_low_usage_message">%1$s 한달동안 거의 사용하지 않았어요.\n구독 유지 여부를 다시 한번 확인해보세요.</string>
+    <string name="report_usage_loading">사용량을 불러오는 중이에요.</string>
+    <string name="report_usage_unavailable">사용량을 불러올 수 없어요.</string>
+    <string name="report_usage_no_records">해당 월의 사용량 데이터가 없어요.</string>
+    <string name="report_usage_no_linked_apps">등록한 구독에 연결된 앱이 없어요.</string>
     <string name="report_year_projection">%1$d 예상 구독료</string>
     <string name="report_year_expense_description">%1$s, %2$,d원</string>
 </resources>

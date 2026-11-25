@@ -9,7 +9,15 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Process;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
+
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public final class UsageStatsUtil {
     private UsageStatsUtil() {
@@ -25,6 +33,51 @@ public final class UsageStatsUtil {
                     == PackageManager.PERMISSION_GRANTED;
         }
         return mode == AppOpsManager.MODE_ALLOWED;
+    }
+
+    /** Returns recorded foreground time by package, or null when stats are unavailable. */
+    @WorkerThread
+    @Nullable
+    public static Map<String, Long> queryMonthlyUsageMillis(
+            @NonNull Context context,
+            @NonNull Calendar selectedMonth,
+            @NonNull Set<String> packageNames
+    ) {
+        Map<String, Long> usageByPackage = new HashMap<>();
+        if (packageNames.isEmpty()) return usageByPackage;
+
+        Calendar monthStart = (Calendar) selectedMonth.clone();
+        monthStart.set(Calendar.DAY_OF_MONTH, 1);
+        monthStart.set(Calendar.HOUR_OF_DAY, 0);
+        monthStart.set(Calendar.MINUTE, 0);
+        monthStart.set(Calendar.SECOND, 0);
+        monthStart.set(Calendar.MILLISECOND, 0);
+
+        Calendar nextMonthStart = (Calendar) monthStart.clone();
+        nextMonthStart.add(Calendar.MONTH, 1);
+        nextMonthStart.set(Calendar.HOUR_OF_DAY, 0);
+        long startMillis = monthStart.getTimeInMillis();
+        long endMillis = Math.min(nextMonthStart.getTimeInMillis(), System.currentTimeMillis());
+        if (endMillis <= startMillis) return usageByPackage;
+
+        UsageStatsManager manager = context.getSystemService(UsageStatsManager.class);
+        if (manager == null || !hasUsageAccess(context)) return null;
+
+        List<UsageStats> stats;
+        try {
+            stats = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startMillis, endMillis);
+        } catch (SecurityException exception) {
+            return null;
+        }
+        if (stats == null || !hasUsageAccess(context)) return null;
+
+        for (UsageStats usage : stats) {
+            String packageName = usage.getPackageName();
+            if (packageNames.contains(packageName)) {
+                usageByPackage.merge(packageName, usage.getTotalTimeInForeground(), Long::sum);
+            }
+        }
+        return usageByPackage;
     }
 
     public static String findPackageNameByLabel(Context context, String serviceName) {
