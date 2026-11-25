@@ -55,10 +55,7 @@ public class AnnualMonthlyChartRenderer {
                             dpToPx(context, 150)
                     );
 
-            columnParams.setMargins(
-                    dpToPx(context, 5), 0,
-                    dpToPx(context, 5), 0
-            );
+            columnParams.setMarginStart(dpToPx(context, 8));
 
             monthColumn.setLayoutParams(columnParams);
 
@@ -211,10 +208,10 @@ public class AnnualMonthlyChartRenderer {
         popupText.setTextAppearance(R.style.ReportText_Body4);
         popupText.setGravity(Gravity.CENTER);
         popupText.setPadding(
-                dpToPx(context, 12),
-                dpToPx(context, 7),
-                dpToPx(context, 12),
-                dpToPx(context, 7)
+                dpToPx(context, 16),
+                dpToPx(context, 8),
+                dpToPx(context, 16),
+                dpToPx(context, 8)
         );
 
         // 팝업 배경 둥글게
@@ -250,7 +247,7 @@ public class AnnualMonthlyChartRenderer {
         popupWindow.showAsDropDown(
                 anchor,
                 (anchor.getWidth() - popupText.getMeasuredWidth()) / 2,
-                -anchor.getHeight() - dpToPx(context, 45)
+                -anchor.getHeight() - dpToPx(context, 48)
         );
 
         // 약 1.5초 후 자동으로 닫기

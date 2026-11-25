@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp"
+        android:padding="16dp"
         android:background="@drawable/bg_usage_report_card">
 
         <!-- 카드 제목 -->
@@ -28,7 +28,7 @@
             android:id="@+id/tvTotalExpense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:text="₩19,375"
             android:textColor="@color/appblack"
             android:textAppearance="@style/ReportText_Body1" />
@@ -38,7 +38,7 @@
             android:id="@+id/tvExpenseComparison"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:text="지난달보다 ▲ ₩1,500"
             android:textColor="@color/error800"
             android:textAppearance="@style/ReportText_Caption" />
@@ -48,7 +48,7 @@
             android:id="@+id/layoutMonthlyCategoryBar"
             android:layout_width="match_parent"
             android:layout_height="6dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
@@ -135,9 +135,9 @@
         android:id="@+id/layoutExpenseListCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical"
-        android:padding="10dp"
+        android:padding="8dp"
         android:background="@drawable/bg_expense_list_card">
 
         <com.google.android.material.textview.MaterialTextView

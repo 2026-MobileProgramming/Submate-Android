@@ -158,10 +158,10 @@ public class AllYearlyChartRenderer {
         popupText.setGravity(Gravity.CENTER);
 
         popupText.setPadding(
-                dpToPx(context, 12),
-                dpToPx(context, 7),
-                dpToPx(context, 12),
-                dpToPx(context, 7)
+                dpToPx(context, 16),
+                dpToPx(context, 8),
+                dpToPx(context, 16),
+                dpToPx(context, 8)
         );
 
         GradientDrawable background = new GradientDrawable();
@@ -193,7 +193,7 @@ public class AllYearlyChartRenderer {
         popupWindow.showAsDropDown(
                 anchor,
                 (anchor.getWidth() - popupText.getMeasuredWidth()) / 2,
-                -anchor.getHeight() - dpToPx(context, 45)
+                -anchor.getHeight() - dpToPx(context, 48)
         );
 
         // 1.5초 후 자동으로 닫기

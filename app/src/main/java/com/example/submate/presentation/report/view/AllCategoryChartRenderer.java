@@ -64,12 +64,9 @@ public class AllCategoryChartRenderer {
                             amount
                     );
 
-            segmentParams.setMargins(
-                    0,
-                    0,
-                    dpToPx(context, 2),
-                    0
-            );
+            if (categoryBar.getChildCount() > 0) {
+                segmentParams.setMarginStart(dpToPx(context, 8));
+            }
 
             categoryBar.addView(segment, segmentParams);
 
@@ -101,7 +98,7 @@ public class AllCategoryChartRenderer {
             badgeBackground.setColor(
                     ReportCategoryColors.getColor(context, item.getCategory())
             );
-            badgeBackground.setCornerRadius(dpToPx(context, 9));
+            badgeBackground.setCornerRadius(dpToPx(context, 4));
 
             categoryBadge.setBackground(badgeBackground);
 
@@ -128,7 +125,7 @@ public class AllCategoryChartRenderer {
                             1
                     );
 
-            nameParams.leftMargin = dpToPx(context, 10);
+            nameParams.setMarginStart(dpToPx(context, 8));
             row.addView(nameText, nameParams);
 
             // 지출 비율

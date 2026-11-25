@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="12dp"
+    android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
     <!-- 서비스 이름 + 사용 시간 -->
@@ -51,7 +51,7 @@
         android:id="@+id/progressServiceUsage"
         android:layout_width="match_parent"
         android:layout_height="6dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:progress="50"
         android:max="100"
         android:progressTint="@color/pastel_red"

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="8dp"
-    android:paddingBottom="4dp">
+    android:paddingBottom="8dp">
 
     <!-- 아이콘 / 서비스명 / 막대그래프 / 가격 -->
     <LinearLayout
@@ -44,7 +44,7 @@
             android:layout_height="5dp"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:progress="50"
             android:max="100"
             android:progressTint="@color/pastel_blue"

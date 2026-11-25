@@ -193,9 +193,20 @@ public class ReportFragment extends Fragment {
         TextViewCompat.setLineHeight(tvHeaderTitle,
                 getResources().getDimensionPixelSize(R.dimen.report_heading1_line_height));
         tvHeaderTitle.setText("리포트");
+        ViewGroup.MarginLayoutParams titleParams =
+                (ViewGroup.MarginLayoutParams) tvHeaderTitle.getLayoutParams();
+        titleParams.setMarginStart(getResources().getDimensionPixelSize(
+                R.dimen.report_content_horizontal_inset));
+        tvHeaderTitle.setLayoutParams(titleParams);
 
         // 알림 버튼 클릭 시 알림 화면으로 이동
-        view.findViewById(R.id.iv_subscribe_notification).setOnClickListener(v -> {
+        View notificationButton = view.findViewById(R.id.iv_subscribe_notification);
+        ViewGroup.MarginLayoutParams notificationParams =
+                (ViewGroup.MarginLayoutParams) notificationButton.getLayoutParams();
+        notificationParams.setMarginEnd(getResources().getDimensionPixelSize(
+                R.dimen.report_header_notification_margin));
+        notificationButton.setLayoutParams(notificationParams);
+        notificationButton.setOnClickListener(v -> {
             ((MainActivity) requireActivity()).openNotifications();
         });
 

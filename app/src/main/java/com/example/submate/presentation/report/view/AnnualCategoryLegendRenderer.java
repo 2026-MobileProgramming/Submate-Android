@@ -50,7 +50,7 @@ public class AnnualCategoryLegendRenderer {
                             dpToPx(context, 24)
                     );
 
-            rowParams.bottomMargin = dpToPx(context, 4);
+            rowParams.bottomMargin = dpToPx(context, 8);
             row.setLayoutParams(rowParams);
 
             // 색상 원형 표시

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp"
+        android:padding="16dp"
         android:background="@drawable/bg_usage_report_card">
 
         <com.google.android.material.textview.MaterialTextView
@@ -25,7 +25,7 @@
             android:id="@+id/tvAnnualTotalExpense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:text="₩243,000"
             android:textColor="@color/appblack"
             android:textAppearance="@style/ReportText_Body1" />
@@ -34,7 +34,7 @@
             android:id="@+id/tvAnnualAverageExpense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:text="월평균 ₩24,300"
             android:textColor="@color/gray500"
             android:textAppearance="@style/ReportText_Caption" />
@@ -45,9 +45,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical"
-        android:padding="12dp"
+        android:padding="16dp"
         android:background="@drawable/bg_expense_list_card">
 
         <com.google.android.material.textview.MaterialTextView
@@ -83,8 +83,8 @@
                 android:layout_height="150dp"
                 android:orientation="horizontal"
                 android:gravity="bottom"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp" />
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
 
         </HorizontalScrollView>
 
@@ -94,9 +94,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical"
-        android:padding="12dp"
+        android:padding="16dp"
         android:background="@drawable/bg_expense_list_card">
 
         <com.google.android.material.textview.MaterialTextView
@@ -139,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:layout_marginStart="12dp" />
+                android:layout_marginStart="8dp" />
 
         </LinearLayout>
 

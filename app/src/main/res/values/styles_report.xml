@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="report_content_horizontal_inset">24dp</dimen>
+    <dimen name="report_header_notification_margin">16dp</dimen>
     <dimen name="report_heading1_line_height">33.6sp</dimen>
 
     <style name="ReportText_Heading1" parent="typo_title_b1">
@@ -24,6 +26,8 @@
     </style>
 
     <style name="report_period_chip" parent="subscribe_filter_chip">
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
         <item name="android:textAppearance">@style/ReportText_Body3</item>
         <item name="android:textSize">@dimen/text_size_body</item>
     </style>
