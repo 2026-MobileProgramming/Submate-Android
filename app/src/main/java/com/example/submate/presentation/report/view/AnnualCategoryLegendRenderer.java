@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.graphics.Typeface;
 
 import com.example.submate.R;
+import com.example.submate.presentation.report.ReportCategoryColors;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
 
 import java.util.List;
@@ -21,24 +22,10 @@ public class AnnualCategoryLegendRenderer {
             Context context,
             LinearLayout legendLayout,
             List<AnnualExpenseData.CategoryExpense> categoryList,
-            int totalExpense,
-            int colorOtt,
-            int colorAi,
-            int colorFood
+            int totalExpense
     ) {
         // 기존 목록 초기화
         legendLayout.removeAllViews();
-
-        // 카테고리별 색상
-        int[] categoryColors = {
-                context.getResources().getColor(R.color.pastel_red),    // OTT
-                context.getResources().getColor(R.color.pastel_purple), // 음악
-                context.getResources().getColor(R.color.pastel_yellow), // 외식
-                context.getResources().getColor(R.color.pastel_green),  // 쇼핑
-                context.getResources().getColor(R.color.pastel_blue),   // AI
-                context.getResources().getColor(R.color.pastel_orange), // 디지털 콘텐츠
-                context.getResources().getColor(R.color.gray500)        // 기타
-        };
 
         // 카테고리별 목록 생성
         for (int i = 0; i < categoryList.size(); i++) {
@@ -72,7 +59,7 @@ public class AnnualCategoryLegendRenderer {
             GradientDrawable dotBackground = new GradientDrawable();
             dotBackground.setShape(GradientDrawable.OVAL);
             dotBackground.setColor(
-                    categoryColors[i % categoryColors.length]
+                    ReportCategoryColors.getColor(context, item.getCategory())
             );
 
             colorDot.setBackground(dotBackground);

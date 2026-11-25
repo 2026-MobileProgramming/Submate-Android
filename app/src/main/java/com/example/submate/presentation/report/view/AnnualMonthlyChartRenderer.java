@@ -14,42 +14,17 @@ import android.widget.TextView;
 
 import com.example.submate.R;
 import com.example.submate.domain.model.SubscribeCategory;
+import com.example.submate.presentation.report.ReportCategoryColors;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
 
 import java.util.List;
 
 public class AnnualMonthlyChartRenderer {
 
-    // 기존 3개 카테고리 호출과의 호환성을 위한 메서드
     public static void render(
             Context context,
             LinearLayout chartLayout,
-            List<AnnualExpenseData.MonthlyExpense> monthlyList,
-            int colorOtt,
-            int colorAi,
-            int colorFood
-    ) {
-        int gray = context.getResources().getColor(R.color.gray500);
-
-        int[] categoryColors = {
-                colorOtt,
-                gray,
-                colorFood,
-                gray,
-                colorAi,
-                gray,
-                gray
-        };
-
-        render(context, chartLayout, monthlyList, categoryColors);
-    }
-
-    // 7개 카테고리를 사용하는 연간 월별 지출 그래프
-    public static void render(
-            Context context,
-            LinearLayout chartLayout,
-            List<AnnualExpenseData.MonthlyExpense> monthlyList,
-            int[] categoryColors
+            List<AnnualExpenseData.MonthlyExpense> monthlyList
     ) {
 
         chartLayout.removeAllViews();
@@ -134,30 +109,13 @@ public class AnnualMonthlyChartRenderer {
                 stack.setBackground(stackBackground);
                 stack.setClipToOutline(true);
 
-                // 카테고리별 금액과 색상
-                int[] categoryAmounts = {
-                        item.getOttExpense(),
-                        item.getMusicExpense(),
-                        item.getFoodExpense(),
-                        item.getShoppingExpense(),
-                        item.getAiExpense(),
-                        item.getDigitalContentExpense(),
-                        item.getEtcExpense()
-                };
-
-                // 7개 카테고리 막대 조각 생성
-                for (int i = 0; i < categoryAmounts.length; i++) {
-
-                    if (i >= categoryColors.length) {
-                        break;
-                    }
-
+                for (SubscribeCategory category : SubscribeCategory.values()) {
                     addChartSegment(
                             context,
                             stack,
-                            categoryAmounts[i],
+                            item.getExpense(category),
                             total,
-                            categoryColors[i]
+                            ReportCategoryColors.getColor(context, category)
                     );
                 }
 

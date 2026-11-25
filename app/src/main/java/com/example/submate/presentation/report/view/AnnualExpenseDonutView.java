@@ -11,26 +11,13 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.example.submate.R;
+import com.example.submate.presentation.report.ReportCategoryColors;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
 
 import java.util.List;
 
 public class AnnualExpenseDonutView extends View {
 
-    // 도넛 그래프 색상
-    private int[] categoryColors;
-
-    private void setupColors() {
-        categoryColors = new int[]{
-                getResources().getColor(R.color.pastel_red),    // OTT
-                getResources().getColor(R.color.pastel_purple), // 음악
-                getResources().getColor(R.color.pastel_yellow), // 외식
-                getResources().getColor(R.color.pastel_green),  // 쇼핑
-                getResources().getColor(R.color.pastel_blue),   // AI
-                getResources().getColor(R.color.pastel_orange), // 디지털 콘텐츠
-                getResources().getColor(R.color.gray500)        // 기타
-        };
-    }
     private final Paint chartPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -68,7 +55,6 @@ public class AnnualExpenseDonutView extends View {
                         getResources().getDisplayMetrics()
                 )
         );
-        setupColors();
     }
 
     // 카테고리별 지출 데이터 전달
@@ -127,7 +113,7 @@ public class AnnualExpenseDonutView extends View {
             float sweepAngle = amount * 360f / totalExpense;
 
             chartPaint.setColor(
-                    categoryColors[i % categoryColors.length]
+                    ReportCategoryColors.getColor(getContext(), categoryList.get(i).getCategory())
             );
             chartPaint.setStrokeWidth(strokeWidth);
 

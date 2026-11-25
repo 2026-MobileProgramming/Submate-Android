@@ -97,11 +97,6 @@ public class ReportFragment extends Fragment {
     private TextView tvAnnualTotalExpense;
     private TextView tvAnnualAverageExpense;
 
-    // 연간 그래프 색상
-    private int colorOtt;
-    private int colorAi;
-    private int colorFood;
-
     // 연간 지출 카테고리 그래프
     private AnnualExpenseDonutView annualDonutChart;
     private LinearLayout layoutAnnualCategoryLegend;
@@ -154,7 +149,6 @@ public class ReportFragment extends Fragment {
 
         initViews(view);
         selectedReportDate = Calendar.getInstance();
-        setupChartColors();
 
         setupUsageReportRecyclerView();
         setupExpenseReportRecyclerView();
@@ -539,23 +533,11 @@ public class ReportFragment extends Fragment {
         tvAnnualCategoryEmpty.setVisibility(hasData ? View.GONE : View.VISIBLE);
         layoutAnnualCategoryChart.setVisibility(hasData ? View.VISIBLE : View.GONE);
 
-        // 카테고리 색상 배열
-        int[] categoryColors = {
-                getCategoryColor(SubscribeCategory.OTT),
-                getCategoryColor(SubscribeCategory.MUSIC),
-                getCategoryColor(SubscribeCategory.FOOD),
-                getCategoryColor(SubscribeCategory.SHOPPING),
-                getCategoryColor(SubscribeCategory.AI),
-                getCategoryColor(SubscribeCategory.DIGITAL_CONTENT),
-                getCategoryColor(SubscribeCategory.ETC)
-        };
-
         // 월별 지출 그래프
         AnnualMonthlyChartRenderer.render(
                 requireContext(),
                 layoutAnnualMonthlyChart,
-                annualData.getMonthlyExpenses(),
-                categoryColors
+                annualData.getMonthlyExpenses()
         );
 
         // 카테고리 도넛 그래프
@@ -568,10 +550,7 @@ public class ReportFragment extends Fragment {
                 requireContext(),
                 layoutAnnualCategoryLegend,
                 annualData.getCategoryExpenses(),
-                totalExpense,
-                colorOtt,
-                colorAi,
-                colorFood
+                totalExpense
         );
     }
 
@@ -617,10 +596,7 @@ public class ReportFragment extends Fragment {
                 layoutAllCategoryBar,
                 layoutAllCategoryList,
                 allData.getCategoryExpenses(),
-                allData.getTotalExpense(),
-                colorOtt,
-                colorAi,
-                colorFood
+                allData.getTotalExpense()
         );
     }
 
@@ -693,12 +669,6 @@ public class ReportFragment extends Fragment {
         }
     }
 
-
-    private void setupChartColors() {
-        colorOtt = getResources().getColor(R.color.pastel_red);
-        colorAi = getResources().getColor(R.color.pastel_blue);
-        colorFood = getResources().getColor(R.color.pastel_yellow);
-    }
 
     // 실제 구독 데이터로 연간 지출 데이터 생성
     private AnnualExpenseData calculateAnnualExpenseData(
@@ -823,7 +793,7 @@ public class ReportFragment extends Fragment {
 
             categoryExpenses.add(
                     new AnnualExpenseData.CategoryExpense(
-                            category.getLabel(),
+                            category,
                             (int) amount
                     )
             );
@@ -964,25 +934,7 @@ public class ReportFragment extends Fragment {
                     ? (int) Math.round(price * 100.0 / totalExpense)
                     : 0;
 
-            int categoryColor;
-
-            switch (item.getCategory()) {
-                case OTT:
-                    categoryColor = colorOtt;
-                    break;
-
-                case AI:
-                    categoryColor = colorAi;
-                    break;
-
-                case FOOD:
-                    categoryColor = colorFood;
-                    break;
-
-                default:
-                    categoryColor = getResources().getColor(R.color.gray500);
-                    break;
-            }
+            int categoryColor = ReportCategoryColors.getColor(requireContext(), item.getCategory());
 
             expenseList.add(
                     new ExpenseReportItem(
@@ -1100,32 +1052,6 @@ public class ReportFragment extends Fragment {
         rvExpenseReport.setVisibility(View.GONE);
         tvExpenseEmpty.setVisibility(View.VISIBLE);
     }
-    // 카테고리별 그래프 색상 반환
-    private int getCategoryColor(SubscribeCategory category) {
-        switch (category) {
-            case OTT:
-                return getResources().getColor(R.color.pastel_red);
-
-            case MUSIC:
-                return getResources().getColor(R.color.pastel_purple);
-
-            case FOOD:
-                return getResources().getColor(R.color.pastel_yellow);
-
-            case SHOPPING:
-                return getResources().getColor(R.color.pastel_green);
-
-            case AI:
-                return getResources().getColor(R.color.pastel_blue);
-
-            case DIGITAL_CONTENT:
-                return getResources().getColor(R.color.pastel_orange);
-
-            case ETC:
-            default:
-                return getResources().getColor(R.color.gray500);
-        }
-    }
     // 월간 카테고리별 지출 그래프 및 범례 생성
     private void updateMonthlyCategoryChart(
             List<SubscribeItem> paidList,
@@ -1171,7 +1097,7 @@ public class ReportFragment extends Fragment {
                 continue;
             }
 
-            int color = getCategoryColor(category);
+            int color = ReportCategoryColors.getColor(requireContext(), category);
 
             // 막대 그래프 생성
             View bar = new View(requireContext());

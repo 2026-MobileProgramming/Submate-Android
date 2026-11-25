@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.submate.R;
+import com.example.submate.presentation.report.ReportCategoryColors;
 import com.example.submate.presentation.report.model.AllExpenseData;
 
 import java.util.List;
@@ -23,20 +24,11 @@ public class AllCategoryChartRenderer {
             LinearLayout categoryBar,
             LinearLayout categoryListLayout,
             List<AllExpenseData.CategoryExpense> categoryList,
-            int totalExpense,
-            int colorOtt,
-            int colorAi,
-            int colorFood
+            int totalExpense
     ) {
 
         categoryBar.removeAllViews();
         categoryListLayout.removeAllViews();
-
-        int[] categoryColors = {
-                colorOtt,
-                colorAi,
-                colorFood
-        };
 
         if (totalExpense <= 0) {
             return;
@@ -59,7 +51,7 @@ public class AllCategoryChartRenderer {
 
             GradientDrawable segmentBackground = new GradientDrawable();
             segmentBackground.setColor(
-                    categoryColors[i % categoryColors.length]
+                    ReportCategoryColors.getColor(context, item.getCategory())
             );
             segmentBackground.setCornerRadius(dpToPx(context, 5));
 
@@ -108,7 +100,7 @@ public class AllCategoryChartRenderer {
 
             GradientDrawable badgeBackground = new GradientDrawable();
             badgeBackground.setColor(
-                    categoryColors[i % categoryColors.length]
+                    ReportCategoryColors.getColor(context, item.getCategory())
             );
             badgeBackground.setCornerRadius(dpToPx(context, 9));
 

@@ -2,7 +2,8 @@ package com.example.submate.presentation.report.data;
 
 import android.content.Context;
 
-import com.example.submate.R;
+import com.example.submate.domain.model.SubscribeCategory;
+import com.example.submate.presentation.report.ReportCategoryColors;
 import com.example.submate.presentation.report.model.UsageReportItem;
 import com.example.submate.presentation.report.model.ExpenseReportItem;
 import com.example.submate.presentation.report.model.AnnualExpenseData;
@@ -36,8 +37,8 @@ public class ReportDummyData {
                     "넷",
                     TimeUnit.HOURS.toMillis(18),
                     100,
-                    context.getResources().getColor(R.color.pastel_red),
-                    context.getResources().getColor(R.color.pastel_red)
+                    ReportCategoryColors.getColor(context, SubscribeCategory.OTT),
+                    ReportCategoryColors.getColor(context, SubscribeCategory.OTT)
             ));
 
             usageList.add(new UsageReportItem(
@@ -45,8 +46,8 @@ public class ReportDummyData {
                     "G",
                     TimeUnit.HOURS.toMillis(7),
                     39,
-                    context.getResources().getColor(R.color.pastel_blue),
-                    context.getResources().getColor(R.color.pastel_blue)
+                    ReportCategoryColors.getColor(context, SubscribeCategory.AI),
+                    ReportCategoryColors.getColor(context, SubscribeCategory.AI)
             ));
 
             usageList.add(new UsageReportItem(
@@ -54,8 +55,8 @@ public class ReportDummyData {
                     "라",
                     TimeUnit.HOURS.toMillis(1),
                     6,
-                    context.getResources().getColor(R.color.pastel_red),
-                    context.getResources().getColor(R.color.pastel_red)
+                    ReportCategoryColors.getColor(context, SubscribeCategory.OTT),
+                    ReportCategoryColors.getColor(context, SubscribeCategory.OTT)
             ));
 
         }
@@ -68,8 +69,8 @@ public class ReportDummyData {
                     "넷",
                     TimeUnit.HOURS.toMillis(12),
                     100,
-                    context.getResources().getColor(R.color.pastel_red),
-                    context.getResources().getColor(R.color.pastel_red)
+                    ReportCategoryColors.getColor(context, SubscribeCategory.OTT),
+                    ReportCategoryColors.getColor(context, SubscribeCategory.OTT)
             ));
 
             usageList.add(new UsageReportItem(
@@ -77,8 +78,8 @@ public class ReportDummyData {
                     "G",
                     TimeUnit.HOURS.toMillis(5),
                     42,
-                    context.getResources().getColor(R.color.pastel_blue),
-                    context.getResources().getColor(R.color.pastel_blue)
+                    ReportCategoryColors.getColor(context, SubscribeCategory.AI),
+                    ReportCategoryColors.getColor(context, SubscribeCategory.AI)
             ));
 
             usageList.add(new UsageReportItem(
@@ -86,8 +87,8 @@ public class ReportDummyData {
                     "라",
                     TimeUnit.HOURS.toMillis(4),
                     33,
-                    context.getResources().getColor(R.color.pastel_red),
-                    context.getResources().getColor(R.color.pastel_red)
+                    ReportCategoryColors.getColor(context, SubscribeCategory.OTT),
+                    ReportCategoryColors.getColor(context, SubscribeCategory.OTT)
             ));
         }
 
@@ -107,8 +108,8 @@ public class ReportDummyData {
                 "C",
                 5000,
                 100,
-                context.getResources().getColor(R.color.pastel_blue),
-                context.getResources().getColor(R.color.pastel_blue)
+                ReportCategoryColors.getColor(context, SubscribeCategory.AI),
+                ReportCategoryColors.getColor(context, SubscribeCategory.AI)
         ));
 
         expenseList.add(new ExpenseReportItem(
@@ -116,8 +117,8 @@ public class ReportDummyData {
                 "G",
                 4881,
                 98,
-                context.getResources().getColor(R.color.pastel_blue),
-                context.getResources().getColor(R.color.pastel_blue)
+                ReportCategoryColors.getColor(context, SubscribeCategory.AI),
+                ReportCategoryColors.getColor(context, SubscribeCategory.AI)
         ));
 
         expenseList.add(new ExpenseReportItem(
@@ -125,8 +126,8 @@ public class ReportDummyData {
                 "넷",
                 4269,
                 85,
-                context.getResources().getColor(R.color.pastel_red),
-                context.getResources().getColor(R.color.pastel_red)
+                ReportCategoryColors.getColor(context, SubscribeCategory.OTT),
+                ReportCategoryColors.getColor(context, SubscribeCategory.OTT)
         ));
 
         expenseList.add(new ExpenseReportItem(
@@ -134,8 +135,8 @@ public class ReportDummyData {
                 "라",
                 3725,
                 75,
-                context.getResources().getColor(R.color.pastel_red),
-                context.getResources().getColor(R.color.pastel_red)
+                ReportCategoryColors.getColor(context, SubscribeCategory.OTT),
+                ReportCategoryColors.getColor(context, SubscribeCategory.OTT)
         ));
 
         expenseList.add(new ExpenseReportItem(
@@ -143,8 +144,8 @@ public class ReportDummyData {
                 "배",
                 1500,
                 30,
-                context.getResources().getColor(R.color.pastel_yellow),
-                context.getResources().getColor(R.color.pastel_yellow)
+                ReportCategoryColors.getColor(context, SubscribeCategory.FOOD),
+                ReportCategoryColors.getColor(context, SubscribeCategory.FOOD)
         ));
 
         return expenseList;
@@ -185,15 +186,15 @@ public class ReportDummyData {
                 new ArrayList<>();
 
         categoryList.add(
-                new AnnualExpenseData.CategoryExpense("OTT", ottTotal)
+                new AnnualExpenseData.CategoryExpense(SubscribeCategory.OTT, ottTotal)
         );
 
         categoryList.add(
-                new AnnualExpenseData.CategoryExpense("AI", aiTotal)
+                new AnnualExpenseData.CategoryExpense(SubscribeCategory.AI, aiTotal)
         );
 
         categoryList.add(
-                new AnnualExpenseData.CategoryExpense("음식", foodTotal)
+                new AnnualExpenseData.CategoryExpense(SubscribeCategory.FOOD, foodTotal)
         );
 
         int totalExpense = ottTotal + aiTotal + foodTotal;
@@ -220,15 +221,15 @@ public class ReportDummyData {
                 new ArrayList<>();
 
         categoryList.add(
-                new AllExpenseData.CategoryExpense("OTT", 197900)
+                new AllExpenseData.CategoryExpense(SubscribeCategory.OTT, 197900)
         );
 
         categoryList.add(
-                new AllExpenseData.CategoryExpense("AI", 181400)
+                new AllExpenseData.CategoryExpense(SubscribeCategory.AI, 181400)
         );
 
         categoryList.add(
-                new AllExpenseData.CategoryExpense("음식", 33000)
+                new AllExpenseData.CategoryExpense(SubscribeCategory.FOOD, 33000)
         );
 
         // 전체 누적 지출 데이터 반환

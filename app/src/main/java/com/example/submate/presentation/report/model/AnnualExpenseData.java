@@ -80,6 +80,19 @@ public class AnnualExpenseData {
             return month;
         }
 
+        public int getExpense(SubscribeCategory category) {
+            switch (category) {
+                case OTT: return ottExpense;
+                case MUSIC: return musicExpense;
+                case FOOD: return foodExpense;
+                case SHOPPING: return shoppingExpense;
+                case AI: return aiExpense;
+                case DIGITAL_CONTENT: return digitalContentExpense;
+                case ETC: return etcExpense;
+            }
+            throw new IllegalArgumentException("Unsupported category: " + category);
+        }
+
         public int getOttExpense() {
             return ottExpense;
         }
@@ -122,16 +135,20 @@ public class AnnualExpenseData {
     // 카테고리별 지출 데이터
     public static class CategoryExpense {
 
-        private final String categoryName;
+        private final SubscribeCategory category;
         private final int amount;
 
-        public CategoryExpense(String categoryName, int amount) {
-            this.categoryName = categoryName;
+        public CategoryExpense(SubscribeCategory category, int amount) {
+            this.category = category;
             this.amount = amount;
         }
 
+        public SubscribeCategory getCategory() {
+            return category;
+        }
+
         public String getCategoryName() {
-            return categoryName;
+            return category.getLabel();
         }
 
         public int getAmount() {
