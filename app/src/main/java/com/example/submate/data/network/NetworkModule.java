@@ -5,6 +5,8 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -25,8 +27,32 @@ public abstract class NetworkModule {
 
     @Provides
     @Singleton
+    static OkHttpClient provideOkHttpClient(TokenManager tokenManager) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+                    Request original = chain.request();
+                    String token = tokenManager.getAccessToken();
+                    if (token != null && !token.isEmpty()) {
+                        Request authorized = original.newBuilder()
+                                .header("Authorization", "Bearer " + token)
+                                .build();
+                        return chain.proceed(authorized);
+                    }
+                    return chain.proceed(original);
+                })
+                .build();
+    }
+
+    @Provides
+    @Singleton
     static Retrofit provideRetrofit() {
         return createRetrofit(BASE_URL);
+    }
+
+    @Provides
+    @Singleton
+    static AuthApi provideAuthApi(Retrofit retrofit) {
+        return retrofit.create(AuthApi.class);
     }
 
     @Provides
