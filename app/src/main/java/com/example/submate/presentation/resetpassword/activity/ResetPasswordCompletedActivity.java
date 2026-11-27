@@ -15,8 +15,9 @@ public class ResetPasswordCompletedActivity extends AppCompatActivity {
         setContentView(R.layout.resetpassword_completed);
 
         findViewById(R.id.btn_go_login).setOnClickListener(view -> {
-            startActivity(new Intent(this, OnboardingActivity.class));
-            finish();
+            Intent intent = new Intent(this, OnboardingActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         });
     }
 }
