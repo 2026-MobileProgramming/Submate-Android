@@ -45,8 +45,12 @@ public abstract class NetworkModule {
 
     @Provides
     @Singleton
-    static Retrofit provideRetrofit() {
-        return createRetrofit(BASE_URL);
+    static Retrofit provideRetrofit(OkHttpClient okHttpClient) {
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
     }
 
     @Provides
