@@ -7,12 +7,14 @@ import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import com.example.submate.BuildConfig;
 
 /** 네트워크 관련 의존성을 등록하는 모듈입니다. */
 @Module
 @InstallIn(SingletonComponent.class)
 public abstract class NetworkModule {
-    public static final String BASE_URL = "http://3.104.172.66:8080/api/";
+    // 서버 주소는 local.properties의 BASE_URL 값을 사용합니다. (반드시 '/'로 끝나야 합니다)
+    public static final String BASE_URL = BuildConfig.BASE_URL;
     public static final String EXCHANGE_RATE_URL = "https://api.frankfurter.dev/";
 
     // true: 구독 데이터를 기기 안에 저장합니다. (서버 준비 전)
